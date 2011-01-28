@@ -1,0 +1,16 @@
+ranked-model
+============
+
+Installation
+------------
+
+To use ranked-model, just add it to your `Gemfile`:
+
+    gem 'ranked-model'
+    
+    # Or pin ranked-model to git
+    # gem 'ranked-model',
+    #   :git => 'git@github.com:harvesthq/ranked-model.git'
+
+Then use `bundle install` to update your `Gemfile.lock`.
+
