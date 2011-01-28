@@ -1,0 +1,43 @@
+PATH
+  remote: .
+  specs:
+    ranked-model (0.0.1)
+      activemodel (>= 3.0.3)
+
+GEM
+  remote: http://rubygems.org/
+  specs:
+    activemodel (3.0.3)
+      activesupport (= 3.0.3)
+      builder (~> 2.1.2)
+      i18n (~> 0.4)
+    activesupport (3.0.3)
+    builder (2.1.2)
+    diff-lcs (1.1.2)
+    genspec (0.1.1)
+      rspec
+      sc-core-ext (>= 1.2.0)
+    i18n (0.5.0)
+    mocha (0.9.10)
+      rake
+    rake (0.8.7)
+    rspec (2.4.0)
+      rspec-core (~> 2.4.0)
+      rspec-expectations (~> 2.4.0)
+      rspec-mocks (~> 2.4.0)
+    rspec-core (2.4.0)
+    rspec-expectations (2.4.0)
+      diff-lcs (~> 1.1.2)
+    rspec-mocks (2.4.0)
+    sc-core-ext (1.2.1)
+      activesupport (>= 2.3.5)
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  activemodel (>= 3.0.3)
+  genspec
+  mocha
+  ranked-model!
+  rspec
