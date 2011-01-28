@@ -14,6 +14,9 @@ Gem::Specification.new do |s|
 
   s.add_dependency "activemodel", ">= 3.0.3"
   s.add_development_dependency "rspec"
+  s.add_development_dependency "rspec-rails"
+  s.add_development_dependency "activerecord", ">= 3.0.3"
+  s.add_development_dependency "sqlite3"
   s.add_development_dependency "genspec"
   s.add_development_dependency "mocha"
 
