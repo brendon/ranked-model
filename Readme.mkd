@@ -1,4 +1,4 @@
-*ranked-model* is modern row sorting library built for Rails 3.  It uses ARel aggressivly and is better optimized than most other libraries.
+**ranked-model** is modern row sorting library built for Rails 3.  It uses ARel aggressivly and is better optimized than most other libraries.
 
 Installation
 ------------
@@ -95,3 +95,4 @@ Contributing
 
 Fork, clone, write a test, write some code, commit, push, send a pull request.  Github FTW!
 
+This project was open-sourced by "Harvest":http://getharvest.com/.  "We're hiring!":http://www.getharvest.com/careers
