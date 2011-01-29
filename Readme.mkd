@@ -1,10 +1,9 @@
-ranked-model
-============
+*ranked-model* is modern row sorting library built for Rails 3.  It uses ARel aggressivly and is better optimized than most other libraries.
 
 Installation
 ------------
 
-To use ranked-model, just add it to your `Gemfile`:
+To install ranked-model, just add it to your `Gemfile`:
 
     gem 'ranked-model'
     
@@ -13,4 +12,86 @@ To use ranked-model, just add it to your `Gemfile`:
     #   :git => 'git@github.com:harvesthq/ranked-model.git'
 
 Then use `bundle install` to update your `Gemfile.lock`.
+
+Simple Use
+----------
+
+Use of ranked-model is straight ahead.  Get some ducks:
+
+    class Duck < ActiveRecord::Base
+    end
+
+Put your ducks in a row:
+
+    class Duck < ActiveRecord::Base
+    
+      include RankedModel
+      ranks :row_order
+    
+    end
+
+This simple example assumes an integer column called `row_order`.  To order Ducks by this order:
+
+    Duck.rank(:row_order).all
+
+The ranking integers stored in the `raw_order` column will be big and spaced apart.  When you
+implement a sorting UI, just update the resource with the position instead:
+
+    @duck.update_attribute :row_order_position, 0  # or 1, 2, 37. :first and :last are also valid
+
+So using a normal json controller where `@duck.attributes = params[:duck]; @duck.save`, JS can
+look pretty elegant:
+
+    $.ajax({
+      type: 'PUT',
+      url: '/ducks',
+      dataType: 'json',
+      data: { duck: { row_order_position: 0 } },  // or whatever your new position is
+    });
+
+Complex Use
+-----------
+
+The `ranks` method takes serveral arguments:
+
+    class Duck < ActiveRecord::Base
+    
+      include RankedModel
+    
+      ranks :row_order,           # Name this ranker, used with rank()
+        :column => :sort_order    # Override the default column, which defaults to the name
+      
+      belongs_to :pond
+      ranks :swimming_order,
+        :with_same => :pond_id    # Ducks belong_to Ponds, make the ranker scoped to one pond
+      
+      scope :walking, where(:walking => true )
+      ranks :walking_order,
+        :scope => :walking        # Narrow this ranker to a scope
+    
+    end
+
+When you make a query, add the rank:
+
+    Duck.rank(:row_order)
+    
+    Pond.first.ducks.rank(:swimming_order)
+    
+    Duck.walking.rank(:walking)
+
+Internals
+---------
+
+This libarary is written using ARel from the ground-up.  This leaves the code much cleaner
+than many implementations.  ranked-model is also optimized to write to the database as little
+as possible: ranks are stored as a number between 0 and 65534 (just below MEDIUMINT in MySQL).
+When an item is given a new position, it assigns itself a rank number between two neighbors.
+This allows several movements of items before no digits are available between to neighbors.  When
+this occurs, ranked-model will rebalance the distribution of rank numbers across all memebers
+of the ranked group.
+
+Contributing
+------------
+
+Fork, clone, write a test, write some code, commit, push, send a pull request.  Github FTW!
 
