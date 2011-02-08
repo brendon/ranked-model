@@ -2,7 +2,7 @@ PATH
   remote: .
   specs:
     ranked-model (0.0.1)
-      activemodel (>= 3.0.3)
+      activerecord (>= 3.0.3)
 
 GEM
   remote: http://rubygems.org/
@@ -73,8 +73,6 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  activemodel (>= 3.0.3)
-  activerecord (>= 3.0.3)
   genspec
   mocha
   ranked-model!
