@@ -25,9 +25,9 @@ describe Duck do
     }
     @ducks.each { |name, duck|
       duck.reload
-      duck.row_position = 0
-      duck.size_position =  0
-      duck.age_position = 0
+      duck.send(:row_position=, 0)
+      duck.send(:size_position=, 0)
+      duck.send(:age_position=, 0)
       duck.save!
     }
     @ducks.each {|name, duck| duck.reload }
@@ -43,9 +43,9 @@ describe Duck do
     subject { Duck.in_shin_pond.rank(:size).all }
 
     its(:size) { should == 3 }
-    
+
     its(:first) { should == @ducks[:quacky] }
-    
+
     its(:last) { should == @ducks[:wingy] }
 
   end
@@ -60,9 +60,9 @@ describe Duck do
     subject { Duck.where(:pond => 'Shin').rank(:age).all }
 
     its(:size) { should == 3 }
-    
+
     its(:first) { should == @ducks[:wingy] }
-    
+
     its(:last) { should == @ducks[:quacky] }
 
   end
@@ -79,9 +79,9 @@ describe Duck do
     subject { Duck.rank(:row).all }
 
     its(:size) { should == 6 }
-    
+
     its(:first) { should == @ducks[:beaky] }
-    
+
     its(:last) { should == @ducks[:wingy] }
 
   end
@@ -98,26 +98,26 @@ describe Duck do
       @ducks[:webby].update_attribute :row_position, 6
     }
 
-    describe "row" do 
+    describe "row" do
 
       subject { Duck.rank(:row).all }
 
       its(:size) { should == 6 }
-      
+
       its(:first) { should == @ducks[:beaky] }
-      
+
       its(:last) { should == @ducks[:webby] }
 
     end
 
-    describe "row" do 
+    describe "row" do
 
       subject { Duck.in_shin_pond.rank(:size).all }
 
       its(:size) { should == 3 }
-      
+
       its(:first) { should == @ducks[:quacky] }
-      
+
       its(:last) { should == @ducks[:feathers] }
 
     end
