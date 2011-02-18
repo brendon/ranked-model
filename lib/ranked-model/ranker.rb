@@ -22,12 +22,20 @@ module RankedModel
       def initialize ranker, instance
         self.ranker   = ranker
         self.instance = instance
+
+        if ranker.scope.present? and not instance.class.respond_to? ranker.scope
+          raise %Q{No scope called "#{ranker.scope}" found in model}
+        end
+
+        if ranker.with_same.present? and not instance.respond_to? ranker.with_same
+          raise %Q{No field called "#{ranker.with_same}" found in model}
+        end
       end
-      
+
       def handle_ranking
         update_index_from_position
         assure_unique_position
-      end      
+      end
 
       def update_rank! value
         # Bypass callbacks
@@ -103,7 +111,7 @@ module RankedModel
           end
         end
       end
-      
+
       def rebalance_ranks
         total = current_order.size + 2
         has_set_self = false
