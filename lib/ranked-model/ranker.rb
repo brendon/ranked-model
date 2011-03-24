@@ -1,5 +1,8 @@
 module RankedModel
 
+  class InvalidScope < StandardError; end
+  class InvalidField < StandardError; end
+
   class Ranker
     attr_accessor :name, :column, :scope, :with_same
 
@@ -23,12 +26,16 @@ module RankedModel
         self.ranker   = ranker
         self.instance = instance
 
-        if ranker.scope.present? and not instance.class.respond_to? ranker.scope
-          raise %Q{No scope called "#{ranker.scope}" found in model}
+        validate_ranker_for_instance!
+      end
+      
+      def validate_ranker_for_instance!
+        if ranker.scope && !instance.class.respond_to?(ranker.scope)
+          raise RankedModel::InvalidScope, %Q{No scope called "#{ranker.scope}" found in model}
         end
 
-        if ranker.with_same.present? and not instance.respond_to? ranker.with_same
-          raise %Q{No field called "#{ranker.with_same}" found in model}
+        if ranker.with_same && !instance.respond_to?(ranker.with_same)
+          raise RankedModel::InvalidField, %Q{No field called "#{ranker.with_same}" found in model}
         end
       end
 

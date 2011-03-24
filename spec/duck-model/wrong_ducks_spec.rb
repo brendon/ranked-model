@@ -6,7 +6,7 @@ describe WrongScopeDuck do
 
     expect {
       WrongScopeDuck.create(:name => 'Quocky', :pond => 'Shin')
-    }.to raise_error 'No scope called "non_existant_scope" found in model'
+    }.to raise_error(RankedModel::InvalidScope, 'No scope called "non_existant_scope" found in model')
 
   end
 
@@ -18,7 +18,7 @@ describe WrongFieldDuck do
 
     expect {
       WrongFieldDuck.create(:name => 'Quicky', :pond => 'Shin')
-    }.to raise_error 'No field called "non_existant_field" found in model'
+    }.to raise_error(RankedModel::InvalidField, 'No field called "non_existant_field" found in model')
 
   end
 
