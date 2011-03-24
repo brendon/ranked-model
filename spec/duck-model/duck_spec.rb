@@ -25,9 +25,9 @@ describe Duck do
     }
     @ducks.each { |name, duck|
       duck.reload
-      duck.row_position = 0
-      duck.size_position =  0
-      duck.age_position = 0
+      duck.update_attribute :row_position, 0
+      duck.update_attribute :size_position, 0
+      duck.update_attribute :age_position, 0
       duck.save!
     }
     @ducks.each {|name, duck| duck.reload }
