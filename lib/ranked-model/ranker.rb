@@ -74,7 +74,7 @@ module RankedModel
             if !current_order.empty? && current_order.last.rank
               rank_at( ( RankedModel::MAX_RANK_VALUE + current_order.last.rank ) / 2 )
             else
-              rank_at RankedModel::MAX_RANK_VALUE
+              rank_at( RankedModel::MAX_RANK_VALUE / 2 )
             end
           when String
             position_at position.to_i
