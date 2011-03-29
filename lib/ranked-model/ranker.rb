@@ -36,7 +36,7 @@ module RankedModel
       end
 
       def position
-        instance.send "#{ranker.name}_position"
+        instance.send( "#{ranker.name}_position" ) || :last
       end
 
       def rank

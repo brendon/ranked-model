@@ -124,4 +124,18 @@ describe Duck do
 
   end
 
+  describe "default to :last positioning" do
+    before {
+      @ducks[:curly] = Duck.create(:name => "Curly", :pond => "Stooges")
+      @ducks[:larry] = Duck.create(:name => "Larry", :pond => "Stooges")
+      @ducks[:moe]   = Duck.create(:name => "Moe", :pond => "Stooges")
+    }
+
+    subject { Duck.where(:pond => "Stooges").rank(:row).all }
+
+    its(:first) { should == @ducks[:curly] }
+
+    its(:last) { should == @ducks[:moe] }
+  end
+
 end
