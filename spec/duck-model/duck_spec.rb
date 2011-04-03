@@ -124,4 +124,150 @@ describe Duck do
 
   end
 
+  describe "setting and fetching by positioning" do
+
+    describe "in the middle" do
+
+      before {
+        @ordered = Duck.rank(:row).where(Duck.arel_table[:id].not_eq @ducks[:wingy].id).collect {|duck| duck.id }
+        @ducks[:wingy].update_attribute :row_position, 2
+      }
+
+      context {
+
+        subject { Duck.ranker(:row).with(Duck.new).current_at_position(2).instance }
+
+        its(:id) { should == @ducks[:wingy].id }
+
+      }
+
+      context {
+
+        subject { Duck.rank(:row).collect {|duck| duck.id } }
+
+        it { subject[0..1].should == @ordered[0..1] }
+        
+        it { subject[3..subject.length].should == @ordered[2..@ordered.length] }
+
+      }
+
+    end
+
+    describe "at the start" do
+
+      before {
+        @ordered = Duck.rank(:row).where(Duck.arel_table[:id].not_eq @ducks[:wingy].id).collect {|duck| duck.id }
+        @ducks[:wingy].update_attribute :row_position, 0
+      }
+
+      context {
+
+        subject { Duck.ranker(:row).with(Duck.new).current_at_position(0).instance }
+
+        its(:id) { should == @ducks[:wingy].id }
+
+      }
+
+      context {
+
+        subject { Duck.ranker(:row).with(Duck.new).instance_eval { current_first }.instance }
+
+        its(:id) { should == @ducks[:wingy].id }
+
+      }
+
+      context {
+
+        subject { Duck.rank(:row).collect {|duck| duck.id } }
+
+        it { subject[1..subject.length].should == @ordered }
+        
+      }
+
+    end
+
+    describe "at the end" do
+
+      before {
+        @ordered = Duck.rank(:row).where(Duck.arel_table[:id].not_eq @ducks[:wingy].id).collect {|duck| duck.id }
+        @ducks[:wingy].update_attribute :row_position, (@ducks.size - 1)
+      }
+
+      context {
+
+        subject { Duck.ranker(:row).with(Duck.new).current_at_position(@ducks.size - 1).instance }
+
+        its(:id) { should == @ducks[:wingy].id }
+
+      }
+
+      context {
+
+        subject { Duck.rank(:row).last }
+
+        its(:id) { should == @ducks[:wingy].id }
+
+      }
+
+      context {
+
+        subject { Duck.ranker(:row).with(Duck.new).instance_eval { current_last }.instance }
+
+        its(:id) { should == @ducks[:wingy].id }
+
+      }
+
+      context {
+
+        subject { Duck.rank(:row).collect {|duck| duck.id } }
+
+        it { subject[0..-2].should == @ordered }
+        
+      }
+
+    end
+
+    describe "at the end with symbol" do
+
+      before {
+        @ordered = Duck.rank(:row).where(Duck.arel_table[:id].not_eq @ducks[:wingy].id).collect {|duck| duck.id }
+        @ducks[:wingy].update_attribute :row_position, :last
+      }
+
+      context {
+
+        subject { Duck.ranker(:row).with(Duck.new).current_at_position(@ducks.size - 1).instance }
+
+        its(:id) { should == @ducks[:wingy].id }
+
+      }
+
+      context {
+
+        subject { Duck.rank(:row).last }
+
+        its(:id) { should == @ducks[:wingy].id }
+
+      }
+
+      context {
+
+        subject { Duck.ranker(:row).with(Duck.new).instance_eval { current_last }.instance }
+
+        its(:id) { should == @ducks[:wingy].id }
+
+      }
+
+      context {
+
+        subject { Duck.rank(:row).collect {|duck| duck.id } }
+
+        it { subject[0..-2].should == @ordered }
+        
+      }
+
+    end
+
+  end
+
 end

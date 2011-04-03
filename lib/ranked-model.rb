@@ -5,7 +5,7 @@ module RankedModel
 
   # Signed MEDIUMINT in MySQL
   #
-  MAX_RANK_VALUE = 65534
+  MAX_RANK_VALUE = 8388607
 
   def self.included base
 
