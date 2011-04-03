@@ -87,18 +87,18 @@ module RankedModel
         case position
           when :first
             if current_first && current_first.rank
-              rank_at( ( current_first.rank / 2 ).ceil )
+              rank_at( ( current_first.rank.to_f / 2 ).ceil )
             else
               position_at :middle
             end
           when :last
             if current_last && current_last.rank
-              rank_at( ( ( RankedModel::MAX_RANK_VALUE + current_last.rank ) / 2 ).ceil )
+              rank_at( ( ( RankedModel::MAX_RANK_VALUE + current_last.rank ).to_f / 2 ).ceil )
             else
               position_at :middle
             end
           when :middle
-            rank_at( ( RankedModel::MAX_RANK_VALUE / 2 ).ceil )
+            rank_at( RankedModel::MAX_RANK_VALUE / 2 )
           when String
             position_at position.to_i
           when 0
@@ -131,12 +131,12 @@ module RankedModel
       end
 
       def rearrange_ranks
-        if current_last.rank < RankedModel::MAX_RANK_VALUE && rank <= RankedModel::MAX_RANK_VALUE
+        if current_last.rank < (RankedModel::MAX_RANK_VALUE - 1) && rank < current_last.rank
           instance.class.
             where( instance.class.arel_table[:id].not_eq(instance.id) ).
             where( instance.class.arel_table[ranker.column].gteq(rank) ).
             update_all( "#{ranker.column} = #{ranker.column} + 1" )
-        elsif current_first.rank > 0 && rank > 0
+        elsif current_first.rank > 0 && rank > current_first.rank 
           instance.class.
             where( instance.class.arel_table[:id].not_eq(instance.id) ).
             where( instance.class.arel_table[ranker.column].lt(rank) ).
