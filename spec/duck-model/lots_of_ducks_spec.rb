@@ -67,8 +67,8 @@ describe Duck do
         @first = Duck.first
         @second = Duck.offset(1).first
         @ordered = Duck.rank(:row).where(Duck.arel_table[:id].not_in([@first.id, @second.id])).collect {|d| d.id }
-        @first.update_attribute :row, 0
-        @second.update_attribute :row, 0
+        @first.update_attribute :row, RankedModel::MIN_RANK_VALUE
+        @second.update_attribute :row, RankedModel::MIN_RANK_VALUE
       }
 
       context {
@@ -96,7 +96,7 @@ describe Duck do
           where(Duck.arel_table[:id].not_in([@first.id, @second.id, @third.id, @fourth.id])).
           where(Duck.arel_table[:row].gteq(RankedModel::MAX_RANK_VALUE / 2)).
           collect {|d| d.id }
-        @first.update_attribute :row, 0
+        @first.update_attribute :row, RankedModel::MIN_RANK_VALUE
         @second.update_attribute :row, RankedModel::MAX_RANK_VALUE
         @third.update_attribute :row, (RankedModel::MAX_RANK_VALUE / 2)
         @fourth.update_attribute :row, @third.row

@@ -87,7 +87,7 @@ module RankedModel
         case position
           when :first
             if current_first && current_first.rank
-              rank_at( ( current_first.rank.to_f / 2 ).ceil )
+              rank_at( ( RankedModel::MIN_RANK_VALUE + current_first.rank.to_f / 2 ).ceil )
             else
               position_at :middle
             end
@@ -107,7 +107,7 @@ module RankedModel
             current = current_at_position(position)
             if current
               previous = position > 0 ? current_at_position(position-1) : nil
-              rank_at( ( ( (previous ? previous.rank : 0) + current.rank ).to_f / 2 ).ceil )
+              rank_at( ( ( (previous ? previous.rank : RankedModel::MIN_RANK_VALUE) + current.rank ).to_f / 2 ).ceil )
             else
               position_at :last
             end
@@ -136,7 +136,7 @@ module RankedModel
             where( instance.class.arel_table[:id].not_eq(instance.id) ).
             where( instance.class.arel_table[ranker.column].gteq(rank) ).
             update_all( "#{ranker.column} = #{ranker.column} + 1" )
-        elsif current_first.rank > 0 && rank > current_first.rank 
+        elsif current_first.rank > RankedModel::MIN_RANK_VALUE && rank > current_first.rank 
           instance.class.
             where( instance.class.arel_table[:id].not_eq(instance.id) ).
             where( instance.class.arel_table[ranker.column].lt(rank) ).
@@ -152,7 +152,7 @@ module RankedModel
         has_set_self = false
         total.times do |index|
           next if index == 0 || index == total
-          rank_value = RankedModel::MAX_RANK_VALUE / total * index
+          rank_value = ((((RankedModel::MAX_RANK_VALUE - RankedModel::MIN_RANK_VALUE).to_f / total) * index ).ceil + RankedModel::MIN_RANK_VALUE)
           index = index - 1
           if has_set_self
             index = index - 1
