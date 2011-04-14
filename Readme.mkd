@@ -84,10 +84,11 @@ Internals
 
 This libarary is written using ARel from the ground-up.  This leaves the code much cleaner
 than many implementations.  ranked-model is also optimized to write to the database as little
-as possible: ranks are stored as a number between 0 and 65534 (just below MEDIUMINT in MySQL).
+as possible: ranks are stored as a number between -8388607 and 8388607 (the MEDIUMINT range in MySQL).
 When an item is given a new position, it assigns itself a rank number between two neighbors.
-This allows several movements of items before no digits are available between to neighbors.  When
-this occurs, ranked-model will rebalance the distribution of rank numbers across all memebers
+This allows several movements of items before no digits are available between two neighbors. When
+this occurs, ranked-model will try to shift other records out of the way. If items can't be easily
+shifted anymore, it will rebalance the distribution of rank numbers across all memebers
 of the ranked group.
 
 Contributing
@@ -96,3 +97,9 @@ Contributing
 Fork, clone, write a test, write some code, commit, push, send a pull request.  Github FTW!
 
 This project was open-sourced by [Harvest](http://getharvest.com/).  [We're hiring!](http://www.getharvest.com/careers)
+
+A hearty thanks to these contributors:
+
+* [yabawock](https://github.com/yabawock)
+* [AndrewRadev](https://github.com/AndrewRadev/ranked-model)
+
