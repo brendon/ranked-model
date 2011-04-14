@@ -87,30 +87,27 @@ module RankedModel
         case position
           when :first
             if current_first && current_first.rank
-              rank_at( ( RankedModel::MIN_RANK_VALUE + current_first.rank.to_f / 2 ).ceil )
+              rank_at( ( ( RankedModel::MIN_RANK_VALUE - current_first.rank ).to_f / 2 ).ceil + current_first.rank)
             else
               position_at :middle
             end
           when :last
             if current_last && current_last.rank
-              rank_at( ( ( RankedModel::MAX_RANK_VALUE + current_last.rank ).to_f / 2 ).ceil )
+              rank_at( ( ( RankedModel::MAX_RANK_VALUE - current_last.rank ).to_f / 2 ).ceil + current_last.rank )
             else
               position_at :middle
             end
           when :middle
-            rank_at( RankedModel::MAX_RANK_VALUE / 2 )
+            rank_at( ( ( RankedModel::MAX_RANK_VALUE - RankedModel::MIN_RANK_VALUE ).to_f / 2 ).ceil + RankedModel::MIN_RANK_VALUE )
           when String
             position_at position.to_i
           when 0
             position_at :first
           when Integer
-            current = current_at_position(position)
-            if current
-              previous = position > 0 ? current_at_position(position-1) : nil
-              rank_at( ( ( (previous ? previous.rank : RankedModel::MIN_RANK_VALUE) + current.rank ).to_f / 2 ).ceil )
-            else
-              position_at :last
-            end
+            neighbors = neighbors_at_position(position)
+            min = (neighbors[:lower] ? neighbors[:lower].rank : RankedModel::MIN_RANK_VALUE)
+            max = (neighbors[:upper] ? neighbors[:upper].rank : RankedModel::MAX_RANK_VALUE)
+            rank_at( ( ( max - min ).to_f / 2 ).ceil + min )
           when NilClass
             if !rank
               position_at :last
@@ -220,6 +217,27 @@ module RankedModel
                                  where( ranker.column => _rank ).
                                  first)
           RankedModel::Ranker::Mapper.new ranker, ordered_instance
+        end
+      end
+
+      def neighbors_at_position _pos
+        if _pos > 0
+          if (ordered_instances = finder.offset(_pos-1).limit(2).all)
+            if ordered_instances[1]
+              { :lower => RankedModel::Ranker::Mapper.new( ranker, ordered_instances[0] ),
+                :upper => RankedModel::Ranker::Mapper.new( ranker, ordered_instances[1] ) }
+            elsif ordered_instances[0]
+              { :lower => RankedModel::Ranker::Mapper.new( ranker, ordered_instances[0] ) }
+            else
+              { :lower => current_last }
+            end
+          end
+        else
+          if (ordered_instance = finder.first)
+            { :upper => RankedModel::Ranker::Mapper.new( ranker, ordered_instance ) }
+          else
+            {}
+          end
         end
       end
 
