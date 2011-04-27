@@ -47,6 +47,7 @@ module RankedModel
       ranker = RankedModel::Ranker.new(*args)
       self.rankers << ranker
       attr_accessor "#{ranker.name}_position"
+      public "#{ranker.name}_position", "#{ranker.name}_position="
     end
 
   end

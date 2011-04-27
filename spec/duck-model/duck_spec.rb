@@ -3,6 +3,23 @@ require 'spec_helper'
 describe Duck do
 
   before {
+    @duck = Duck.new
+  }
+
+  subject { @duck }
+
+  it { subject.respond_to?(:row_position).should be_true }
+  it { subject.respond_to?(:row_position=).should be_true }
+  it { subject.respond_to?(:size_position).should be_true }
+  it { subject.respond_to?(:size_position=).should be_true }
+  it { subject.respond_to?(:age_position).should be_true }
+  it { subject.respond_to?(:age_position=).should be_true }
+
+end
+
+describe Duck do
+
+  before {
     @ducks = {
       :quacky => Duck.create(
         :name => 'Quacky',
