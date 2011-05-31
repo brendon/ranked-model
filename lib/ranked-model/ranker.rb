@@ -4,11 +4,12 @@ module RankedModel
   class InvalidField < StandardError; end
 
   class Ranker
-    attr_accessor :name, :column, :scope, :with_same
+    attr_accessor :name, :column, :scope, :with_same, :class_name
 
     def initialize name, options={}
       self.name = name.to_sym
       self.column = options[:column] || name
+      self.class_name = options[:class_name]
 
       [ :scope, :with_same ].each do |key|
         self.send "#{key}=", options[key]
@@ -30,7 +31,7 @@ module RankedModel
       end
       
       def validate_ranker_for_instance!
-        if ranker.scope && !instance.class.respond_to?(ranker.scope)
+        if ranker.scope && !instance_class.respond_to?(ranker.scope)
           raise RankedModel::InvalidScope, %Q{No scope called "#{ranker.scope}" found in model}
         end
 
@@ -47,7 +48,7 @@ module RankedModel
       def update_rank! value
         # Bypass callbacks
         #
-        instance.class.where(:id => instance.id).update_all ["#{ranker.column} = ?", value]
+        instance_class.where(:id => instance.id).update_all ["#{ranker.column} = ?", value]
       end
 
       def position
@@ -65,6 +66,10 @@ module RankedModel
       end
 
     private
+
+      def instance_class
+        ranker.class_name.nil? ? instance.class : ranker.class_name.constantize
+      end
 
       def position_at value
         instance.send "#{ranker.name}_position=", value
@@ -129,14 +134,14 @@ module RankedModel
 
       def rearrange_ranks
         if current_last.rank < (RankedModel::MAX_RANK_VALUE - 1) && rank < current_last.rank
-          instance.class.
-            where( instance.class.arel_table[:id].not_eq(instance.id) ).
-            where( instance.class.arel_table[ranker.column].gteq(rank) ).
+          instance_class.
+            where( instance_class.arel_table[:id].not_eq(instance.id) ).
+            where( instance_class.arel_table[ranker.column].gteq(rank) ).
             update_all( "#{ranker.column} = #{ranker.column} + 1" )
         elsif current_first.rank > RankedModel::MIN_RANK_VALUE && rank > current_first.rank 
-          instance.class.
-            where( instance.class.arel_table[:id].not_eq(instance.id) ).
-            where( instance.class.arel_table[ranker.column].lt(rank) ).
+          instance_class.
+            where( instance_class.arel_table[:id].not_eq(instance.id) ).
+            where( instance_class.arel_table[ranker.column].lt(rank) ).
             update_all( "#{ranker.column} = #{ranker.column} - 1" )
           rank_at( rank - 1 )
         else
@@ -168,19 +173,19 @@ module RankedModel
 
       def finder
         @finder ||= begin
-          _finder = instance.class
+          _finder = instance_class
           if ranker.scope
             _finder = _finder.send ranker.scope
           end
           if ranker.with_same
             _finder = _finder.where \
-              instance.class.arel_table[ranker.with_same].eq(instance.attributes["#{ranker.with_same}"])
+              instance_class.arel_table[ranker.with_same].eq(instance.attributes["#{ranker.with_same}"])
           end
           if !new_record?
             _finder = _finder.where \
-              instance.class.arel_table[:id].not_eq(instance.id)
+              instance_class.arel_table[:id].not_eq(instance.id)
           end
-          _finder.order(instance.class.arel_table[ranker.column].asc).select([:id, ranker.column])
+          _finder.order(instance_class.arel_table[ranker.column].asc).select([:id, ranker.column])
         end
       end
 
@@ -204,7 +209,7 @@ module RankedModel
         @current_last ||= begin
           if (ordered_instance = finder.
                                    except( :order ).
-                                   order( instance.class.arel_table[ranker.column].desc ).
+                                   order( instance_class.arel_table[ranker.column].desc ).
                                    first)
             RankedModel::Ranker::Mapper.new ranker, ordered_instance
           end

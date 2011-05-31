@@ -12,8 +12,10 @@ ActiveRecord::Base.establish_connection('development')
 
 ActiveRecord::Schema.define :version => 0 do
   create_table :ducks, :force => true do |t|
+    t.string :type
     t.string :name
     t.integer :row
+    t.integer :sti_row
     t.integer :size
     t.integer :age
     t.string :pond
@@ -38,9 +40,13 @@ class Duck < ActiveRecord::Base
   ranks :row
   ranks :size, :scope => :in_shin_pond
   ranks :age, :with_same => :pond
+  ranks :sti_row, :class_name => 'Duck'
 
   scope :in_shin_pond, where(:pond => 'Shin')
 
+end
+
+class Duckling < Duck
 end
 
 # Negative examples
