@@ -30,6 +30,12 @@ ActiveRecord::Schema.define :version => 0 do
     t.integer :age
     t.string :pond
   end
+
+  create_table :elements, :force => true do |t|
+    t.string :symbol
+    t.string :type
+    t.integer :combination_order
+  end
 end
 
 class Duck < ActiveRecord::Base
@@ -56,5 +62,20 @@ class WrongFieldDuck < ActiveRecord::Base
 
   include RankedModel
   ranks :age, :with_same => :non_existant_field
+
+end
+
+class Element < ActiveRecord::Base
+
+  include RankedModel
+  ranks :combination_order
+
+end
+
+class TransitionMetal < Element
+
+end
+
+class NobleGas < Element
 
 end
