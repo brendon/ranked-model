@@ -138,7 +138,7 @@ module RankedModel
             where( instance.class.arel_table[:id].not_eq(instance.id) ).
             where( instance.class.arel_table[ranker.column].gteq(rank) ).
             update_all( "#{ranker.column} = #{ranker.column} + 1" )
-        elsif current_first.rank > RankedModel::MIN_RANK_VALUE + 1 && rank > current_first.rank 
+        elsif current_first.rank > RankedModel::MIN_RANK_VALUE && rank > current_first.rank 
           instance.class.
             where( instance.class.arel_table[:id].not_eq(instance.id) ).
             where( instance.class.arel_table[ranker.column].lt(rank) ).
