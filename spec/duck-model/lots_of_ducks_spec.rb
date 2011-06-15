@@ -37,6 +37,32 @@ describe Duck do
 
     end
 
+    describe 'last' do
+
+      before {
+        @last = Duck.last
+        @last.update_attribute :row_position, :last
+      }
+
+      subject { Duck.rank(:row).last }
+
+      its(:id) { should == @last.id }
+
+    end
+
+    describe 'first' do
+
+      before {
+        @last = Duck.last
+        @last.update_attribute :row_position, :first
+      }
+
+      subject { Duck.rank(:row).first }
+
+      its(:id) { should == @last.id }
+
+    end
+
   end
 
   describe "a rearrangement" do
@@ -55,7 +81,7 @@ describe Duck do
 
         subject { Duck.rank(:row).collect {|d| d.id } }
 
-        it { should == (@ordered[0..-2] + [@first.id, @second.id, @ordered[-1]]) }
+        it { should == (@ordered[0..-2] + [@ordered[-1], @first.id, @second.id]) }
 
       }
 

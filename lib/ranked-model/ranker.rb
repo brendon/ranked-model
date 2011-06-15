@@ -128,16 +128,21 @@ module RankedModel
       end
 
       def rearrange_ranks
-        if current_last.rank < (RankedModel::MAX_RANK_VALUE - 1) && rank < current_last.rank
+        if current_first.rank > RankedModel::MIN_RANK_VALUE && rank == RankedModel::MAX_RANK_VALUE
+          instance.class.
+            where( instance.class.arel_table[:id].not_eq(instance.id) ).
+            where( instance.class.arel_table[ranker.column].lteq(rank) ).
+            update_all( "#{ranker.column} = #{ranker.column} - 1" )
+        elsif current_last.rank < (RankedModel::MAX_RANK_VALUE - 1) && rank < current_last.rank
           instance.class.
             where( instance.class.arel_table[:id].not_eq(instance.id) ).
             where( instance.class.arel_table[ranker.column].gteq(rank) ).
             update_all( "#{ranker.column} = #{ranker.column} + 1" )
-        elsif current_first.rank > RankedModel::MIN_RANK_VALUE && rank > current_first.rank 
+        elsif current_first.rank > RankedModel::MIN_RANK_VALUE + 1 && rank > current_first.rank 
           instance.class.
             where( instance.class.arel_table[:id].not_eq(instance.id) ).
             where( instance.class.arel_table[ranker.column].lt(rank) ).
-            update_all( "#{ranker.column} = #{ranker.column} - 1" )
+            update_all( "#{ranker.column} = #{ranker.column} - 2" )
           rank_at( rank - 1 )
         else
           rebalance_ranks
