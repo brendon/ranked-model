@@ -142,7 +142,7 @@ module RankedModel
           instance.class.
             where( instance.class.arel_table[:id].not_eq(instance.id) ).
             where( instance.class.arel_table[ranker.column].lt(rank) ).
-            update_all( "#{ranker.column} = #{ranker.column} - 2" )
+            update_all( "#{ranker.column} = #{ranker.column} - 1" )
           rank_at( rank - 1 )
         else
           rebalance_ranks
