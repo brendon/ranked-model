@@ -38,13 +38,17 @@ describe Duck do
         :pond => 'Meddybemps' ),
       :beaky => Duck.create(
         :name => 'Beaky',
-        :pond => 'Great Moose' )
+        :pond => 'Great Moose' ),
+      :huey => Duckling.create(
+        :name => 'Huey',
+        :pond => 'Duckburg' )
     }
     @ducks.each { |name, duck|
       duck.reload
       duck.update_attribute :row_position, 0
       duck.update_attribute :size_position, 0
       duck.update_attribute :age_position, 0
+      duck.update_attribute :sti_row_position, 0
       duck.save!
     }
     @ducks.each {|name, duck| duck.reload }
@@ -90,16 +94,33 @@ describe Duck do
       @ducks[:beaky].update_attribute :row_position, 0
       @ducks[:webby].update_attribute :row_position, 2
       @ducks[:waddly].update_attribute :row_position, 2
-      @ducks[:wingy].update_attribute :row_position, 6
+      @ducks[:wingy].update_attribute :row_position, 7
     }
 
     subject { Duck.rank(:row).all }
 
-    its(:size) { should == 6 }
+    its(:size) { should == 7 }
     
     its(:first) { should == @ducks[:beaky] }
     
     its(:last) { should == @ducks[:wingy] }
+
+  end
+
+  describe "sorting by sti row" do
+
+    before {
+      @ducks[:huey].update_attribute :sti_row_position, 0
+      @ducks[:beaky].update_attribute :sti_row_position, 7
+    }
+
+    subject { Duck.rank(:sti_row).all }
+
+    its(:size) { should == 7 }
+
+    its(:first) { should == @ducks[:huey] }
+
+    its(:last) { should == @ducks[:beaky] }
 
   end
 
@@ -111,15 +132,15 @@ describe Duck do
       @ducks[:webby].update_attribute :row_position, 2
       @ducks[:wingy].update_attribute :size_position, 1
       @ducks[:waddly].update_attribute :row_position, 2
-      @ducks[:wingy].update_attribute :row_position, 6
-      @ducks[:webby].update_attribute :row_position, 6
+      @ducks[:wingy].update_attribute :row_position, 7
+      @ducks[:webby].update_attribute :row_position, 7
     }
 
     describe "row" do 
 
       subject { Duck.rank(:row).all }
 
-      its(:size) { should == 6 }
+      its(:size) { should == 7 }
       
       its(:first) { should == @ducks[:beaky] }
       
