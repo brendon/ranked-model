@@ -16,6 +16,9 @@ ActiveRecord::Schema.define :version => 0 do
     t.integer :row
     t.integer :size
     t.integer :age
+    t.integer :lake_id
+    t.integer :flock_id
+    t.integer :landing_order
     t.string :pond
   end
 
@@ -44,6 +47,9 @@ class Duck < ActiveRecord::Base
   ranks :row
   ranks :size, :scope => :in_shin_pond
   ranks :age, :with_same => :pond
+  
+  ranks :landing_order, :with_same => [:lake_id, :flock_id]
+  scope :in_lake_and_flock, lambda {|lake, flock| where(:lake_id => lake, :flock_id => flock) }
 
   scope :in_shin_pond, where(:pond => 'Shin')
 

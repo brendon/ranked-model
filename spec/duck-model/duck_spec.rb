@@ -14,6 +14,8 @@ describe Duck do
   it { subject.respond_to?(:size_position=).should be_true }
   it { subject.respond_to?(:age_position).should be_true }
   it { subject.respond_to?(:age_position=).should be_true }
+  it { subject.respond_to?(:landing_order_position).should be_true }
+  it { subject.respond_to?(:landing_order_position=).should be_true }
 
 end
 
@@ -284,6 +286,85 @@ describe Duck do
       }
 
     end
+
+  end
+
+end
+
+describe Duck do
+
+  before {
+    @ducks = {
+      :quacky => Duck.create(
+        :name => 'Quacky',
+        :lake_id => 0,
+        :flock_id => 0 ),
+      :feathers => Duck.create(
+        :name => 'Feathers',
+        :lake_id => 0,
+        :flock_id => 0 ),
+      :wingy => Duck.create(
+        :name => 'Wingy',
+        :lake_id => 0,
+        :flock_id => 0 ),
+      :webby => Duck.create(
+        :name => 'Webby',
+        :lake_id => 1,
+        :flock_id => 1 ),
+      :waddly => Duck.create(
+        :name => 'Waddly',
+        :lake_id => 1,
+        :flock_id => 0 ),
+      :beaky => Duck.create(
+        :name => 'Beaky',
+        :lake_id => 0,
+        :flock_id => 1 ),
+    }
+    @ducks.each { |name, duck|
+      duck.reload
+      duck.update_attribute :landing_order_position, 0
+      duck.save!
+    }
+    @ducks.each {|name, duck| duck.reload }
+  }
+
+  describe "sorting by landing_order" do
+
+    before {
+      @ducks[:quacky].update_attribute :landing_order_position, 0
+      @ducks[:wingy].update_attribute :landing_order_position, 1
+    }
+
+    subject { Duck.in_lake_and_flock(0,0).rank(:landing_order).all }
+
+    its(:size) { should == 3 }
+    
+    its(:first) { should == @ducks[:quacky] }
+    
+    its(:last) { should == @ducks[:feathers] }
+
+  end
+
+  describe "sorting by landing_order doesn't touch other items" do
+
+    before {
+      @untouchable_ranks = lambda {
+        [:webby, :waddly, :beaky].inject([]) do |ranks, untouchable_duck|
+          ranks << @ducks[untouchable_duck].landing_order
+        end
+      }
+
+      @previous_ranks = @untouchable_ranks.call
+
+      @ducks[:quacky].update_attribute :landing_order_position, 0
+      @ducks[:wingy].update_attribute :landing_order_position, 1
+      @ducks[:feathers].update_attribute :landing_order_position, 0
+      @ducks[:wingy].update_attribute :landing_order_position, 1
+    }
+
+    subject { @untouchable_ranks.call }
+
+    it { should == @previous_ranks }
 
   end
 

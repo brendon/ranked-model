@@ -34,8 +34,17 @@ module RankedModel
           raise RankedModel::InvalidScope, %Q{No scope called "#{ranker.scope}" found in model}
         end
 
-        if ranker.with_same && !instance.respond_to?(ranker.with_same)
-          raise RankedModel::InvalidField, %Q{No field called "#{ranker.with_same}" found in model}
+        if ranker.with_same
+          if (case ranker.with_same
+                when Symbol
+                  !instance.respond_to?(ranker.with_same)
+                when Array
+                  ranker.with_same.detect {|attr| !instance.respond_to?(attr) }
+                else
+                  false
+              end)
+            raise RankedModel::InvalidField, %Q{No field called "#{ranker.with_same}" found in model}
+          end
         end
       end
 
@@ -177,9 +186,24 @@ module RankedModel
           if ranker.scope
             _finder = _finder.send ranker.scope
           end
-          if ranker.with_same
-            _finder = _finder.where \
-              instance.class.arel_table[ranker.with_same].eq(instance.attributes["#{ranker.with_same}"])
+          case ranker.with_same
+            when Symbol
+              _finder = _finder.where \
+                instance.class.arel_table[ranker.with_same].eq(instance.attributes["#{ranker.with_same}"])
+            when Array
+              _finder = _finder.where(
+                ranker.with_same[1..-1].inject(
+                  instance.class.arel_table[ranker.with_same.first].eq(
+                    instance.attributes["#{ranker.with_same.first}"]
+                  )
+                ) {|scoper, attr|
+                  scoper.and( 
+                    instance.class.arel_table[attr].eq(
+                      instance.attributes["#{attr}"]
+                    )
+                  )
+                }
+              )
           end
           if !new_record?
             _finder = _finder.where \
