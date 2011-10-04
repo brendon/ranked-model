@@ -286,6 +286,47 @@ describe Duck do
       }
 
     end
+    
+    describe "at the end with string" do
+
+      before {
+        @ordered = Duck.rank(:row).where(Duck.arel_table[:id].not_eq @ducks[:wingy].id).collect {|duck| duck.id }
+        @ducks[:wingy].update_attribute :row_position, 'last'
+      }
+
+      context {
+
+        subject { Duck.ranker(:row).with(Duck.new).current_at_position(@ducks.size - 1).instance }
+
+        its(:id) { should == @ducks[:wingy].id }
+
+      }
+
+      context {
+
+        subject { Duck.rank(:row).last }
+
+        its(:id) { should == @ducks[:wingy].id }
+
+      }
+
+      context {
+
+        subject { Duck.ranker(:row).with(Duck.new).instance_eval { current_last }.instance }
+
+        its(:id) { should == @ducks[:wingy].id }
+
+      }
+
+      context {
+
+        subject { Duck.rank(:row).collect {|duck| duck.id } }
+
+        it { subject[0..-2].should == @ordered }
+        
+      }
+
+    end
 
   end
 
