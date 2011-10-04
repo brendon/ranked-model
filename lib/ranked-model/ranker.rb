@@ -94,19 +94,19 @@ module RankedModel
 
       def update_index_from_position
         case position
-          when :first
+          when :first, 'first'
             if current_first && current_first.rank
               rank_at( ( ( RankedModel::MIN_RANK_VALUE - current_first.rank ).to_f / 2 ).ceil + current_first.rank)
             else
               position_at :middle
             end
-          when :last
+          when :last, 'last'
             if current_last && current_last.rank
               rank_at( ( ( RankedModel::MAX_RANK_VALUE - current_last.rank ).to_f / 2 ).ceil + current_last.rank )
             else
               position_at :middle
             end
-          when :middle
+          when :middle, 'middle'
             rank_at( ( ( RankedModel::MAX_RANK_VALUE - RankedModel::MIN_RANK_VALUE ).to_f / 2 ).ceil + RankedModel::MIN_RANK_VALUE )
           when String
             position_at position.to_i
