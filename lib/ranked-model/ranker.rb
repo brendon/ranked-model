@@ -233,7 +233,7 @@ module RankedModel
         @current_last ||= begin
           if (ordered_instance = finder.
                                    except( :order ).
-                                   order( instance.class.arel_table[ranker.column].desc ).
+                                   order( instance.class.arel_table[ranker.column].desc.to_sql ).
                                    first)
             RankedModel::Ranker::Mapper.new ranker, ordered_instance
           end
