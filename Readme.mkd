@@ -115,10 +115,13 @@ Contributing
 
 Fork, clone, write a test, write some code, commit, push, send a pull request.  Github FTW!
 
-This project was open-sourced by [Harvest](http://getharvest.com/).  [We're hiring!](http://www.getharvest.com/careers)
+RankedModel is mostly the handiwork of Matthew Beale:
+
+* [madhatted.com](http://madhatted.com) is where I blog. Also [@mixonic](http://twitter.com/mixonic).
+* [Spinto](http://www.spintoapp.com) is a product I'm bootstrapping.
 
 A hearty thanks to these contributors:
 
+* [Harvest](http://getharvest.com) where this Gem started. They are great, great folks.
 * [yabawock](https://github.com/yabawock)
 * [AndrewRadev](https://github.com/AndrewRadev/ranked-model)
-
