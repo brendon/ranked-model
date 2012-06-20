@@ -4,8 +4,7 @@ describe Duck do
 
   before {
     200.times do |i|
-      Duck.create \
-        :name => "Duck #{i}"
+      Duck.create :name => "Duck #{i}"
     end
   }
 
@@ -85,6 +84,30 @@ describe Duck do
 
       }
 
+    end
+
+    describe "with max value and with_same pond" do
+      before {
+        Duck.first(50).each_with_index do |d, index|
+          d.update_attributes :age => index % 10, :pond => "Pond #{index / 10}"
+        end
+        @duck_11 = Duck.offset(10).first
+        @duck_12 = Duck.offset(11).first
+        @ordered = Duck.where(:pond => 'Pond 1').rank(:age).where(Duck.arel_table[:id].not_in([@duck_11.id, @duck_12.id])).collect {|d| d.id }
+        @duck_11.update_attribute :age, RankedModel::MAX_RANK_VALUE
+        @duck_12.update_attribute :age, RankedModel::MAX_RANK_VALUE
+      }
+
+      context {
+        subject { Duck.where(:pond => 'Pond 1').rank(:age).collect {|d| d.id } }
+
+        it { should == (@ordered[0..-2] + [@ordered[-1], @duck_11.id, @duck_12.id]) }
+      }
+
+      context {
+        subject { Duck.first.age }
+        it { should == 0}
+      }
     end
 
     describe "with min value" do
