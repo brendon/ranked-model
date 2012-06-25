@@ -10,7 +10,7 @@ gem 'ranked-model'
 
 # Or pin ranked-model to git
 # gem 'ranked-model',
-#   :git => 'git@github.com:harvesthq/ranked-model.git'
+#   :git => 'git@github.com:mixonic/ranked-model.git'
 ```
 
 Then use `bundle install` to update your `Gemfile.lock`.
