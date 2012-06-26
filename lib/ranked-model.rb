@@ -18,7 +18,7 @@ module RankedModel
       before_save :handle_ranking
 
       scope :rank, lambda { |name|
-        order arel_table[ ranker(name.to_sym).column ]
+        order ranker(name.to_sym).column
       }
     end
 
