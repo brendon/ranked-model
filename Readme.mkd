@@ -107,7 +107,7 @@ as possible: ranks are stored as a number between -8388607 and 8388607 (the MEDI
 When an item is given a new position, it assigns itself a rank number between two neighbors.
 This allows several movements of items before no digits are available between two neighbors. When
 this occurs, ranked-model will try to shift other records out of the way. If items can't be easily
-shifted anymore, it will rebalance the distribution of rank numbers across all memebers
+shifted anymore, it will rebalance the distribution of rank numbers across all members
 of the ranked group.
 
 Contributing
