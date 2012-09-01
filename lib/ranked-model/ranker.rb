@@ -4,13 +4,13 @@ module RankedModel
   class InvalidField < StandardError; end
 
   class Ranker
-    attr_accessor :name, :column, :scope, :with_same
+    attr_accessor :name, :column, :scope, :with_same, :trigger_callbacks
 
     def initialize name, options={}
       self.name = name.to_sym
       self.column = options[:column] || name
 
-      [ :scope, :with_same ].each do |key|
+      [ :scope, :with_same, :trigger_callbacks ].each do |key|
         self.send "#{key}=", options[key]
       end
     end
@@ -54,9 +54,13 @@ module RankedModel
       end
 
       def update_rank! value
-        # Bypass callbacks
-        #
-        instance.class.where(:id => instance.id).update_all ["#{ranker.column} = ?", value]
+        if ranker.trigger_callbacks == true
+          instance.update_attributes ranker.column => value
+        else
+          # Bypass callbacks
+          #
+          instance.class.where(:id => instance.id).update_all ["#{ranker.column} = ?", value]
+        end
       end
 
       def position
@@ -74,6 +78,20 @@ module RankedModel
       end
 
     private
+    
+      def increment_all(query, amount = 1 )
+        if ranker.trigger_callbacks == true
+          query.select('print_jobs.*').each do |m|
+            #TODO: this causes infinite recursion of positioning on save callbacks sometimes
+            m.send "#{ranker.column}=", m.send(ranker.column) + amount
+            m.send "#{ranker.column}_disable_ranking_hooks=", true
+            m.save!
+          end
+        else
+          query.update_all("#{ranker.column} = #{ranker.column} + #{amount}")
+        end
+        return query
+      end
 
       def position_at value
         instance.send "#{ranker.name}_position=", value
@@ -143,17 +161,17 @@ module RankedModel
           _scope = _scope.where( instance.class.arel_table[:id].not_eq(instance.id) )
         end
         if current_first.rank && current_first.rank > RankedModel::MIN_RANK_VALUE && rank == RankedModel::MAX_RANK_VALUE
-          _scope.
-            where( instance.class.arel_table[ranker.column].lteq(rank) ).
-            update_all( "#{ranker.column} = #{ranker.column} - 1" )
+          query = _scope.
+            where( instance.class.arel_table[ranker.column].lteq(rank) )
+          increment_all query, -1
         elsif current_last.rank && current_last.rank < (RankedModel::MAX_RANK_VALUE - 1) && rank < current_last.rank
-          _scope.
-            where( instance.class.arel_table[ranker.column].gteq(rank) ).
-            update_all( "#{ranker.column} = #{ranker.column} + 1" )
+          query = _scope.
+            where( instance.class.arel_table[ranker.column].gteq(rank) )
+          increment_all query, +1
         elsif current_first.rank && current_first.rank > RankedModel::MIN_RANK_VALUE && rank > current_first.rank 
-          _scope.
-            where( instance.class.arel_table[ranker.column].lt(rank) ).
-            update_all( "#{ranker.column} = #{ranker.column} - 1" )
+          query = _scope.
+            where( instance.class.arel_table[ranker.column].lt(rank) )
+          increment_all query, -1
           rank_at( rank - 1 )
         else
           rebalance_ranks

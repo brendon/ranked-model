@@ -28,7 +28,9 @@ module RankedModel
 
   def handle_ranking
     self.class.rankers.each do |ranker|
-      ranker.with(self).handle_ranking
+      unless self.send("#{ranker.name}_disable_ranking_hooks")
+        ranker.with(self).handle_ranking
+      end
     end
   end
 
@@ -47,6 +49,7 @@ module RankedModel
       ranker = RankedModel::Ranker.new(*args)
       self.rankers << ranker
       attr_accessor "#{ranker.name}_position"
+      attr_accessor "#{ranker.name}_disable_ranking_hooks"
       public "#{ranker.name}_position", "#{ranker.name}_position="
     end
 
