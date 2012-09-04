@@ -234,8 +234,7 @@ module RankedModel
       def current_last
         @current_last ||= begin
           if (ordered_instance = finder.
-                                   except( :order ).
-                                   order( instance.class.arel_table[ranker.column].desc ).
+                                   reverse.
                                    first)
             RankedModel::Ranker::Mapper.new ranker, ordered_instance
           end
