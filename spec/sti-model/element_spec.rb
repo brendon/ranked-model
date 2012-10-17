@@ -119,4 +119,25 @@ describe Element do
 
   end
 
+  describe "ranking by STI parent" do
+
+    before {
+      @elements[:helium].update_attribute :combination_order_position, :first
+      @elements[:chromium].update_attribute :combination_order_position, :first
+    }
+
+    describe "Element" do
+
+      subject { Element.rank(:combination_order) }
+
+      its(:size) { should == 5 }
+
+      its(:first) { should == @elements[:chromium] }
+
+      its(:second) { should == @elements[:helium] }
+
+    end
+
+  end
+
 end
