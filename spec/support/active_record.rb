@@ -74,7 +74,7 @@ end
 class Element < ActiveRecord::Base
 
   include RankedModel
-  ranks :combination_order
+  ranks :combination_order, :class_name => 'Element'
 
 end
 
