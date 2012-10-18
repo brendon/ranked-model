@@ -122,6 +122,11 @@ describe Element do
   describe "ranking by STI parent" do
 
     before {
+
+      Element.class_eval do
+        ranks :combination_order, :class_name => 'Element'
+      end
+
       @elements[:helium].update_attribute :combination_order_position, :first
       @elements[:chromium].update_attribute :combination_order_position, :first
     }
