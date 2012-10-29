@@ -39,6 +39,13 @@ ActiveRecord::Schema.define :version => 0 do
     t.string :type
     t.integer :combination_order
   end
+
+  create_table :vehicles, :force => true do |t|
+    t.string :color
+    t.string :manufacturer
+    t.string :type
+    t.integer :parking_order
+  end
 end
 
 class Duck < ActiveRecord::Base
@@ -47,7 +54,7 @@ class Duck < ActiveRecord::Base
   ranks :row
   ranks :size, :scope => :in_shin_pond
   ranks :age, :with_same => :pond
-  
+
   ranks :landing_order, :with_same => [:lake_id, :flock_id]
   scope :in_lake_and_flock, lambda {|lake, flock| where(:lake_id => lake, :flock_id => flock) }
 
@@ -71,6 +78,8 @@ class WrongFieldDuck < ActiveRecord::Base
 
 end
 
+# Example for STI, ranking within each child class
+
 class Element < ActiveRecord::Base
 
   include RankedModel
@@ -83,5 +92,21 @@ class TransitionMetal < Element
 end
 
 class NobleGas < Element
+
+end
+
+# Example for STI, ranking within parent
+
+class Vehicle < ActiveRecord::Base
+
+  include RankedModel
+  ranks :parking_order, :class_name => 'Vehicle'
+end
+
+class Car < Vehicle
+
+end
+
+class Truck < Vehicle
 
 end

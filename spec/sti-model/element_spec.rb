@@ -30,9 +30,9 @@ describe Element do
     subject { NobleGas.rank(:combination_order) }
 
     its(:size) { should == 3 }
-    
+
     its(:first) { should == @elements[:xenon] }
-    
+
     its(:last) { should == @elements[:argon] }
 
   end
@@ -57,9 +57,9 @@ describe Element do
       subject { NobleGas.rank(:combination_order) }
 
       its(:size) { should == 3 }
-      
+
       its(:first) { should == @elements[:argon] }
-      
+
       its(:last) { should == @elements[:helium] }
 
     end
@@ -69,9 +69,9 @@ describe Element do
       subject { TransitionMetal.rank(:combination_order) }
 
       its(:size) { should == 2 }
-      
+
       its(:first) { should == @elements[:chromium] }
-      
+
       its(:last) { should == @elements[:manganese] }
 
     end
@@ -98,9 +98,9 @@ describe Element do
       subject { NobleGas.rank(:combination_order) }
 
       its(:size) { should == 3 }
-      
+
       its(:first) { should == @elements[:argon] }
-      
+
       its(:last) { should == @elements[:helium] }
 
     end
@@ -110,36 +110,10 @@ describe Element do
       subject { TransitionMetal.rank(:combination_order) }
 
       its(:size) { should == 2 }
-      
+
       its(:first) { should == @elements[:chromium] }
-      
+
       its(:last) { should == @elements[:manganese] }
-
-    end
-
-  end
-
-  describe "ranking by STI parent" do
-
-    before {
-
-      Element.class_eval do
-        ranks :combination_order, :class_name => 'Element'
-      end
-
-      @elements[:helium].update_attribute :combination_order_position, :first
-      @elements[:chromium].update_attribute :combination_order_position, :first
-    }
-
-    describe "Element" do
-
-      subject { Element.rank(:combination_order) }
-
-      its(:size) { should == 5 }
-
-      its(:first) { should == @elements[:chromium] }
-
-      its(:second) { should == @elements[:helium] }
 
     end
 
