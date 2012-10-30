@@ -38,4 +38,38 @@ describe Vehicle do
 
   end
 
+  describe "overriding parent's ranking" do
+
+    describe "Vehicle" do
+
+      it "should have one ranker object" do
+        Vehicle.rankers.count.should == 1
+      end
+
+      subject { Vehicle.rankers.first }
+
+      its(:class_name) { should == 'Vehicle' }
+
+      its(:column) { should == :parking_order }
+
+    end
+
+    describe "MotorBike" do
+
+      it "should have one ranker object" do
+        MotorBike.rankers.count.should == 1
+      end
+
+      subject { MotorBike.rankers.first }
+
+      its(:class_name) { should == 'Vehicle' }
+
+      its(:column) { should == :parking_order }
+
+      its(:with_same) { should == :color }
+
+    end
+
+  end
+
 end

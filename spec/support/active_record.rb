@@ -101,6 +101,7 @@ class Vehicle < ActiveRecord::Base
 
   include RankedModel
   ranks :parking_order, :class_name => 'Vehicle'
+
 end
 
 class Car < Vehicle
@@ -108,5 +109,14 @@ class Car < Vehicle
 end
 
 class Truck < Vehicle
+
+end
+
+# Example for STI, overriding parent's ranking
+
+class MotorBike < Vehicle
+
+  include RankedModel
+  ranks :parking_order, :class_name => 'Vehicle', :with_same => :color
 
 end
