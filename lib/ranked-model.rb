@@ -11,7 +11,7 @@ module RankedModel
   def self.included base
 
     base.class_eval do
-      cattr_accessor :rankers
+      class_attribute :rankers
 
       extend RankedModel::ClassMethods
 
