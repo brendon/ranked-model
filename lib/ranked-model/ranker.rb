@@ -4,14 +4,14 @@ module RankedModel
   class InvalidField < StandardError; end
 
   class Ranker
-    attr_accessor :name, :column, :scope, :with_same, :class_name
+    attr_accessor :name, :column, :scope, :with_same, :class_name, :unless
 
     def initialize name, options={}
       self.name = name.to_sym
       self.column = options[:column] || name
       self.class_name = options[:class_name]
 
-      [ :scope, :with_same ].each do |key|
+      [ :scope, :with_same, :unless ].each do |key|
         self.send "#{key}=", options[key]
       end
     end
@@ -50,6 +50,13 @@ module RankedModel
       end
 
       def handle_ranking
+        case ranker.unless
+        when Proc
+          return if ranker.unless.call(instance)
+        when Symbol
+          return if instance.send(ranker.unless)
+        end
+
         update_index_from_position
         assure_unique_position
       end
