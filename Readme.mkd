@@ -126,6 +126,6 @@ A hearty thanks to these contributors:
 
 * [Harvest](http://getharvest.com) where this Gem started. They are great, great folks.
 * [yabawock](https://github.com/yabawock)
-* [AndrewRadev](https://github.com/AndrewRadev/ranked-model)
-* [adheerajkumar](https://github.com/adheerajkumar/ranked-model)
-* [mikeycgto](https://github.com/mikeycgto/ranked-model)
+* [AndrewRadev](https://github.com/AndrewRadev)
+* [adheerajkumar](https://github.com/adheerajkumar)
+* [mikeycgto](https://github.com/mikeycgto)
