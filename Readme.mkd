@@ -1,6 +1,6 @@
 **ranked-model** is a modern row sorting library built for Rails 3.  It uses ARel aggressively and is better optimized than most other libraries.
 
-Build status on Ruby 1.9.2, 1.9.3: [![Build Status](https://travis-ci.org/mixonic/ranked-model.png)](https://travis-ci.org/mixonic/ranked-model)
+[![Build Status](https://travis-ci.org/mixonic/ranked-model.png)](https://travis-ci.org/mixonic/ranked-model)
 
 Installation
 ------------
@@ -127,3 +127,5 @@ A hearty thanks to these contributors:
 * [Harvest](http://getharvest.com) where this Gem started. They are great, great folks.
 * [yabawock](https://github.com/yabawock)
 * [AndrewRadev](https://github.com/AndrewRadev/ranked-model)
+* [adheerajkumar](https://github.com/adheerajkumar/ranked-model)
+* [mikeycgto](https://github.com/mikeycgto/ranked-model)
