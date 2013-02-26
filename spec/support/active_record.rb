@@ -58,7 +58,7 @@ class Duck < ActiveRecord::Base
   ranks :landing_order, :with_same => [:lake_id, :flock_id]
   scope :in_lake_and_flock, lambda {|lake, flock| where(:lake_id => lake, :flock_id => flock) }
 
-  scope :in_shin_pond, where(:pond => 'Shin')
+  scope :in_shin_pond, lambda { where(:pond => 'Shin') }
 
 end
 
