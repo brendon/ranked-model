@@ -264,7 +264,7 @@ module RankedModel
 
       def neighbors_at_position _pos
         if _pos > 0
-          if (ordered_instances = finder.offset(_pos-1).limit(2).all)
+          if (ordered_instances = finder.offset(_pos-1).limit(2).load)
             if ordered_instances[1]
               { :lower => RankedModel::Ranker::Mapper.new( ranker, ordered_instances[0] ),
                 :upper => RankedModel::Ranker::Mapper.new( ranker, ordered_instances[1] ) }

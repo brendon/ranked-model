@@ -59,7 +59,7 @@ describe Duck do
       @ducks[:wingy].update_attribute :size_position, 2
     }
 
-    subject { Duck.in_shin_pond.rank(:size).all }
+    subject { Duck.in_shin_pond.rank(:size).load }
 
     its(:size) { should == 3 }
     
@@ -76,7 +76,7 @@ describe Duck do
       @ducks[:wingy].update_attribute :age_position, 0
     }
 
-    subject { Duck.where(:pond => 'Shin').rank(:age).all }
+    subject { Duck.where(:pond => 'Shin').rank(:age).load }
 
     its(:size) { should == 3 }
     
@@ -95,7 +95,7 @@ describe Duck do
       @ducks[:wingy].update_attribute :row_position, 6
     }
 
-    subject { Duck.rank(:row).all }
+    subject { Duck.rank(:row).load }
 
     its(:size) { should == 6 }
     
@@ -119,7 +119,7 @@ describe Duck do
 
     describe "row" do 
 
-      subject { Duck.rank(:row).all }
+      subject { Duck.rank(:row).load }
 
       its(:size) { should == 6 }
       
@@ -131,7 +131,7 @@ describe Duck do
 
     describe "row" do 
 
-      subject { Duck.in_shin_pond.rank(:size).all }
+      subject { Duck.in_shin_pond.rank(:size).load }
 
       its(:size) { should == 3 }
       
@@ -376,7 +376,7 @@ describe Duck do
       @ducks[:wingy].update_attribute :landing_order_position, 1
     }
 
-    subject { Duck.in_lake_and_flock(0,0).rank(:landing_order).all }
+    subject { Duck.in_lake_and_flock(0,0).rank(:landing_order).load }
 
     its(:size) { should == 3 }
     
