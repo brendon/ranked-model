@@ -1,8 +1,13 @@
 require 'active_record'
 require 'sqlite3'
 require 'logger'
-require 'rspec/rails/adapters'
-require 'rspec/rails/fixture_support'
+require 'rails/all'
+require 'rspec/rails'
+
+# TODO when rails and rspec-rails update we can likely use:
+# require 'rails/version'
+# require 'rspec/rails/adapters'
+# require 'rspec/rails/fixture_support'
 
 ROOT = File.join(File.dirname(__FILE__), '..')
 
