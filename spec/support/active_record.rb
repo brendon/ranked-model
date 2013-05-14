@@ -1,8 +1,13 @@
 require 'active_record'
 require 'sqlite3'
 require 'logger'
-require 'rspec/rails/adapters'
-require 'rspec/rails/fixture_support'
+require 'rails/all'
+require 'rspec/rails'
+
+# TODO when rails and rspec-rails update we can likely use:
+# require 'rails/version'
+# require 'rspec/rails/adapters'
+# require 'rspec/rails/fixture_support'
 
 ROOT = File.join(File.dirname(__FILE__), '..')
 
@@ -58,7 +63,7 @@ class Duck < ActiveRecord::Base
   ranks :landing_order, :with_same => [:lake_id, :flock_id]
   scope :in_lake_and_flock, lambda {|lake, flock| where(:lake_id => lake, :flock_id => flock) }
 
-  scope :in_shin_pond, where(:pond => 'Shin')
+  scope :in_shin_pond, lambda { where(:pond => 'Shin') }
 
 end
 

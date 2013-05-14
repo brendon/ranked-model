@@ -197,14 +197,21 @@ module RankedModel
       def finder
         @finder ||= begin
           _finder = instance_class
+          columns = [instance_class.arel_table[:id], instance_class.arel_table[ranker.column]]
+
           if ranker.scope
             _finder = _finder.send ranker.scope
           end
           case ranker.with_same
             when Symbol
+              columns << ranker.with_same
+
               _finder = _finder.where \
                 instance_class.arel_table[ranker.with_same].eq(instance.attributes["#{ranker.with_same}"])
+
             when Array
+              columns.push *ranker.with_same
+
               _finder = _finder.where(
                 ranker.with_same[1..-1].inject(
                   instance_class.arel_table[ranker.with_same.first].eq(
@@ -223,7 +230,8 @@ module RankedModel
             _finder = _finder.where \
               instance_class.arel_table[:id].not_eq(instance.id)
           end
-          _finder.order(instance_class.arel_table[ranker.column].asc).select([instance_class.arel_table[:id], instance_class.arel_table[ranker.column]])
+
+          _finder.order(instance_class.arel_table[ranker.column].asc).select(columns)
         end
       end
 
@@ -264,7 +272,7 @@ module RankedModel
 
       def neighbors_at_position _pos
         if _pos > 0
-          if (ordered_instances = finder.offset(_pos-1).limit(2).all)
+          if (ordered_instances = finder.offset(_pos-1).limit(2).load)
             if ordered_instances[1]
               { :lower => RankedModel::Ranker::Mapper.new( ranker, ordered_instances[0] ),
                 :upper => RankedModel::Ranker::Mapper.new( ranker, ordered_instances[1] ) }

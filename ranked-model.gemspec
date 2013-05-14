@@ -12,9 +12,16 @@ Gem::Specification.new do |s|
   s.summary     = %q{An acts_as_sortable replacement built for Rails 3}
   s.description = %q{ranked-model is a modern row sorting library built for Rails 3. It uses ARel aggressively and is better optimized than most other libraries.}
 
-  s.add_dependency "activerecord", ">= 3.0.3"
-  s.add_development_dependency "rspec"
-  s.add_development_dependency "rspec-rails"
+  s.add_dependency "activerecord", "~> 4.0.0.rc1"
+
+  # NOTE cannot get rspec-rails to work without the following:
+  s.add_development_dependency "railties", "~> 4.0.0.rc1"
+  s.add_development_dependency "activesupport", "~> 4.0.0.rc1"
+  s.add_development_dependency "actionpack", "~> 4.0.0.rc1"
+
+  s.add_development_dependency "rake"
+  s.add_development_dependency "rspec", "~> 2.13.0"
+  s.add_development_dependency "rspec-rails", "~> 2.13.1"
   s.add_development_dependency "sqlite3"
   s.add_development_dependency "genspec"
   s.add_development_dependency "mocha"
