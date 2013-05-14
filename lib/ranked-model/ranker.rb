@@ -29,7 +29,7 @@ module RankedModel
 
         validate_ranker_for_instance!
       end
-      
+
       def validate_ranker_for_instance!
         if ranker.scope && !instance_class.respond_to?(ranker.scope)
           raise RankedModel::InvalidScope, %Q{No scope called "#{ranker.scope}" found in model}
@@ -64,7 +64,7 @@ module RankedModel
       def update_rank! value
         # Bypass callbacks
         #
-        instance_class.where(:id => instance.id).update_all ["#{ranker.column} = ?", value]
+        instance_class.where(instance_class.primary_key => instance.id).update_all ["#{ranker.column} = ?", value]
       end
 
       def position
@@ -152,7 +152,7 @@ module RankedModel
         _scope = finder
         unless instance.id.nil?
           # Never update ourself, shift others around us.
-          _scope = _scope.where( instance_class.arel_table[:id].not_eq(instance.id) )
+          _scope = _scope.where( instance_class.arel_table[instance_class.primary_key].not_eq(instance.id) )
         end
         if current_first.rank && current_first.rank > RankedModel::MIN_RANK_VALUE && rank == RankedModel::MAX_RANK_VALUE
           _scope.
@@ -221,9 +221,9 @@ module RankedModel
           end
           if !new_record?
             _finder = _finder.where \
-              instance_class.arel_table[:id].not_eq(instance.id)
+              instance_class.arel_table[instance_class.primary_key].not_eq(instance.id)
           end
-          _finder.order(instance_class.arel_table[ranker.column].asc).select([instance_class.arel_table[:id], instance_class.arel_table[ranker.column]])
+          _finder.order(instance_class.arel_table[ranker.column].asc).select([instance_class.arel_table[instance_class.primary_key], instance_class.arel_table[ranker.column]])
         end
       end
 
