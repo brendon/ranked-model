@@ -46,6 +46,11 @@ ActiveRecord::Schema.define :version => 0 do
     t.string :type
     t.integer :parking_order
   end
+
+  create_table :egos, :primary_key => :alternative_to_id, :force => true do |t|
+    t.string :name
+    t.integer :size
+  end
 end
 
 class Duck < ActiveRecord::Base
@@ -119,4 +124,10 @@ class MotorBike < Vehicle
   include RankedModel
   ranks :parking_order, :class_name => 'Vehicle', :with_same => :color
 
+end
+
+class Ego < ActiveRecord::Base
+  primary_key = :alternative_to_id
+  include RankedModel
+  ranks :size
 end
