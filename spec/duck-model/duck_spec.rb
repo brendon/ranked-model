@@ -143,6 +143,19 @@ describe Duck do
 
   end
 
+  describe "changing an unrelated attribute" do
+
+    it "doesn't change ranking" do
+      # puts Duck.rank(:age).collect {|duck| "#{duck.name} #{duck.age}" }
+      duck = Duck.rank(:age)[2]
+      ->{
+        duck.update_attribute :name, 'New Name'
+      }.should_not change(duck.reload, :age)
+      # puts Duck.rank(:age).collect {|duck| "#{duck.name} #{duck.age}" }
+    end
+
+  end
+
   describe "setting and fetching by positioning" do
 
     describe "in the middle" do
