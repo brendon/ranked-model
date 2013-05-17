@@ -8,7 +8,7 @@ Gem::Specification.new do |s|
   s.platform    = Gem::Platform::RUBY
   s.authors     = ["Matthew Beale"]
   s.email       = ["matt.beale@madhatted.com"]
-  s.homepage    = "https://github.com/harvesthq/ranked-model"
+  s.homepage    = "https://github.com/mixonic/ranked-model"
   s.summary     = %q{An acts_as_sortable replacement built for Rails 3}
   s.description = %q{ranked-model is a modern row sorting library built for Rails 3. It uses ARel aggressively and is better optimized than most other libraries.}
 
