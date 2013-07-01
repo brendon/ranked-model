@@ -23,7 +23,7 @@ describe Ego do
       @egos[:sally].update_attribute :size_position, 2
     }
 
-    subject { Ego.rank(:size).all }
+    subject { Ego.rank(:size).to_a }
 
     its(:size) { should == 3 }
 
