@@ -64,7 +64,7 @@ module RankedModel
       def update_rank! value
         # Bypass callbacks
         #
-        instance_class.where(instance_class.primary_key => instance.id).update_all ["#{ranker.column} = ?", value]
+        instance_class.where(instance_class.primary_key => instance.id).update_all(ranker.column => value)
       end
 
       def position
@@ -150,22 +150,25 @@ module RankedModel
 
       def rearrange_ranks
         _scope = finder
+        _table = instance_class.arel_table
+        _incr  = _table[ranker.column].eq(_table[ranker.column] + 1).to_sql
+        _decr  = _table[ranker.column].eq(_table[ranker.column] - 1).to_sql
         unless instance.id.nil?
           # Never update ourself, shift others around us.
-          _scope = _scope.where( instance_class.arel_table[instance_class.primary_key].not_eq(instance.id) )
+          _scope = _scope.where( _table[instance_class.primary_key].not_eq(instance.id) )
         end
         if current_first.rank && current_first.rank > RankedModel::MIN_RANK_VALUE && rank == RankedModel::MAX_RANK_VALUE
           _scope.
-            where( instance_class.arel_table[ranker.column].lteq(rank) ).
-            update_all( "#{ranker.column} = #{ranker.column} - 1" )
+            where( _table[ranker.column].lteq(rank) ).
+            update_all( _decr )
         elsif current_last.rank && current_last.rank < (RankedModel::MAX_RANK_VALUE - 1) && rank < current_last.rank
           _scope.
-            where( instance_class.arel_table[ranker.column].gteq(rank) ).
-            update_all( "#{ranker.column} = #{ranker.column} + 1" )
+            where( _table[ranker.column].gteq(rank) ).
+            update_all( _incr )
         elsif current_first.rank && current_first.rank > RankedModel::MIN_RANK_VALUE && rank > current_first.rank
           _scope.
-            where( instance_class.arel_table[ranker.column].lt(rank) ).
-            update_all( "#{ranker.column} = #{ranker.column} - 1" )
+            where( _table[ranker.column].lt(rank) ).
+            update_all( _decr )
           rank_at( rank - 1 )
         else
           rebalance_ranks
