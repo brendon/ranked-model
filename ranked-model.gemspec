@@ -12,14 +12,13 @@ Gem::Specification.new do |s|
   s.summary     = %q{An acts_as_sortable replacement built for Rails 3}
   s.description = %q{ranked-model is a modern row sorting library built for Rails 3. It uses ARel aggressively and is better optimized than most other libraries.}
 
-  s.add_dependency "activerecord", ">= 3.0.3"
-  s.add_development_dependency "rspec"
-  s.add_development_dependency "rspec-rails", "~> 2.12.0"
-  s.add_development_dependency "sqlite3"
-  s.add_development_dependency "genspec"
-  s.add_development_dependency "mocha"
-
-  # s.rubyforge_project = "ranked-model"
+  s.add_dependency "activerecord", ">= 3.1.12"
+  s.add_development_dependency "rspec", "~> 2.13.0"
+  s.add_development_dependency "sqlite3", "~> 1.3.7"
+  s.add_development_dependency "genspec", "~> 0.2.8"
+  s.add_development_dependency "mocha", "~> 0.14.0"
+  s.add_development_dependency "database_cleaner", "~> 1.0.1"
+  s.add_development_dependency "rake", "~> 10.1.0"
 
   s.files         = `git ls-files`.split("\n")
   s.test_files    = `git ls-files -- {test,spec,features}/*`.split("\n")
