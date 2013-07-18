@@ -9,8 +9,8 @@ Gem::Specification.new do |s|
   s.authors     = ["Matthew Beale"]
   s.email       = ["matt.beale@madhatted.com"]
   s.homepage    = "https://github.com/mixonic/ranked-model"
-  s.summary     = %q{An acts_as_sortable replacement built for Rails 3}
-  s.description = %q{ranked-model is a modern row sorting library built for Rails 3. It uses ARel aggressively and is better optimized than most other libraries.}
+  s.summary     = %q{An acts_as_sortable replacement built for Rails 3 & 4}
+  s.description = %q{ranked-model is a modern row sorting library built for Rails 3 & 4. It uses ARel aggressively and is better optimized than most other libraries.}
 
   s.add_dependency "activerecord", ">= 3.1.12"
   s.add_development_dependency "rspec", "~> 2.13.0"
