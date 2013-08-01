@@ -156,6 +156,16 @@ describe Duck do
 
   end
 
+  describe "changing a related attribute" do
+
+    it "marks record as changed" do
+      duck = Duck.rank(:age)[2]
+      duck.age_position = 1
+      duck.changed?.should be_true
+    end
+
+  end
+
   describe "setting and fetching by positioning" do
 
     describe "in the middle" do

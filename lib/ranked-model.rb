@@ -46,7 +46,12 @@ module RankedModel
       self.rankers ||= []
       ranker = RankedModel::Ranker.new(*args)
       self.rankers << ranker
-      attr_accessor "#{ranker.name}_position"
+      attr_reader "#{ranker.name}_position"
+      define_method "#{ranker.name}_position=" do |position|
+        send "#{ranker.column}_will_change!" if position.present?
+        instance_variable_set "@#{ranker.name}_position", position
+      end
+
       public "#{ranker.name}_position", "#{ranker.name}_position="
     end
 
