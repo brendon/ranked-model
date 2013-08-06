@@ -48,8 +48,10 @@ module RankedModel
       self.rankers << ranker
       attr_reader "#{ranker.name}_position"
       define_method "#{ranker.name}_position=" do |position|
-        send "#{ranker.column}_will_change!" if position.present?
-        instance_variable_set "@#{ranker.name}_position", position
+        if position.present?
+          send "#{ranker.column}_will_change!"
+          instance_variable_set "@#{ranker.name}_position", position
+        end
       end
 
       public "#{ranker.name}_position", "#{ranker.name}_position="
