@@ -48,11 +48,11 @@ The ranking integers stored in the `row_order` column will be big and spaced apa
 implement a sorting UI, just update the resource with the position instead:
 
 ``` ruby
-@duck.update_attribute :row_order_position, 0  # or 1, 2, 37. :first and :last are also valid
+@duck.update_attribute :row_order_position, 0  # or 1, 2, 37. :first, :last, :middle, :up and :down are also valid
 ```
 
 Position numbers begin at zero.  A position number greater than the number of records acts the
-same as :last.
+same as `:last`. `:up` and `:down` move the record on step up/down the ladder.
 
 So using a normal json controller where `@duck.attributes = params[:duck]; @duck.save`, JS can
 look pretty elegant:
@@ -78,11 +78,11 @@ class Duck < ActiveRecord::Base
 
   ranks :row_order,           # Name this ranker, used with rank()
     :column => :sort_order    # Override the default column, which defaults to the name
-  
+
   belongs_to :pond
   ranks :swimming_order,
     :with_same => :pond_id    # Ducks belong_to Ponds, make the ranker scoped to one pond
-  
+
   scope :walking, where(:walking => true )
   ranks :walking_order,
     :scope => :walking        # Narrow this ranker to a scope

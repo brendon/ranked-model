@@ -120,6 +120,12 @@ module RankedModel
             end
           when :middle, 'middle'
             rank_at( ( ( RankedModel::MAX_RANK_VALUE - RankedModel::MIN_RANK_VALUE ).to_f / 2 ).ceil + RankedModel::MIN_RANK_VALUE )
+          when :up, 'up'
+            curr_pos = current_position(rank)
+            position_at (curr_pos > 0 ? curr_pos - 1 : :first)
+          when :down, 'down'
+            curr_pos = current_position(rank)
+            position_at curr_pos + 1
           when String
             position_at position.to_i
           when 0
@@ -236,6 +242,10 @@ module RankedModel
             RankedModel::Ranker::Mapper.new ranker, ordered_instance
           }
         end
+      end
+
+      def current_position _rank
+        finder.take_while { |i| i.send("#{ranker.column}") < _rank }.size
       end
 
       def current_first
