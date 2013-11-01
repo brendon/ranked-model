@@ -62,9 +62,9 @@ describe Duck do
     subject { Duck.in_shin_pond.rank(:size).to_a }
 
     its(:size) { should == 3 }
-    
+
     its(:first) { should == @ducks[:quacky] }
-    
+
     its(:last) { should == @ducks[:wingy] }
 
   end
@@ -79,9 +79,9 @@ describe Duck do
     subject { Duck.where(:pond => 'Shin').rank(:age).to_a }
 
     its(:size) { should == 3 }
-    
+
     its(:first) { should == @ducks[:wingy] }
-    
+
     its(:last) { should == @ducks[:quacky] }
 
   end
@@ -98,9 +98,9 @@ describe Duck do
     subject { Duck.rank(:row).to_a }
 
     its(:size) { should == 6 }
-    
+
     its(:first) { should == @ducks[:beaky] }
-    
+
     its(:last) { should == @ducks[:wingy] }
 
   end
@@ -117,26 +117,26 @@ describe Duck do
       @ducks[:webby].update_attribute :row_position, 6
     }
 
-    describe "row" do 
+    describe "row" do
 
       subject { Duck.rank(:row).to_a }
 
       its(:size) { should == 6 }
-      
+
       its(:first) { should == @ducks[:beaky] }
-      
+
       its(:last) { should == @ducks[:webby] }
 
     end
 
-    describe "row" do 
+    describe "row" do
 
       subject { Duck.in_shin_pond.rank(:size).to_a }
 
       its(:size) { should == 3 }
-      
+
       its(:first) { should == @ducks[:quacky] }
-      
+
       its(:last) { should == @ducks[:feathers] }
 
     end
@@ -152,6 +152,27 @@ describe Duck do
         duck.update_attribute :name, 'New Name'
       }.should_not change(duck.reload, :age)
       # puts Duck.rank(:age).collect {|duck| "#{duck.name} #{duck.age}" }
+    end
+
+  end
+
+  describe "changing a related attribute" do
+
+    it "marks record as changed" do
+      duck = Duck.rank(:age)[2]
+      duck.age_position = 1
+      duck.changed?.should be_true
+    end
+
+  end
+
+  describe "setting only truly values" do
+
+    subject { Duck.rank(:age).first }
+
+    it "doesnt set empty string" do
+      subject.age_position = ''
+      subject.age_position.should be_nil
     end
 
   end
@@ -178,7 +199,7 @@ describe Duck do
         subject { Duck.rank(:row).collect {|duck| duck.id } }
 
         it { subject[0..1].should == @ordered[0..1] }
-        
+
         it { subject[3..subject.length].should == @ordered[2..@ordered.length] }
 
       }
@@ -213,7 +234,7 @@ describe Duck do
         subject { Duck.rank(:row).collect {|duck| duck.id } }
 
         it { subject[1..subject.length].should == @ordered }
-        
+
       }
 
     end
@@ -254,7 +275,7 @@ describe Duck do
         subject { Duck.rank(:row).collect {|duck| duck.id } }
 
         it { subject[0..-2].should == @ordered }
-        
+
       }
 
     end
@@ -295,11 +316,11 @@ describe Duck do
         subject { Duck.rank(:row).collect {|duck| duck.id } }
 
         it { subject[0..-2].should == @ordered }
-        
+
       }
 
     end
-    
+
     describe "at the end with string" do
 
       before {
@@ -336,7 +357,7 @@ describe Duck do
         subject { Duck.rank(:row).collect {|duck| duck.id } }
 
         it { subject[0..-2].should == @ordered }
-        
+
       }
 
     end
@@ -392,9 +413,9 @@ describe Duck do
     subject { Duck.in_lake_and_flock(0,0).rank(:landing_order).to_a }
 
     its(:size) { should == 3 }
-    
+
     its(:first) { should == @ducks[:quacky] }
-    
+
     its(:last) { should == @ducks[:feathers] }
 
   end
