@@ -444,3 +444,140 @@ describe Duck do
   end
 
 end
+
+# Up and down positioning
+describe Duck do
+
+  before {
+    @ducks = {
+      :quacky => Duck.create(:name => 'Quacky'),
+      :feathers => Duck.create(:name => 'Feathers'),
+      :wingy => Duck.create(:name => 'Wingy'),
+      :webby => Duck.create(:name => 'Webby'),
+      :waddly => Duck.create(:name => 'Waddly'),
+      :beaky => Duck.create(:name => 'Beaky')
+    }
+    @ducks.each {|name, duck| duck.reload }
+  }
+
+  describe "up positioning" do
+
+    describe "with symbol" do
+      before {
+        @ducks[:wingy].update_attribute :row_position, :up
+      }
+
+      context {
+        subject { Duck.rank(:row)[1] }
+        its(:id) { should == @ducks[:wingy].id }
+      }
+
+      context {
+        subject { Duck.rank(:row)[2] }
+        its(:id) { should == @ducks[:feathers].id }
+      }
+    end
+
+    describe "with string" do
+      before {
+        @ducks[:wingy].update_attribute :row_position, "up"
+      }
+
+      context {
+        subject { Duck.rank(:row)[1] }
+        its(:id) { should == @ducks[:wingy].id }
+      }
+
+      context {
+        subject { Duck.rank(:row)[2] }
+        its(:id) { should == @ducks[:feathers].id }
+      }
+    end
+
+  end
+
+  describe "up positioning of first duck" do
+
+      describe "with symbol" do
+        before {
+          @ducks[:quacky].update_attribute :row_position, :up
+        }
+
+        subject { Duck.rank(:row).first }
+
+        its(:id) { should == @ducks[:quacky].id }
+      end
+
+      describe "with string" do
+        before {
+          @ducks[:quacky].update_attribute :row_position, "up"
+        }
+
+        subject { Duck.rank(:row).first }
+
+        its(:id) { should == @ducks[:quacky].id }
+      end
+
+  end
+
+  describe "down positioning" do
+
+      describe "with symbol" do
+        before {
+          @ducks[:wingy].update_attribute :row_position, :down
+        }
+
+        context {
+          subject { Duck.rank(:row)[3] }
+          its(:id) { should == @ducks[:wingy].id }
+        }
+
+        context {
+          subject { Duck.rank(:row)[2] }
+          its(:id) { should == @ducks[:webby].id }
+        }
+      end
+
+      describe "with string" do
+        before {
+          @ducks[:wingy].update_attribute :row_position, "down"
+        }
+
+        context {
+          subject { Duck.rank(:row)[3] }
+          its(:id) { should == @ducks[:wingy].id }
+        }
+
+        context {
+          subject { Duck.rank(:row)[2] }
+          its(:id) { should == @ducks[:webby].id }
+        }
+      end
+
+  end
+
+  describe "down positioning of last duck" do
+
+      describe "with symbol" do
+        before {
+          @ducks[:beaky].update_attribute :row_position, :down
+        }
+
+        subject { Duck.rank(:row).last }
+
+        its(:id) { should == @ducks[:beaky].id }
+      end
+
+      describe "with string" do
+        before {
+          @ducks[:beaky].update_attribute :row_position, "down"
+        }
+
+        subject { Duck.rank(:row).last }
+
+        its(:id) { should == @ducks[:beaky].id }
+      end
+
+  end
+end
+
