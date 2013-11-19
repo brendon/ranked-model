@@ -371,7 +371,7 @@ describe Duck do
 
       context {
 
-        subject { Duck.ranker(:row).with(Duck.new).current_at_position(4) }
+        subject { Duck.ranker(:row).with(Duck.new).current_at_position(4).instance }
 
         its(:id) { should == @ducks[:wingy].id }
 
@@ -425,7 +425,7 @@ describe Duck do
 
       context {
 
-        subject { Duck.ranker(:row).with(Duck.new).current_at_position(2) }
+        subject { Duck.ranker(:row).with(Duck.new).current_at_position(2).instance }
 
         its(:id) { should == @ducks[:wingy].id }
 
@@ -452,7 +452,7 @@ describe Duck do
 
       context {
 
-        subject { Duck.ranker(:row).with(Duck.new).current_at_position(2) }
+        subject { Duck.ranker(:row).with(Duck.new).current_at_position(2).instance }
 
         its(:id) { should == @ducks[:wingy].id }
 
