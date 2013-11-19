@@ -126,14 +126,18 @@ module RankedModel
             rank_at( ( ( RankedModel::MAX_RANK_VALUE - RankedModel::MIN_RANK_VALUE ).to_f / 2 ).ceil + RankedModel::MIN_RANK_VALUE )
           when :down, 'down'
             neighbors = find_next_two(rank)
-            min = neighbors[:lower].rank
-            max = neighbors[:upper].rank
-            rank_at( ( ( max - min ).to_f / 2 ).ceil + min )
+            if neighbors[:lower]
+              min = neighbors[:lower].rank
+              max = neighbors[:upper] ? neighbors[:upper].rank : RankedModel::MAX_RANK_VALUE
+              rank_at( ( ( max - min ).to_f / 2 ).ceil + min )
+            end
           when :up, 'up'
             neighbors = find_previous_two(rank)
-            min = neighbors[:lower].rank
-            max = neighbors[:upper].rank
-            rank_at( ( ( max - min ).to_f / 2 ).ceil + min )
+            if neighbors[:upper]
+              max = neighbors[:upper].rank
+              min = neighbors[:lower] ? neighbors[:lower].rank : RankedModel::MIN_RANK_VALUE
+              rank_at( ( ( max - min ).to_f / 2 ).ceil + min )
+            end
           when String
             position_at position.to_i
           when 0
