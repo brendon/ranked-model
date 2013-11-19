@@ -362,6 +362,114 @@ describe Duck do
 
     end
 
+    describe "down with symbol" do
+
+      before {
+        @ordered = Duck.rank(:row).where(Duck.arel_table[:id].not_eq @ducks[:wingy].id).collect { |duck| duck.id }
+        @ducks[:wingy].update_attribute :row_position, :down
+      }
+
+      context {
+
+        subject { Duck.ranker(:row).with(Duck.new).current_at_position(4) }
+
+        its(:id) { should == @ducks[:wingy].id }
+
+      }
+
+      context {
+
+        subject { Duck.rank(:row).collect {|duck| duck.id } }
+
+        it { subject[0..3].should == @ordered[0..3] }
+
+        it { subject[5..subject.length].should == @ordered[4..@ordered.length] }
+
+      }
+
+    end
+
+    describe "down with string" do
+
+      before {
+        @ordered = Duck.rank(:row).where(Duck.arel_table[:id].not_eq @ducks[:wingy].id).collect { |duck| duck.id }
+        @ducks[:wingy].update_attribute :row_position, 'down'
+      }
+
+      context {
+
+        subject { Duck.ranker(:row).with(Duck.new).current_at_position(4).instance }
+
+        its(:id) { should == @ducks[:wingy].id }
+
+      }
+
+      context {
+
+        subject { Duck.rank(:row).collect {|duck| duck.id } }
+
+        it { subject[0..3].should == @ordered[0..3] }
+
+        it { subject[5..subject.length].should == @ordered[4..@ordered.length] }
+
+      }
+
+    end
+
+    describe "up with symbol" do
+
+      before {
+        @ordered = Duck.rank(:row).where(Duck.arel_table[:id].not_eq @ducks[:wingy].id).collect { |duck| duck.id }
+        @ducks[:wingy].update_attribute :row_position, :up
+      }
+
+      context {
+
+        subject { Duck.ranker(:row).with(Duck.new).current_at_position(2) }
+
+        its(:id) { should == @ducks[:wingy].id }
+
+      }
+
+      context {
+
+        subject { Duck.rank(:row).collect {|duck| duck.id } }
+
+        it { subject[0..1].should == @ordered[0..1] }
+
+        it { subject[3..subject.length].should == @ordered[2..@ordered.length] }
+
+      }
+
+    end
+
+    describe "up with string" do
+
+      before {
+        @ordered = Duck.rank(:row).where(Duck.arel_table[:id].not_eq @ducks[:wingy].id).collect { |duck| duck.id }
+        @ducks[:wingy].update_attribute :row_position, 'up'
+      }
+
+      context {
+
+        subject { Duck.ranker(:row).with(Duck.new).current_at_position(2) }
+
+        its(:id) { should == @ducks[:wingy].id }
+
+      }
+
+      context {
+
+        subject { Duck.rank(:row).collect {|duck| duck.id } }
+
+        it { subject[0..1].should == @ordered[0..1] }
+
+        it { subject[3..subject.length].should == @ordered[2..@ordered.length] }
+
+      }
+
+    end
+
   end
 
 end
