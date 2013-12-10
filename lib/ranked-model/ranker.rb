@@ -124,6 +124,20 @@ module RankedModel
             end
           when :middle, 'middle'
             rank_at( ( ( RankedModel::MAX_RANK_VALUE - RankedModel::MIN_RANK_VALUE ).to_f / 2 ).ceil + RankedModel::MIN_RANK_VALUE )
+          when :down, 'down'
+            neighbors = find_next_two(rank)
+            if neighbors[:lower]
+              min = neighbors[:lower].rank
+              max = neighbors[:upper] ? neighbors[:upper].rank : RankedModel::MAX_RANK_VALUE
+              rank_at( ( ( max - min ).to_f / 2 ).ceil + min )
+            end
+          when :up, 'up'
+            neighbors = find_previous_two(rank)
+            if neighbors[:upper]
+              max = neighbors[:upper].rank
+              min = neighbors[:lower] ? neighbors[:lower].rank : RankedModel::MIN_RANK_VALUE
+              rank_at( ( ( max - min ).to_f / 2 ).ceil + min )
+            end
           when String
             position_at position.to_i
           when 0
@@ -198,7 +212,7 @@ module RankedModel
         end
       end
 
-      def finder
+      def finder(order = :asc)
         @finder ||= begin
           _finder = instance_class
           columns = [instance_class.arel_table[instance_class.primary_key], instance_class.arel_table[ranker.column]]
@@ -230,7 +244,7 @@ module RankedModel
             _finder = _finder.where \
               instance_class.arel_table[instance_class.primary_key].not_eq(instance.id)
           end
-          _finder.order(instance_class.arel_table[ranker.column].asc).select(columns)
+          _finder.order(instance_class.arel_table[ranker.column].send(order)).select(columns)
         end
       end
 
@@ -287,6 +301,30 @@ module RankedModel
           else
             {}
           end
+        end
+      end
+
+      def find_next_two _rank
+        ordered_instances = finder.where(instance_class.arel_table[ranker.column].gt _rank).limit(2)
+        if ordered_instances[1]
+          { :lower => RankedModel::Ranker::Mapper.new( ranker, ordered_instances[0] ),
+            :upper => RankedModel::Ranker::Mapper.new( ranker, ordered_instances[1] ) }
+        elsif ordered_instances[0]
+          { :lower => RankedModel::Ranker::Mapper.new( ranker, ordered_instances[0] ) }
+        else
+          {}
+        end
+      end
+
+      def find_previous_two _rank
+        ordered_instances = finder(:desc).where(instance_class.arel_table[ranker.column].lt _rank).limit(2)
+        if ordered_instances[1]
+          { :upper => RankedModel::Ranker::Mapper.new( ranker, ordered_instances[0] ),
+            :lower => RankedModel::Ranker::Mapper.new( ranker, ordered_instances[1] ) }
+        elsif ordered_instances[0]
+          { :upper => RankedModel::Ranker::Mapper.new( ranker, ordered_instances[0] ) }
+        else
+          {}
         end
       end
 
