@@ -3,6 +3,8 @@ rvm:
   - "1.9.2"
   - "1.9.3"
   - "2.0.0"
+  - "jruby-19mode"
+  - "rbx"
 env:
   - "ACTIVERECORD_VERSION=4.0.0"
   - "ACTIVERECORD_VERSION=3.2.13"
