@@ -1,5 +1,4 @@
 require 'active_record'
-require 'sqlite3'
 require 'logger'
 
 ROOT = File.join(File.dirname(__FILE__), '..')

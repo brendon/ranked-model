@@ -13,3 +13,11 @@ when "default"
 else
   gem "activerecord", "~> #{ar_version}"
 end
+
+platforms :rbx do
+  gem 'rubysl', '~> 2.0'
+  gem 'rubinius-developer_tools'
+end
+
+gem "activerecord-jdbcsqlite3-adapter", ">= 1.3.0", platforms: :jruby
+gem "sqlite3", platforms: :ruby
