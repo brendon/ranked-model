@@ -5,6 +5,10 @@
 Installation
 ------------
 
+ranked-model passes specs with Rails 3.1, 3.2, 4.0, and 4.1-beta for MySQL, Postgres, and SQLite on Ruby 1.9.2, 1.9.3, 2.0, 2.1, jruby-19mode, and rubinius where Rails supports the platform. This is with the exception of Postgres before Rails 4.0 on all platforms, which is unsupported (I'd gladly accept a PR to fix this).
+
+TL;DR, if you are using Rails 4 and up you are 100% good to go. Before Rails 4, be wary of Postgres.
+
 To install ranked-model, just add it to your `Gemfile`:
 
 ``` ruby
