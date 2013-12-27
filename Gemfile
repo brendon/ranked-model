@@ -19,5 +19,14 @@ platforms :rbx do
   gem 'rubinius-developer_tools'
 end
 
+# SQLite
 gem "activerecord-jdbcsqlite3-adapter", ">= 1.3.0", platforms: :jruby
 gem "sqlite3", platforms: :ruby
+
+# Postgres
+gem "activerecord-jdbcpostgresql-adapter", platforms: :jruby
+gem "pg", platforms: :ruby
+
+# MySQL
+gem "activerecord-jdbcmysql-adapter", platforms: :jruby
+gem "mysql", platforms: :ruby

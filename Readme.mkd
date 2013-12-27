@@ -117,10 +117,17 @@ Contributing
 
 Fork, clone, write a test, write some code, commit, push, send a pull request.  Github FTW!
 
+The specs can be run with sqlite, postgres, and mysql:
+
+```
+DB=postgres bundle exec rake
+```
+
+Is no DB is specified, the tests run against sqlite.
+
 RankedModel is mostly the handiwork of Matthew Beale:
 
 * [madhatted.com](http://madhatted.com) is where I blog. Also [@mixonic](http://twitter.com/mixonic).
-* [Spinto](http://www.spintoapp.com) is a product I'm bootstrapping.
 
 A hearty thanks to these contributors:
 
