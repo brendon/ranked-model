@@ -15,3 +15,16 @@ test_postgresql:
   database: ranked_model_test
   pool: 5
   timeout: 5000
+
+test_mysql_travis:
+  adapter: mysql
+  database: ranked_model_test
+  pool: 5
+  timeout: 5000
+  username: travis
+
+test_postgresql_travis:
+  adapter: postgresql
+  database: ranked_model_test
+  pool: 5
+  timeout: 5000

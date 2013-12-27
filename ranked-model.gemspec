@@ -18,7 +18,7 @@ Gem::Specification.new do |s|
   s.add_development_dependency "sqlite3", "~> 1.3.7"
   s.add_development_dependency "genspec", "~> 0.2.8"
   s.add_development_dependency "mocha", "~> 0.14.0"
-  s.add_development_dependency "database_cleaner", "~> 1.0.1"
+  s.add_development_dependency "database_cleaner", "~> 1.2.0"
   s.add_development_dependency "rake", "~> 10.1.0"
 
   s.files         = `git ls-files`.split("\n")
