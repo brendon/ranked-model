@@ -64,7 +64,9 @@ module RankedModel
       def update_rank! value
         # Bypass callbacks
         #
-        instance_class.where(instance_class.primary_key => instance.id).update_all [%Q{"#{ranker.column}" = ?}, value]
+        instance_class.
+          where(instance_class.primary_key => instance.id).
+          update_all([%Q{#{ranker.column} = ?}, value])
       end
 
       def position
@@ -175,15 +177,15 @@ module RankedModel
         if current_first.rank && current_first.rank > RankedModel::MIN_RANK_VALUE && rank == RankedModel::MAX_RANK_VALUE
           _scope.
             where( instance_class.arel_table[ranker.column].lteq(rank) ).
-            update_all( %Q{"#{ranker.column}" = "#{ranker.column}" - 1} )
+            update_all( %Q{#{ranker.column} = #{ranker.column} - 1} )
         elsif current_last.rank && current_last.rank < (RankedModel::MAX_RANK_VALUE - 1) && rank < current_last.rank
           _scope.
             where( instance_class.arel_table[ranker.column].gteq(rank) ).
-            update_all( %Q{"#{ranker.column}" = "#{ranker.column}" + 1} )
+            update_all( %Q{#{ranker.column} = #{ranker.column} + 1} )
         elsif current_first.rank && current_first.rank > RankedModel::MIN_RANK_VALUE && rank > current_first.rank
           _scope.
             where( instance_class.arel_table[ranker.column].lt(rank) ).
-            update_all( %Q{"#{ranker.column}" = "#{ranker.column}" - 1} )
+            update_all( %Q{#{ranker.column} = #{ranker.column} - 1} )
           rank_at( rank - 1 )
         else
           rebalance_ranks
