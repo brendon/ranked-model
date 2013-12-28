@@ -5,6 +5,10 @@
 Installation
 ------------
 
+ranked-model passes specs with Rails 3.1, 3.2, 4.0, and 4.1-beta for MySQL, Postgres, and SQLite on Ruby 1.9.2, 1.9.3, 2.0, 2.1, jruby-19mode, and rubinius where Rails supports the platform. This is with the exception of Postgres before Rails 4.0 on all platforms, which is unsupported (I'd gladly accept a PR to fix this).
+
+TL;DR, if you are using Rails 4 and up you are 100% good to go. Before Rails 4, be wary of Postgres.
+
 To install ranked-model, just add it to your `Gemfile`:
 
 ``` ruby
@@ -117,10 +121,17 @@ Contributing
 
 Fork, clone, write a test, write some code, commit, push, send a pull request.  Github FTW!
 
+The specs can be run with sqlite, postgres, and mysql:
+
+```
+DB=postgres bundle exec rake
+```
+
+Is no DB is specified, the tests run against sqlite.
+
 RankedModel is mostly the handiwork of Matthew Beale:
 
 * [madhatted.com](http://madhatted.com) is where I blog. Also [@mixonic](http://twitter.com/mixonic).
-* [Spinto](http://www.spintoapp.com) is a product I'm bootstrapping.
 
 A hearty thanks to these contributors:
 

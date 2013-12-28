@@ -1,5 +1,30 @@
-development:
+test:
   adapter: sqlite3
   database: tmp/data.sqlite3
+  pool: 5
+  timeout: 5000
+
+test_mysql:
+  adapter: mysql
+  database: ranked_model_test
+  pool: 5
+  timeout: 5000
+
+test_postgresql:
+  adapter: postgresql
+  database: ranked_model_test
+  pool: 5
+  timeout: 5000
+
+test_mysql_travis:
+  adapter: mysql
+  database: ranked_model_test
+  pool: 5
+  timeout: 5000
+  username: travis
+
+test_postgresql_travis:
+  adapter: postgresql
+  database: ranked_model_test
   pool: 5
   timeout: 5000
