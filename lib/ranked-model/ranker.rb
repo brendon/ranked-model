@@ -148,7 +148,12 @@ module RankedModel
             neighbors = neighbors_at_position(position)
             min = ((neighbors[:lower] && neighbors[:lower].has_rank?) ? neighbors[:lower].rank : RankedModel::MIN_RANK_VALUE)
             max = ((neighbors[:upper] && neighbors[:upper].has_rank?) ? neighbors[:upper].rank : RankedModel::MAX_RANK_VALUE)
-            rank_at( ( ( max - min ).to_f / 2 ).ceil + min )
+            if min == max
+              rebalance_ranks
+              position_at position
+            else
+              rank_at( ( ( max - min ).to_f / 2 ).ceil + min )
+            end
           when NilClass
             if !rank
               position_at :last
