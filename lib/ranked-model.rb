@@ -15,7 +15,7 @@ module RankedModel
 
       extend RankedModel::ClassMethods
 
-      before_save :handle_ranking
+      before_validation :handle_ranking
 
       scope :rank, lambda { |name|
         order ranker(name.to_sym).column
