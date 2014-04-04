@@ -221,17 +221,19 @@ module RankedModel
           if ranker.scope
             _finder = _finder.send ranker.scope
           end
-          case ranker.with_same
+
+          with_same = ranker.with_same.respond_to?(:call) ? ranker.with_same.call(instance) : ranker.with_same
+          case with_same
             when Symbol
-              columns << instance_class.arel_table[ranker.with_same]
+              columns << instance_class.arel_table[with_same]
               _finder = _finder.where \
-                instance_class.arel_table[ranker.with_same].eq(instance.attributes["#{ranker.with_same}"])
+                instance_class.arel_table[with_same].eq(instance.attributes["#{with_same}"])
             when Array
-              ranker.with_same.each {|c| columns.push instance_class.arel_table[c] }
+              with_same.each {|c| columns.push instance_class.arel_table[c] }
               _finder = _finder.where(
-                ranker.with_same[1..-1].inject(
-                  instance_class.arel_table[ranker.with_same.first].eq(
-                    instance.attributes["#{ranker.with_same.first}"]
+                with_same[1..-1].inject(
+                  instance_class.arel_table[with_same.first].eq(
+                    instance.attributes["#{with_same.first}"]
                   )
                 ) {|scoper, attr|
                   scoper.and(

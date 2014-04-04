@@ -392,7 +392,7 @@ describe Duck do
       end
 
       context "when last" do
-        
+
         before {
           @ordered = Duck.rank(:row).where(Duck.arel_table[:id].not_eq @ducks[:quacky].id).collect { |duck| duck.id }
           @ducks[:quacky].update_attribute :row_position, :down
@@ -417,7 +417,7 @@ describe Duck do
       end
 
       context "when second last" do
-        
+
         before {
           @ordered = Duck.rank(:row).where(Duck.arel_table[:id].not_eq @ducks[:feathers].id).collect { |duck| duck.id }
           @ducks[:feathers].update_attribute :row_position, :down
@@ -473,7 +473,7 @@ describe Duck do
       end
 
       context "when last" do
-        
+
         before {
           @ordered = Duck.rank(:row).where(Duck.arel_table[:id].not_eq @ducks[:quacky].id).collect { |duck| duck.id }
           @ducks[:quacky].update_attribute :row_position, 'down'
@@ -498,7 +498,7 @@ describe Duck do
       end
 
       context "when second last" do
-        
+
         before {
           @ordered = Duck.rank(:row).where(Duck.arel_table[:id].not_eq @ducks[:feathers].id).collect { |duck| duck.id }
           @ducks[:feathers].update_attribute :row_position, 'down'
@@ -554,7 +554,7 @@ describe Duck do
       end
 
       context "when first" do
-        
+
         before {
           @ordered = Duck.rank(:row).where(Duck.arel_table[:id].not_eq @ducks[:beaky].id).collect { |duck| duck.id }
           @ducks[:beaky].update_attribute :row_position, :up
@@ -579,7 +579,7 @@ describe Duck do
       end
 
       context "when second" do
-        
+
         before {
           @ordered = Duck.rank(:row).where(Duck.arel_table[:id].not_eq @ducks[:waddly].id).collect { |duck| duck.id }
           @ducks[:waddly].update_attribute :row_position, :up
@@ -635,7 +635,7 @@ describe Duck do
       end
 
       context "when first" do
-        
+
         before {
           @ordered = Duck.rank(:row).where(Duck.arel_table[:id].not_eq @ducks[:beaky].id).collect { |duck| duck.id }
           @ducks[:beaky].update_attribute :row_position, 'up'
@@ -660,7 +660,7 @@ describe Duck do
       end
 
       context "when second" do
-        
+
         before {
           @ordered = Duck.rank(:row).where(Duck.arel_table[:id].not_eq @ducks[:waddly].id).collect { |duck| duck.id }
           @ducks[:waddly].update_attribute :row_position, 'up'
@@ -759,6 +759,125 @@ describe Duck do
       @ducks[:wingy].update_attribute :landing_order_position, 1
       @ducks[:feathers].update_attribute :landing_order_position, 0
       @ducks[:wingy].update_attribute :landing_order_position, 1
+    }
+
+    subject { @untouchable_ranks.call }
+
+    it { should == @previous_ranks }
+
+  end
+
+end
+
+describe Duck do
+
+  before {
+    @ducks = {
+      :quacky => Duck.create(
+        :name => 'Quacky',
+        :lake_id  => 0,
+        :flock_id => 2 ),
+      :feathers => Duck.create(
+        :name => 'Feathers',
+        :lake_id  => 0,
+        :flock_id => 1 ),
+      :wingy => Duck.create(
+        :name => 'Wingy',
+        :lake_id  => 0,
+        :flock_id => 2 ),
+      :webby => Duck.create(
+        :name => 'Webby',
+        :lake_id  => nil,
+        :flock_id => 0 ),
+      :waddly => Duck.create(
+        :name => 'Waddly',
+        :lake_id  => nil,
+        :flock_id => 0 ),
+      :beaky => Duck.create(
+        :name => 'Beaky',
+        :lake_id  => 1,
+        :flock_id => 1 )
+    }
+    @ducks.each { |name, duck|
+      duck.reload
+      duck.update_attribute :pecking_order, 0
+      duck.save!
+    }
+    @ducks.each {|name, duck| duck.reload }
+  }
+
+  describe "sorting by pecking_order" do
+
+    before {
+      @ducks[:quacky].update_attribute :pecking_order_position, 0
+      @ducks[:wingy].update_attribute :pecking_order_position, 1
+    }
+
+    subject { Duck.in_lake(0).rank(:pecking_order).to_a }
+
+    its(:size) { should == 3 }
+
+    its(:first) { should == @ducks[:quacky] }
+
+    its(:last) { should == @ducks[:feathers] }
+
+  end
+
+  describe "sorting by pecking_order" do
+
+    before {
+      @ducks[:webby].update_attribute :pecking_order_position, 0
+      @ducks[:waddly].update_attribute :pecking_order_position, 1
+    }
+
+    subject { Duck.without_lake.rank(:pecking_order).to_a }
+
+    its(:size) { should == 2 }
+
+    its(:first) { should == @ducks[:webby] }
+
+    its(:last) { should == @ducks[:waddly] }
+
+  end
+
+  describe "sorting by pecking_order doesn't touch other items" do
+
+    before {
+      @untouchable_ranks = lambda {
+        [:webby, :waddly, :beaky].inject([]) do |ranks, untouchable_duck|
+          ranks << @ducks[untouchable_duck].pecking_order
+        end
+      }
+
+      @previous_ranks = @untouchable_ranks.call
+
+      @ducks[:quacky].update_attribute :pecking_order_position, 0
+      @ducks[:wingy].update_attribute :pecking_order_position, 1
+      @ducks[:feathers].update_attribute :pecking_order_position, 0
+      @ducks[:wingy].update_attribute :pecking_order_position, 1
+    }
+
+    subject { @untouchable_ranks.call }
+
+    it { should == @previous_ranks }
+
+  end
+
+  describe "sorting by pecking_order doesn't touch other items" do
+
+    before {
+      @untouchable_ranks = lambda {
+        [:quacky, :wingy, :feathers].inject([]) do |ranks, untouchable_duck|
+          ranks << @ducks[untouchable_duck].pecking_order
+        end
+      }
+
+      @previous_ranks = @untouchable_ranks.call
+
+      @ducks[:webby].update_attribute :pecking_order_position, 0
+      @ducks[:waddly].update_attribute :pecking_order_position, 1
+      @ducks[:beaky].update_attribute :pecking_order_position, 0
+      @ducks[:waddly].update_attribute :pecking_order_position, 1
     }
 
     subject { @untouchable_ranks.call }

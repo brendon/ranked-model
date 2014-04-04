@@ -82,14 +82,21 @@ class Duck < ActiveRecord::Base
 
   ranks :row_order,           # Name this ranker, used with rank()
     :column => :sort_order    # Override the default column, which defaults to the name
-  
+
   belongs_to :pond
   ranks :swimming_order,
     :with_same => :pond_id    # Ducks belong_to Ponds, make the ranker scoped to one pond
-  
+
   scope :walking, where(:walking => true )
   ranks :walking_order,
     :scope => :walking        # Narrow this ranker to a scope
+
+  # Imagine ducks optionally belong_to Flocks as well. When they're associated with a Flock
+  # make the ranker scoped to one flock, otherwise scope to one pond.
+
+  belongs_to :flock
+  ranks :pecking_order,
+    :with_same => Proc.new { |duck| duck.flock_id ? :flock_id : :pond_id }
 
 end
 ```
