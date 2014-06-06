@@ -107,7 +107,7 @@ Duck.walking.rank(:walking)
 Internals
 ---------
 
-This libarary is written using ARel from the ground-up.  This leaves the code much cleaner
+This library is written using ARel from the ground-up.  This leaves the code much cleaner
 than many implementations.  ranked-model is also optimized to write to the database as little
 as possible: ranks are stored as a number between -8388607 and 8388607 (the MEDIUMINT range in MySQL).
 When an item is given a new position, it assigns itself a rank number between two neighbors.
