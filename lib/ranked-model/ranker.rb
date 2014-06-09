@@ -40,11 +40,11 @@ module RankedModel
                 when Symbol
                   !instance.respond_to?(ranker.with_same)
                 when Array
-                  ranker.with_same.detect {|attr| !instance.respond_to?(attr) }
+                  array_element = ranker.with_same.detect {|attr| !instance.respond_to?(attr) }
                 else
                   false
               end)
-            raise RankedModel::InvalidField, %Q{No field called "#{ranker.with_same}" found in model}
+            raise RankedModel::InvalidField, %Q{No field called "#{array_element || ranker.with_same}" found in model}
           end
         end
       end

@@ -85,7 +85,12 @@ class WrongFieldDuck < ActiveRecord::Base
 
   include RankedModel
   ranks :age, :with_same => :non_existant_field
+end
 
+class ReallyWrongFieldDuck < ActiveRecord::Base
+  self.table_name = :wrong_field_ducks
+  include RankedModel
+  ranks :age, :with_same => [:name, :non_existant_field]
 end
 
 # Example for STI, ranking within each child class
