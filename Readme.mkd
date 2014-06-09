@@ -104,6 +104,60 @@ Pond.first.ducks.rank(:swimming_order)
 Duck.walking.rank(:walking)
 ```
 
+Single Table Inheritance (STI)
+------------------------------
+
+ranked-model scopes your records' positions based on the class name of the object. If you have
+a STI `type` column set in your model, ranked-model will reference that class for positioning.
+
+Consider this example:
+
+``` ruby
+class Vehicle < ActiveRecord::Base
+  ranks :row_order
+end
+
+class Car < Vehicle
+end
+
+class Truck < Vehicle
+end
+
+car = Car.create!
+truck = Truck.create!
+
+car.row_order
+=> 0
+truck.row_order
+=> 0
+```
+
+In this example, the `row_order` for both `car` and `truck` will be set to `0` because they have
+different class names (`Car` and `Truck`, respectively).
+
+If you would like for both `car` and `truck` to be ranked together based on the base `Vehicle`
+class instead, use the `class_name` option:
+
+``` ruby
+class Vehicle < ActiveRecord::Base
+  ranks :row_order, class_name: 'Vehicle'
+end
+
+class Car < Vehicle
+end
+
+class Truck < Vehicle
+end
+
+car = Car.create!
+truck = Truck.create!
+
+car.row_order
+=> 0
+truck.row_order
+=> 4194304
+```
+
 Internals
 ---------
 
