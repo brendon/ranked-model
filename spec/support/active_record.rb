@@ -56,6 +56,11 @@ ActiveRecord::Schema.define :version => 0 do
     t.string :city
     t.integer :score
   end
+
+  create_table :tasks, :force => true do |t|
+    t.string :name
+    t.integer :row_order
+  end
 end
 
 class Duck < ActiveRecord::Base
@@ -144,4 +149,17 @@ end
 
 class Player < ActiveRecord::Base
   # don't add rank yet, do it in the specs
+end
+
+class Task < ActiveRecord::Base
+  # don't add rank yet, do it in the specs
+
+  def self.create_tasks_in_same_position(position, number_of_tasks = 1)
+    tasks = []
+    number_of_tasks.times do |n|
+      tasks << create(name: "task name #{n}", row_order_position: position)
+    end
+    tasks
+  end
+
 end
