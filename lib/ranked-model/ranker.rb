@@ -4,14 +4,14 @@ module RankedModel
   class InvalidField < StandardError; end
 
   class Ranker
-    attr_accessor :name, :column, :scope, :with_same, :class_name, :unless
+    attr_accessor :name, :column, :scope, :with_same, :class_name, :unless, :collision_policy
 
     def initialize name, options={}
       self.name = name.to_sym
       self.column = options[:column] || name
       self.class_name = options[:class_name]
 
-      [ :scope, :with_same, :unless ].each do |key|
+      [ :scope, :with_same, :unless, :collision_policy ].each do |key|
         self.send "#{key}=", options[key]
       end
     end
@@ -163,7 +163,7 @@ module RankedModel
           end
 
           if (rank > RankedModel::MAX_RANK_VALUE) || current_at_rank(rank)
-            rearrange_ranks
+            apply_collision_policy
           end
         end
       end
@@ -327,6 +327,17 @@ module RankedModel
           { :upper => RankedModel::Ranker::Mapper.new( ranker, ordered_instances[0] ) }
         else
           {}
+        end
+      end
+
+      def apply_collision_policy
+        case ranker.collision_policy
+        when :rebalance
+          rebalance_ranks
+        when :rearrange
+          rearrange_ranks
+        else
+          rearrange_ranks
         end
       end
 
