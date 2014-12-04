@@ -59,7 +59,7 @@ describe Task do
       end
     end
 
-    it 'use rearrange collision policy using shift' do
+    it 'use rebalance collision policy and not use shift' do
       expect(tasks[-1].row_order).to_not eq(-8388606)
       expect(tasks[-2].row_order).to_not eq(tasks[-1].row_order + 1)
       expect(tasks[-3].row_order).to_not eq(tasks[-2].row_order + 1)
