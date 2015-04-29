@@ -241,6 +241,11 @@ module RankedModel
                   )
                 }
               )
+            when String
+              def interpolate(&str)
+                eval "%{#{str.call}}", str.binding
+              end
+              _finder = _finder.where(interpolate { ranker.with_same })
           end
           if !new_record?
             _finder = _finder.where \
