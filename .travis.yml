@@ -1,3 +1,5 @@
+sudo: false
+cache: bundler
 language: ruby
 before_script:
   - mysql -e 'create database ranked_model_test;'
