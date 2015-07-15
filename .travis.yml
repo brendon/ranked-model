@@ -5,12 +5,12 @@ before_script:
   - mysql -e 'create database ranked_model_test;'
   - psql -c 'create database ranked_model_test;' -U postgres
 rvm:
-  - "1.9.3"
-  - "2.0.0"
-  - "2.1.0"
+  - "1.9.3-p551"
+  - "2.0.0-p645"
+  - "2.1.6"
   - "jruby-19mode"
-  - "rbx-2.1.1"
-  - "rbx-2.2.6"
+  - "rbx-2.1.6"
+  - "rbx-2.2.10"
 env:
   - "ACTIVERECORD_VERSION=4.1.0.beta1"
   - "ACTIVERECORD_VERSION=4.1.0.beta1 DB=mysql_travis"
@@ -30,11 +30,11 @@ env:
 matrix:
   exclude:
     - env: "ACTIVERECORD_VERSION=4.1.0.beta1"
-      rvm: "1.9.3"
+      rvm: "1.9.3-p551"
     - env: "ACTIVERECORD_VERSION=4.1.0.beta1 DB=mysql_travis"
-      rvm: "1.9.3"
+      rvm: "1.9.3-p551"
     - env: "ACTIVERECORD_VERSION=4.1.0.beta1 DB=postgresql_travis"
-      rvm: "1.9.3"
+      rvm: "1.9.3-p551"
     - env: "ACTIVERECORD_VERSION=4.1.0.beta1"
       rvm: "jruby-19mode"
     - env: "ACTIVERECORD_VERSION=4.1.0.beta1 DB=mysql_travis"
@@ -48,11 +48,11 @@ matrix:
     - env: "ACTIVERECORD_VERSION=master DB=postgresql_travis"
       rvm: "jruby-19mode"
     - env: "ACTIVERECORD_VERSION=master"
-      rvm: "1.9.3"
+      rvm: "1.9.3-p551"
     - env: "ACTIVERECORD_VERSION=master DB=mysql_travis"
-      rvm: "1.9.3"
+      rvm: "1.9.3-p551"
     - env: "ACTIVERECORD_VERSION=master DB=postgresql_travis"
-      rvm: "1.9.3"
+      rvm: "1.9.3-p551"
   allow_failures:
     # Master may or may not pass
     - env: "ACTIVERECORD_VERSION=master"
