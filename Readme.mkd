@@ -80,16 +80,19 @@ class Duck < ActiveRecord::Base
 
   include RankedModel
 
-  ranks :row_order,           # Name this ranker, used with rank()
-    :column => :sort_order    # Override the default column, which defaults to the name
-  
+  ranks :row_order,                  # Name this ranker, used with rank()
+    :column => :sort_order           # Override the default column, which defaults to the name
+
   belongs_to :pond
   ranks :swimming_order,
-    :with_same => :pond_id    # Ducks belong_to Ponds, make the ranker scoped to one pond
-  
+    :with_same => :pond_id           # Ducks belong_to Ponds, make the ranker scoped to one pond
+
+  ranks :row_order,
+    :with_same => [:pond_id, :breed] # Lets rank them by breed
+
   scope :walking, where(:walking => true )
   ranks :walking_order,
-    :scope => :walking        # Narrow this ranker to a scope
+    :scope => :walking               # Narrow this ranker to a scope
 
 end
 ```
