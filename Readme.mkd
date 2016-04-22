@@ -73,7 +73,7 @@ $.ajax({
 Complex Use
 -----------
 
-The `ranks` method takes serveral arguments:
+The `ranks` method takes several arguments:
 
 ``` ruby
 class Duck < ActiveRecord::Base
