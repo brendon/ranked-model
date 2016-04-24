@@ -1,3 +1,4 @@
+sudo: false # use newer travis infrastructure
 language: ruby
 before_script:
   - mysql -e 'create database ranked_model_test;'
