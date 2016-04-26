@@ -114,30 +114,30 @@ module RankedModel
         case position
           when :first, 'first'
             if current_first && current_first.rank
-              rank_at( ( ( RankedModel::MIN_RANK_VALUE - current_first.rank ).to_f / 2 ).ceil + current_first.rank)
+              rank_at( ( ( RankedModel::MIN_RANK_VALUE.call - current_first.rank ).to_f / 2 ).ceil + current_first.rank)
             else
               position_at :middle
             end
           when :last, 'last'
             if current_last && current_last.rank
-              rank_at( ( ( RankedModel::MAX_RANK_VALUE - current_last.rank ).to_f / 2 ).ceil + current_last.rank )
+              rank_at( ( ( RankedModel::MAX_RANK_VALUE.call - current_last.rank ).to_f / 2 ).ceil + current_last.rank )
             else
               position_at :middle
             end
           when :middle, 'middle'
-            rank_at( ( ( RankedModel::MAX_RANK_VALUE - RankedModel::MIN_RANK_VALUE ).to_f / 2 ).ceil + RankedModel::MIN_RANK_VALUE )
+            rank_at( ( ( RankedModel::MAX_RANK_VALUE.call - RankedModel::MIN_RANK_VALUE.call ).to_f / 2 ).ceil + RankedModel::MIN_RANK_VALUE.call )
           when :down, 'down'
             neighbors = find_next_two(rank)
             if neighbors[:lower]
               min = neighbors[:lower].rank
-              max = neighbors[:upper] ? neighbors[:upper].rank : RankedModel::MAX_RANK_VALUE
+              max = neighbors[:upper] ? neighbors[:upper].rank : RankedModel::MAX_RANK_VALUE.call
               rank_at( ( ( max - min ).to_f / 2 ).ceil + min )
             end
           when :up, 'up'
             neighbors = find_previous_two(rank)
             if neighbors[:upper]
               max = neighbors[:upper].rank
-              min = neighbors[:lower] ? neighbors[:lower].rank : RankedModel::MIN_RANK_VALUE
+              min = neighbors[:lower] ? neighbors[:lower].rank : RankedModel::MIN_RANK_VALUE.call
               rank_at( ( ( max - min ).to_f / 2 ).ceil + min )
             end
           when String
@@ -146,8 +146,8 @@ module RankedModel
             position_at :first
           when Integer
             neighbors = neighbors_at_position(position)
-            min = ((neighbors[:lower] && neighbors[:lower].has_rank?) ? neighbors[:lower].rank : RankedModel::MIN_RANK_VALUE)
-            max = ((neighbors[:upper] && neighbors[:upper].has_rank?) ? neighbors[:upper].rank : RankedModel::MAX_RANK_VALUE)
+            min = ((neighbors[:lower] && neighbors[:lower].has_rank?) ? neighbors[:lower].rank : RankedModel::MIN_RANK_VALUE.call)
+            max = ((neighbors[:upper] && neighbors[:upper].has_rank?) ? neighbors[:upper].rank : RankedModel::MAX_RANK_VALUE.call)
             rank_at( ( ( max - min ).to_f / 2 ).ceil + min )
           when NilClass
             if !rank
@@ -159,10 +159,10 @@ module RankedModel
       def assure_unique_position
         if ( new_record? || rank_changed? )
           unless rank
-            rank_at( RankedModel::MAX_RANK_VALUE )
+            rank_at( RankedModel::MAX_RANK_VALUE.call )
           end
 
-          if (rank > RankedModel::MAX_RANK_VALUE) || current_at_rank(rank)
+          if (rank > RankedModel::MAX_RANK_VALUE.call) || current_at_rank(rank)
             rearrange_ranks
           end
         end
@@ -174,15 +174,15 @@ module RankedModel
           # Never update ourself, shift others around us.
           _scope = _scope.where( instance_class.arel_table[instance_class.primary_key].not_eq(instance.id) )
         end
-        if current_first.rank && current_first.rank > RankedModel::MIN_RANK_VALUE && rank == RankedModel::MAX_RANK_VALUE
+        if current_first.rank && current_first.rank > RankedModel::MIN_RANK_VALUE.call && rank == RankedModel::MAX_RANK_VALUE.call
           _scope.
             where( instance_class.arel_table[ranker.column].lteq(rank) ).
             update_all( %Q{#{ranker.column} = #{ranker.column} - 1} )
-        elsif current_last.rank && current_last.rank < (RankedModel::MAX_RANK_VALUE - 1) && rank < current_last.rank
+        elsif current_last.rank && current_last.rank < (RankedModel::MAX_RANK_VALUE.call - 1) && rank < current_last.rank
           _scope.
             where( instance_class.arel_table[ranker.column].gteq(rank) ).
             update_all( %Q{#{ranker.column} = #{ranker.column} + 1} )
-        elsif current_first.rank && current_first.rank > RankedModel::MIN_RANK_VALUE && rank > current_first.rank
+        elsif current_first.rank && current_first.rank > RankedModel::MIN_RANK_VALUE.call && rank > current_first.rank
           _scope.
             where( instance_class.arel_table[ranker.column].lt(rank) ).
             update_all( %Q{#{ranker.column} = #{ranker.column} - 1} )
@@ -197,7 +197,7 @@ module RankedModel
         has_set_self = false
         total.times do |index|
           next if index == 0 || index == total
-          rank_value = ((((RankedModel::MAX_RANK_VALUE - RankedModel::MIN_RANK_VALUE).to_f / total) * index ).ceil + RankedModel::MIN_RANK_VALUE)
+          rank_value = ((((RankedModel::MAX_RANK_VALUE.call - RankedModel::MIN_RANK_VALUE.call).to_f / total) * index ).ceil + RankedModel::MIN_RANK_VALUE.call)
           index = index - 1
           if has_set_self
             index = index - 1

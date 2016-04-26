@@ -3,10 +3,34 @@ require File.dirname(__FILE__)+'/ranked-model/railtie' if defined?(Rails::Railti
 
 module RankedModel
 
-  # Signed MEDIUMINT in MySQL
+  # MAX_RANK_VALUE and MIN_RANK_VALUE are set to MySQL's 3-byte MEDIUMINT
+  # range by default. However, as PostgreSQL doesn't have a 3-byte integer
+  # data type and Postgres users are forced into allocating a 4-byte integer
+  # anyway, we may as well use the full 4-byte range  to reduce the chance of
+  # potentially expensive rebalancing.
   #
-  MAX_RANK_VALUE = 8388607
-  MIN_RANK_VALUE = -8388607
+  # Signed 4-byte INTEGER in PostgreSQL: -2147483648 to +2147483647
+  # Signed 3-byte MEDIUMINT in MySQL: -8388607 to +8388607
+  #
+  # SQLite3 allocates space according to size of each value, so we'll stick
+  # with the defaults.
+  MAX_RANK_VALUE = -> {
+    case ActiveRecord::Base.connection.adapter_name.downcase.to_sym
+    when :postgresql
+      2147483647
+    else
+      8388607
+    end
+  }
+
+  MIN_RANK_VALUE = -> {
+    case ActiveRecord::Base.connection.adapter_name.downcase.to_sym
+    when :postgresql
+      -2147483648
+    else
+      -8388607
+    end
+  }
 
   def self.included base
 
