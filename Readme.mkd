@@ -178,7 +178,7 @@ Fork, clone, write a test, write some code, commit, push, send a pull request.  
 The specs can be run with sqlite, postgres, and mysql:
 
 ```
-DB=postgres bundle exec rake
+DB=postgresql bundle exec rake
 ```
 
 Is no DB is specified, the tests run against sqlite.
