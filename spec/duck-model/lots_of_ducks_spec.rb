@@ -73,8 +73,8 @@ describe Duck do
         @first = Duck.first
         @second = Duck.offset(1).first
         @ordered = Duck.rank(:row).where(Duck.arel_table[:id].not_in([@first.id, @second.id])).collect {|d| d.id }
-        @first.update_attribute :row, RankedModel::MAX_RANK_VALUE
-        @second.update_attribute :row, RankedModel::MAX_RANK_VALUE
+        @first.update_attribute :row, RankedModel::MAX_RANK_VALUE.call
+        @second.update_attribute :row, RankedModel::MAX_RANK_VALUE.call
       }
 
       context {
@@ -96,8 +96,8 @@ describe Duck do
         @duck_11 = Duck.offset(10).first
         @duck_12 = Duck.offset(11).first
         @ordered = Duck.where(:pond => 'Pond 1').rank(:age).where(Duck.arel_table[:id].not_in([@duck_11.id, @duck_12.id])).collect {|d| d.id }
-        @duck_11.update_attribute :age, RankedModel::MAX_RANK_VALUE
-        @duck_12.update_attribute :age, RankedModel::MAX_RANK_VALUE
+        @duck_11.update_attribute :age, RankedModel::MAX_RANK_VALUE.call
+        @duck_12.update_attribute :age, RankedModel::MAX_RANK_VALUE.call
       }
 
       context {
@@ -119,8 +119,8 @@ describe Duck do
         @first = Duck.first
         @second = Duck.offset(1).first
         @ordered = Duck.rank(:row).where(Duck.arel_table[:id].not_in([@first.id, @second.id])).collect {|d| d.id }
-        @first.update_attribute :row, RankedModel::MIN_RANK_VALUE
-        @second.update_attribute :row, RankedModel::MIN_RANK_VALUE
+        @first.update_attribute :row, RankedModel::MIN_RANK_VALUE.call
+        @second.update_attribute :row, RankedModel::MIN_RANK_VALUE.call
       }
 
       context {
@@ -137,20 +137,20 @@ describe Duck do
 
       before {
         @first = Duck.first
-        @second = Duck.where(:row => RankedModel::MAX_RANK_VALUE).first || Duck.offset(1).first
+        @second = Duck.where(:row => RankedModel::MAX_RANK_VALUE.call).first || Duck.offset(1).first
         @third = Duck.offset(2).first
         @fourth = Duck.offset(4).first
         @lower = Duck.rank(:row).
           where(Duck.arel_table[:id].not_in([@first.id, @second.id, @third.id, @fourth.id])).
-          where(Duck.arel_table[:row].lt(RankedModel::MAX_RANK_VALUE / 2)).
+          where(Duck.arel_table[:row].lt(RankedModel::MAX_RANK_VALUE.call / 2)).
           collect {|d| d.id }
         @upper = Duck.rank(:row).
           where(Duck.arel_table[:id].not_in([@first.id, @second.id, @third.id, @fourth.id])).
-          where(Duck.arel_table[:row].gteq(RankedModel::MAX_RANK_VALUE / 2)).
+          where(Duck.arel_table[:row].gteq(RankedModel::MAX_RANK_VALUE.call / 2)).
           collect {|d| d.id }
-        @first.update_attribute :row, RankedModel::MIN_RANK_VALUE
-        @second.update_attribute :row, RankedModel::MAX_RANK_VALUE
-        @third.update_attribute :row, (RankedModel::MAX_RANK_VALUE / 2)
+        @first.update_attribute :row, RankedModel::MIN_RANK_VALUE.call
+        @second.update_attribute :row, RankedModel::MAX_RANK_VALUE.call
+        @third.update_attribute :row, (RankedModel::MAX_RANK_VALUE.call / 2)
         @fourth.update_attribute :row, @third.row
       }
 
