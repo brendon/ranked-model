@@ -3,10 +3,10 @@ require File.dirname(__FILE__)+'/ranked-model/railtie' if defined?(Rails::Railti
 
 module RankedModel
 
-  # Signed MEDIUMINT in MySQL
+  # Signed INT in MySQL
   #
-  MAX_RANK_VALUE = 8388607
-  MIN_RANK_VALUE = -8388607
+  MAX_RANK_VALUE = 2147483647
+  MIN_RANK_VALUE = -2147483648
 
   def self.included base
 
