@@ -44,9 +44,9 @@ describe Duck do
     }
     @ducks.each { |name, duck|
       duck.reload
-      duck.update_attribute :row_position, 0
-      duck.update_attribute :size_position, 0
-      duck.update_attribute :age_position, 0
+      duck.update_attributes(:row_position => 0)
+      duck.update_attributes(:size_position => 0)
+      duck.update_attributes(:age_position => 0)
       duck.save!
     }
     @ducks.each {|name, duck| duck.reload }
@@ -55,8 +55,8 @@ describe Duck do
   describe "sorting by size on in_shin_pond" do
 
     before {
-      @ducks[:quacky].update_attribute :size_position, 0
-      @ducks[:wingy].update_attribute :size_position, 2
+      @ducks[:quacky].update_attributes(:size_position => 0)
+      @ducks[:wingy].update_attributes(:size_position => 2)
     }
 
     subject { Duck.in_shin_pond.rank(:size).to_a }
@@ -72,8 +72,8 @@ describe Duck do
   describe "sorting by age on Shin pond" do
 
     before {
-      @ducks[:feathers].update_attribute :age_position, 0
-      @ducks[:wingy].update_attribute :age_position, 0
+      @ducks[:feathers].update_attributes(:age_position => 0)
+      @ducks[:wingy].update_attributes(:age_position => 0)
     }
 
     subject { Duck.where(:pond => 'Shin').rank(:age).to_a }
@@ -89,10 +89,10 @@ describe Duck do
   describe "sorting by row" do
 
     before {
-      @ducks[:beaky].update_attribute :row_position, 0
-      @ducks[:webby].update_attribute :row_position, 2
-      @ducks[:waddly].update_attribute :row_position, 2
-      @ducks[:wingy].update_attribute :row_position, 6
+      @ducks[:beaky].update_attributes(:row_position => 0)
+      @ducks[:webby].update_attributes(:row_position => 2)
+      @ducks[:waddly].update_attributes(:row_position => 2)
+      @ducks[:wingy].update_attributes(:row_position => 6)
     }
 
     subject { Duck.rank(:row).to_a }
@@ -108,13 +108,13 @@ describe Duck do
   describe "mixed sorting by" do
 
     before {
-      @ducks[:quacky].update_attribute :size_position, 0
-      @ducks[:beaky].update_attribute :row_position, 0
-      @ducks[:webby].update_attribute :row_position, 2
-      @ducks[:wingy].update_attribute :size_position, 1
-      @ducks[:waddly].update_attribute :row_position, 2
-      @ducks[:wingy].update_attribute :row_position, 6
-      @ducks[:webby].update_attribute :row_position, 6
+      @ducks[:quacky].update_attributes(:size_position => 0)
+      @ducks[:beaky].update_attributes(:row_position => 0)
+      @ducks[:webby].update_attributes(:row_position => 2)
+      @ducks[:wingy].update_attributes(:size_position => 1)
+      @ducks[:waddly].update_attributes(:row_position => 2)
+      @ducks[:wingy].update_attributes(:row_position => 6)
+      @ducks[:webby].update_attributes(:row_position => 6)
     }
 
     describe "row" do
@@ -149,7 +149,7 @@ describe Duck do
       # puts Duck.rank(:age).collect {|duck| "#{duck.name} #{duck.age}" }
       duck = Duck.rank(:age)[2]
       ->{
-        duck.update_attribute :name, 'New Name'
+        duck.update_attributes(:name => 'New Name')
       }.should_not change(duck.reload, :age)
       # puts Duck.rank(:age).collect {|duck| "#{duck.name} #{duck.age}" }
     end
@@ -183,7 +183,7 @@ describe Duck do
 
       before {
         @ordered = Duck.rank(:row).where(Duck.arel_table[:id].not_eq @ducks[:wingy].id).collect {|duck| duck.id }
-        @ducks[:wingy].update_attribute :row_position, 2
+        @ducks[:wingy].update_attributes(:row_position => 2)
       }
 
       context {
@@ -210,7 +210,7 @@ describe Duck do
 
       before {
         @ordered = Duck.rank(:row).where(Duck.arel_table[:id].not_eq @ducks[:wingy].id).collect {|duck| duck.id }
-        @ducks[:wingy].update_attribute :row_position, 0
+        @ducks[:wingy].update_attributes(:row_position => 0)
       }
 
       context {
@@ -243,7 +243,7 @@ describe Duck do
 
       before {
         @ordered = Duck.rank(:row).where(Duck.arel_table[:id].not_eq @ducks[:wingy].id).collect {|duck| duck.id }
-        @ducks[:wingy].update_attribute :row_position, (@ducks.size - 1)
+        @ducks[:wingy].update_attributes(:row_position => (@ducks.size - 1))
       }
 
       context {
@@ -284,7 +284,7 @@ describe Duck do
 
       before {
         @ordered = Duck.rank(:row).where(Duck.arel_table[:id].not_eq @ducks[:wingy].id).collect {|duck| duck.id }
-        @ducks[:wingy].update_attribute :row_position, :last
+        @ducks[:wingy].update_attributes(:row_position => :last)
       }
 
       context {
@@ -325,7 +325,7 @@ describe Duck do
 
       before {
         @ordered = Duck.rank(:row).where(Duck.arel_table[:id].not_eq @ducks[:wingy].id).collect {|duck| duck.id }
-        @ducks[:wingy].update_attribute :row_position, 'last'
+        @ducks[:wingy].update_attributes(:row_position => 'last')
       }
 
       context {
@@ -368,7 +368,7 @@ describe Duck do
 
         before {
           @ordered = Duck.rank(:row).where(Duck.arel_table[:id].not_eq @ducks[:wingy].id).collect { |duck| duck.id }
-          @ducks[:wingy].update_attribute :row_position, :down
+          @ducks[:wingy].update_attributes(:row_position => :down)
         }
 
         context {
@@ -395,7 +395,7 @@ describe Duck do
         
         before {
           @ordered = Duck.rank(:row).where(Duck.arel_table[:id].not_eq @ducks[:quacky].id).collect { |duck| duck.id }
-          @ducks[:quacky].update_attribute :row_position, :down
+          @ducks[:quacky].update_attributes(:row_position => :down)
         }
 
         context {
@@ -420,7 +420,7 @@ describe Duck do
         
         before {
           @ordered = Duck.rank(:row).where(Duck.arel_table[:id].not_eq @ducks[:feathers].id).collect { |duck| duck.id }
-          @ducks[:feathers].update_attribute :row_position, :down
+          @ducks[:feathers].update_attributes(:row_position => :down)
         }
 
         context {
@@ -449,7 +449,7 @@ describe Duck do
 
         before {
           @ordered = Duck.rank(:row).where(Duck.arel_table[:id].not_eq @ducks[:wingy].id).collect { |duck| duck.id }
-          @ducks[:wingy].update_attribute :row_position, 'down'
+          @ducks[:wingy].update_attributes(:row_position => 'down')
         }
 
         context {
@@ -476,7 +476,7 @@ describe Duck do
         
         before {
           @ordered = Duck.rank(:row).where(Duck.arel_table[:id].not_eq @ducks[:quacky].id).collect { |duck| duck.id }
-          @ducks[:quacky].update_attribute :row_position, 'down'
+          @ducks[:quacky].update_attributes(:row_position => 'down')
         }
 
         context {
@@ -501,7 +501,7 @@ describe Duck do
         
         before {
           @ordered = Duck.rank(:row).where(Duck.arel_table[:id].not_eq @ducks[:feathers].id).collect { |duck| duck.id }
-          @ducks[:feathers].update_attribute :row_position, 'down'
+          @ducks[:feathers].update_attributes(:row_position => 'down')
         }
 
         context {
@@ -530,7 +530,7 @@ describe Duck do
 
         before {
           @ordered = Duck.rank(:row).where(Duck.arel_table[:id].not_eq @ducks[:wingy].id).collect { |duck| duck.id }
-          @ducks[:wingy].update_attribute :row_position, :up
+          @ducks[:wingy].update_attributes(:row_position => :up)
         }
 
         context {
@@ -557,7 +557,7 @@ describe Duck do
         
         before {
           @ordered = Duck.rank(:row).where(Duck.arel_table[:id].not_eq @ducks[:beaky].id).collect { |duck| duck.id }
-          @ducks[:beaky].update_attribute :row_position, :up
+          @ducks[:beaky].update_attributes(:row_position => :up)
         }
 
         context {
@@ -582,7 +582,7 @@ describe Duck do
         
         before {
           @ordered = Duck.rank(:row).where(Duck.arel_table[:id].not_eq @ducks[:waddly].id).collect { |duck| duck.id }
-          @ducks[:waddly].update_attribute :row_position, :up
+          @ducks[:waddly].update_attributes(:row_position => :up)
         }
 
         context {
@@ -611,7 +611,7 @@ describe Duck do
 
         before {
           @ordered = Duck.rank(:row).where(Duck.arel_table[:id].not_eq @ducks[:wingy].id).collect { |duck| duck.id }
-          @ducks[:wingy].update_attribute :row_position, 'up'
+          @ducks[:wingy].update_attributes(:row_position => 'up')
         }
 
         context {
@@ -638,7 +638,7 @@ describe Duck do
         
         before {
           @ordered = Duck.rank(:row).where(Duck.arel_table[:id].not_eq @ducks[:beaky].id).collect { |duck| duck.id }
-          @ducks[:beaky].update_attribute :row_position, 'up'
+          @ducks[:beaky].update_attributes(:row_position => 'up')
         }
 
         context {
@@ -663,7 +663,7 @@ describe Duck do
         
         before {
           @ordered = Duck.rank(:row).where(Duck.arel_table[:id].not_eq @ducks[:waddly].id).collect { |duck| duck.id }
-          @ducks[:waddly].update_attribute :row_position, 'up'
+          @ducks[:waddly].update_attributes(:row_position => 'up')
         }
 
         context {
@@ -721,7 +721,7 @@ describe Duck do
     }
     @ducks.each { |name, duck|
       duck.reload
-      duck.update_attribute :landing_order_position, 0
+      duck.update_attributes(:landing_order_position => 0)
       duck.save!
     }
     @ducks.each {|name, duck| duck.reload }
@@ -730,8 +730,8 @@ describe Duck do
   describe "sorting by landing_order" do
 
     before {
-      @ducks[:quacky].update_attribute :landing_order_position, 0
-      @ducks[:wingy].update_attribute :landing_order_position, 1
+      @ducks[:quacky].update_attributes(:landing_order_position => 0)
+      @ducks[:wingy].update_attributes(:landing_order_position => 1)
     }
 
     subject { Duck.in_lake_and_flock(0,0).rank(:landing_order).to_a }
@@ -755,10 +755,10 @@ describe Duck do
 
       @previous_ranks = @untouchable_ranks.call
 
-      @ducks[:quacky].update_attribute :landing_order_position, 0
-      @ducks[:wingy].update_attribute :landing_order_position, 1
-      @ducks[:feathers].update_attribute :landing_order_position, 0
-      @ducks[:wingy].update_attribute :landing_order_position, 1
+      @ducks[:quacky].update_attributes(:landing_order_position => 0)
+      @ducks[:wingy].update_attributes(:landing_order_position => 1)
+      @ducks[:feathers].update_attributes(:landing_order_position => 0)
+      @ducks[:wingy].update_attributes(:landing_order_position => 1)
     }
 
     subject { @untouchable_ranks.call }
