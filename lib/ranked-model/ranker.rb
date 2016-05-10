@@ -74,7 +74,7 @@ module RankedModel
       end
 
       def rank
-        instance.send "#{ranker.column}"
+        instance[ranker.column]
       end
 
       def current_at_position _pos
@@ -99,7 +99,7 @@ module RankedModel
       end
 
       def rank_at value
-        instance.send "#{ranker.column}=", value
+        instance[ranker.column] = value
       end
 
       def rank_changed?

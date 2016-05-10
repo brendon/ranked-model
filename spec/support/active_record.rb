@@ -56,6 +56,11 @@ ActiveRecord::Schema.define :version => 0 do
     t.string :city
     t.integer :score
   end
+
+  create_table :actors, :force => true do |t|
+    t.string :name
+    t.integer :position
+  end
 end
 
 class Duck < ActiveRecord::Base
@@ -143,5 +148,9 @@ class Ego < ActiveRecord::Base
 end
 
 class Player < ActiveRecord::Base
+  # don't add rank yet, do it in the specs
+end
+
+class Actor < ActiveRecord::Base
   # don't add rank yet, do it in the specs
 end
