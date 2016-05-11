@@ -215,7 +215,8 @@ module RankedModel
       end
 
       def finder(order = :asc)
-        @finder ||= begin
+        @finder ||= {}
+        @finder[order] ||= begin
           _finder = instance_class
           columns = [instance_class.arel_table[instance_class.primary_key], instance_class.arel_table[ranker.column]]
           if ranker.scope
