@@ -18,6 +18,7 @@ ActiveRecord::Schema.define :version => 0 do
     t.integer :lake_id
     t.integer :flock_id
     t.integer :landing_order
+    t.integer :pecking_order
     t.string :pond
   end
 
@@ -64,9 +65,13 @@ class Duck < ActiveRecord::Base
   ranks :row
   ranks :size, :scope => :in_shin_pond
   ranks :age, :with_same => :pond
+  ranks :pecking_order, :with_same => Proc.new { |d| d.lake_id ? :lake_id : :flock_id }
 
   ranks :landing_order, :with_same => [:lake_id, :flock_id]
   scope :in_lake_and_flock, lambda {|lake, flock| where(:lake_id => lake, :flock_id => flock) }
+
+  scope :in_lake, lambda { |lake| where(:lake_id => lake) }
+  scope :without_lake, lambda { where(:lake_id => nil) }
 
   scope :in_shin_pond, lambda { where(:pond => 'Shin') }
 
