@@ -768,3 +768,13 @@ describe Duck do
   end
 
 end
+
+describe Duck do
+  before do
+    4.times { |counter| Duck.create( name: "Duck #{counter}", pond: 'foobar', age: 0 ) }
+  end
+
+  subject { Duck.rank(:age).pluck(:id) }
+
+  it { should eq Duck.all.pluck(:id).reverse }
+end
