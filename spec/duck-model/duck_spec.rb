@@ -770,11 +770,9 @@ describe Duck do
 end
 
 describe Duck do
-  before do
-    4.times { |counter| Duck.create( name: "Duck #{counter}", pond: 'foobar', age: 0 ) }
-  end
+  let! (:ducks) { 4.times.map { |counter| Duck.create( name: "Duck #{counter}", pond: 'foobar', age: 0 ) } }
 
   subject { Duck.rank(:age).map(&:id) }
 
-  it { should eq Duck.all.map(&:id).reverse }
+  it { should eq ducks.map(&:id).reverse }
 end
