@@ -29,4 +29,4 @@ gem "pg", platforms: :ruby
 
 # MySQL
 gem "activerecord-jdbcmysql-adapter", platforms: :jruby
-gem "mysql", platforms: :ruby
+gem "mysql2", platforms: :ruby

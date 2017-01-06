@@ -5,7 +5,7 @@ test:
   timeout: 5000
 
 test_mysql:
-  adapter: mysql
+  adapter: mysql2
   database: ranked_model_test
   pool: 5
   timeout: 5000
@@ -17,7 +17,7 @@ test_postgresql:
   timeout: 5000
 
 test_mysql_travis:
-  adapter: mysql
+  adapter: mysql2
   database: ranked_model_test
   pool: 5
   timeout: 5000
