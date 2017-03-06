@@ -57,7 +57,7 @@ module RankedModel
       public "#{ranker.name}_position", "#{ranker.name}_position="
 
       singleton_class.instance_eval do
-        define_method "with_#{ranker.name}_position" do |with_same: nil|
+        define_method "with_#{ranker.name}_position" do |with_same: ranker.with_same|
           if with_same
             instances = self.all.to_a
             key_from_instance = case with_same
