@@ -57,22 +57,18 @@ module RankedModel
       public "#{ranker.name}_position", "#{ranker.name}_position="
 
       singleton_class.instance_eval do
-        define_method "with_#{ranker.name}_position" do |with_same: ranker.with_same|
-          if with_same
+        define_method "with_#{ranker.name}_position" do
+          if ranker.with_same
             instances = self.all.to_a
-            key_from_instance = case with_same
+            key_from_instance = case ranker.with_same
               when Symbol
-                raise RankedModel::InvalidField, %Q{No field called "#{with_same}" found in model} unless self.public_instance_methods.include? with_same
                 Proc.new do |t|
-                  t.send(with_same)
+                  t.send(ranker.with_same)
                 end
               when Array
-                raise RankedModel::InvalidField, %Q{No field called "#{with_same}" found in model} unless (with_same - self.public_instance_methods).empty?
                 Proc.new do |t|
-                  with_same.map { |c| t.send(c) }
+                  ranker.with_same.map { |c| t.send(c) }
                 end
-              else
-                raise RankedModel::InvalidField, %Q{No field called "#{with_same}" found in model}
             end
             indexes = {}
 
