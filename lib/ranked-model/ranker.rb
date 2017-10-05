@@ -4,14 +4,14 @@ module RankedModel
   class InvalidField < StandardError; end
 
   class Ranker
-    attr_accessor :name, :column, :scope, :with_same, :class_name, :unless
+    attr_accessor :name, :column, :scope, :with_same, :class_name, :unless, :partition_key
 
     def initialize name, options={}
       self.name = name.to_sym
       self.column = options[:column] || name
       self.class_name = options[:class_name]
 
-      [ :scope, :with_same, :unless ].each do |key|
+      [ :scope, :with_same, :unless, :partition_key ].each do |key|
         self.send "#{key}=", options[key]
       end
     end
@@ -47,6 +47,18 @@ module RankedModel
             raise RankedModel::InvalidField, %Q{No field called "#{array_element || ranker.with_same}" found in model}
           end
         end
+
+        if ranker.partition_key
+          if (case ranker.partition_key
+                when Symbol
+                  !instance.respond_to?(ranker.partition_key)
+                else
+                  false
+              end)
+            raise RankedModel::InvalidField, %Q{No field called "#{ranker.partition_key}" found in model}
+          end
+        end
+
       end
 
       def handle_ranking
@@ -66,6 +78,7 @@ module RankedModel
         #
         instance_class.
           where(instance_class.primary_key => instance.id).
+          and(inject_partition_key).
           update_all([%Q{#{ranker.column} = ?}, value])
       end
 
@@ -85,6 +98,10 @@ module RankedModel
 
       def has_rank?
         !rank.nil?
+      end
+
+      def inject_partition_key
+        ranker.partition_key ? instance_class.arel_table[ranker.partition_key].eq(instance.send(ranker.partition_key)) : "1=1"
       end
 
     private
@@ -172,19 +189,19 @@ module RankedModel
         _scope = finder
         unless instance.id.nil?
           # Never update ourself, shift others around us.
-          _scope = _scope.where( instance_class.arel_table[instance_class.primary_key].not_eq(instance.id) )
+          _scope = _scope.where( instance_class.arel_table[instance_class.primary_key].not_eq(instance.id).and(inject_partition_key) )
         end
         if current_first.rank && current_first.rank > RankedModel::MIN_RANK_VALUE && rank == RankedModel::MAX_RANK_VALUE
           _scope.
-            where( instance_class.arel_table[ranker.column].lteq(rank) ).
+            where( instance_class.arel_table[ranker.column].lteq(rank).and(inject_partition_key) ).
             update_all( %Q{#{ranker.column} = #{ranker.column} - 1} )
         elsif current_last.rank && current_last.rank < (RankedModel::MAX_RANK_VALUE - 1) && rank < current_last.rank
           _scope.
-            where( instance_class.arel_table[ranker.column].gteq(rank) ).
+            where( instance_class.arel_table[ranker.column].gteq(rank).and(inject_partition_key) ).
             update_all( %Q{#{ranker.column} = #{ranker.column} + 1} )
         elsif current_first.rank && current_first.rank > RankedModel::MIN_RANK_VALUE && rank > current_first.rank
           _scope.
-            where( instance_class.arel_table[ranker.column].lt(rank) ).
+            where( instance_class.arel_table[ranker.column].lt(rank).and(inject_partition_key) ).
             update_all( %Q{#{ranker.column} = #{ranker.column} - 1} )
           rank_at( rank - 1 )
         else
@@ -242,6 +259,12 @@ module RankedModel
                 }
               )
           end
+          case ranker.partition_key
+            when Symbol
+              columns << instance_class.arel_table[ranker.partition_key]
+              _finder = _finder.where \
+                inject_partition_key
+          end
           if !new_record?
             _finder = _finder.where \
               instance_class.arel_table[instance_class.primary_key].not_eq(instance.id)
@@ -280,6 +303,7 @@ module RankedModel
         if (ordered_instance = finder.
                                  except( :order ).
                                  where( ranker.column => _rank ).
+                                 where( inject_partition_key ).
                                  first)
           RankedModel::Ranker::Mapper.new ranker, ordered_instance
         end
@@ -307,7 +331,7 @@ module RankedModel
       end
 
       def find_next_two _rank
-        ordered_instances = finder.where(instance_class.arel_table[ranker.column].gt _rank).limit(2)
+        ordered_instances = finder.where(instance_class.arel_table[ranker.column].gt(_rank).and(inject_partition_key)).limit(2)
         if ordered_instances[1]
           { :lower => RankedModel::Ranker::Mapper.new( ranker, ordered_instances[0] ),
             :upper => RankedModel::Ranker::Mapper.new( ranker, ordered_instances[1] ) }
@@ -319,7 +343,7 @@ module RankedModel
       end
 
       def find_previous_two _rank
-        ordered_instances = finder(:desc).where(instance_class.arel_table[ranker.column].lt _rank).limit(2)
+        ordered_instances = finder(:desc).where(instance_class.arel_table[ranker.column].lt(_rank).and(inject_partition_key)).limit(2)
         if ordered_instances[1]
           { :upper => RankedModel::Ranker::Mapper.new( ranker, ordered_instances[0] ),
             :lower => RankedModel::Ranker::Mapper.new( ranker, ordered_instances[1] ) }
