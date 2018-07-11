@@ -3,20 +3,18 @@ source "https://rubygems.org"
 # Specify your gem's dependencies in ranked-model.gemspec
 gemspec
 
-platforms :rbx do
-  gem 'rubysl', '~> 2.0'
-  gem 'rubinius-developer_tools'
-end
+gem 'rubysl', '~> 2.0', platform: :rbx
+gem 'rubinius-developer_tools', platform: :rbx
 
 group :sqlite do
-  gem "activerecord-jdbcsqlite3-adapter", ">= 1.3.0", platforms: :jruby
-  gem "sqlite3", platforms: [:ruby]
+  gem "activerecord-jdbcsqlite3-adapter", ">= 1.3.0", platform: :jruby
+  gem "sqlite3", platform: :ruby
 end
 
 group :mysql do
-  gem "activerecord-jdbcmysql-adapter", platforms: :jruby
+  gem "activerecord-jdbcmysql-adapter", platform: :jruby
 end
 
 group :postgresql do
-  gem "activerecord-jdbcpostgresql-adapter", platforms: :jruby
+  gem "activerecord-jdbcpostgresql-adapter", platform: :jruby
 end
