@@ -59,7 +59,8 @@ appraise "rails-5-0" do
     gem "activerecord-jdbcmysql-adapter", "~> 50.1", platform: :jruby
   end
   group :postgresql do
-    gem "pg", "~> 1.0.0", platform: :ruby
+    gem "pg", "~> 1.0.0", platform: :mri
+    gem "pg", "~> 0.21.0", platform: :rbx
     gem "activerecord-jdbcpostgresql-adapter", "~> 50.1", platform: :jruby
   end
 
@@ -76,7 +77,8 @@ appraise "rails-5-1" do
     gem "activerecord-jdbcmysql-adapter", "~> 51.1", platform: :jruby
   end
   group :postgresql do
-    gem "pg", "~> 1.0.0", platform: :ruby
+    gem "pg", "~> 1.0.0", platform: :mri
+    gem "pg", "~> 0.21.0", platform: :rbx
     gem "activerecord-jdbcpostgresql-adapter", "~> 51.1", platform: :jruby
   end
 
@@ -91,7 +93,8 @@ appraise "rails-5-2" do
     gem "mysql2", "~> 0.5.2", platform: :ruby
   end
   group :postgresql do
-    gem "pg", "~> 1.0.0", platform: :ruby
+    gem "pg", "~> 1.0.0", platform: :mri
+    gem "pg", "~> 0.21.0", platform: :rbx
   end
 
   gem "activerecord", "~> 5.2.0"
