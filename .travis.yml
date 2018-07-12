@@ -1,68 +1,38 @@
 sudo: false # use newer travis infrastructure
 language: ruby
+cache: bundler
+before_install:
+  - gem install bundler -v 1.16.1
 before_script:
   - mysql -e 'create database ranked_model_test;'
   - psql -c 'create database ranked_model_test;' -U postgres
 rvm:
-  - "1.9.3"
-  - "2.1.8"
-  - "2.2.4"
-  - "2.3.0"
-  - "jruby-19mode"
-  - "rbx"
+  - 1.9.3
+  - 2.1.10
+  - 2.2.10
+  - 2.3.7
+  - 2.4.4
+  - 2.5.1
+  - jruby-9.1.17.0
+  - rbx-3.100
 env:
-  - "ACTIVERECORD_VERSION=4.2.6"
-  - "ACTIVERECORD_VERSION=4.2.6 DB=mysql_travis"
-  - "ACTIVERECORD_VERSION=4.2.6 DB=postgresql_travis"
-  - "ACTIVERECORD_VERSION=4.1.15"
-  - "ACTIVERECORD_VERSION=4.1.15 DB=mysql_travis"
-  - "ACTIVERECORD_VERSION=4.1.15 DB=postgresql_travis"
-  - "ACTIVERECORD_VERSION=4.0.13"
-  - "ACTIVERECORD_VERSION=4.0.13 DB=mysql_travis"
-  - "ACTIVERECORD_VERSION=4.0.13 DB=postgresql_travis"
-  - "ACTIVERECORD_VERSION=3.2.22.2"
-  - "ACTIVERECORD_VERSION=3.2.22.2 DB=mysql_travis"
-  # - "ACTIVERECORD_VERSION=3.2.22.2 DB=postgresql_travis"
-  - "ACTIVERECORD_VERSION=3.1.12"
-  - "ACTIVERECORD_VERSION=3.1.12 DB=mysql_travis"
-  # - "ACTIVERECORD_VERSION=3.1.12 DB=postgresql_travis"
-  - "ACTIVERECORD_VERSION=master"
-  - "ACTIVERECORD_VERSION=master DB=mysql_travis"
-  - "ACTIVERECORD_VERSION=master DB=postgresql_travis"
+  - DB=sqlite
+  - DB=mysql
+  - DB=postgresql
+gemfile:
+  - gemfiles/rails_3_2.gemfile
+  - gemfiles/rails_4_1.gemfile
+  - gemfiles/rails_4_2.gemfile
 matrix:
   exclude:
-    - env: "ACTIVERECORD_VERSION=4.1.15"
-      rvm: "1.9.3"
-    - env: "ACTIVERECORD_VERSION=4.1.15 DB=mysql_travis"
-      rvm: "1.9.3"
-    - env: "ACTIVERECORD_VERSION=4.1.15 DB=postgresql_travis"
-      rvm: "1.9.3"
-    - env: "ACTIVERECORD_VERSION=4.1.15"
-      rvm: "jruby-19mode"
-    - env: "ACTIVERECORD_VERSION=4.1.15 DB=mysql_travis"
-      rvm: "jruby-19mode"
-    - env: "ACTIVERECORD_VERSION=4.1.15 DB=postgresql_travis"
-      rvm: "jruby-19mode"
-    - env: "ACTIVERECORD_VERSION=master"
-      rvm: "jruby-19mode"
-    - env: "ACTIVERECORD_VERSION=master DB=mysql_travis"
-      rvm: "jruby-19mode"
-    - env: "ACTIVERECORD_VERSION=master DB=postgresql_travis"
-      rvm: "jruby-19mode"
-    - env: "ACTIVERECORD_VERSION=master"
-      rvm: "1.9.3"
-    - env: "ACTIVERECORD_VERSION=master DB=mysql_travis"
-      rvm: "1.9.3"
-    - env: "ACTIVERECORD_VERSION=master DB=postgresql_travis"
-      rvm: "1.9.3"
-  allow_failures:
-    # Master may or may not pass
-    - env: "ACTIVERECORD_VERSION=master"
-    - env: "ACTIVERECORD_VERSION=master DB=mysql_travis"
-    - env: "ACTIVERECORD_VERSION=master DB=postgresql_travis"
-    # Rails 3.1 is incompatible with database cleaner 1.2
-    - env: "ACTIVERECORD_VERSION=3.1.12 DB=mysql_travis"
-    - env: "ACTIVERECORD_VERSION=3.1.12 DB=postgresql_travis"
-    # Postgres is not supported before Rails 4.0.
-    - env: "ACTIVERECORD_VERSION=3.1.12 DB=postgresql_travis"
-    - env: "ACTIVERECORD_VERSION=3.2.16 DB=postgresql_travis"
+    - rvm: 2.4.4
+      gemfile: gemfiles/rails_3_2.gemfile
+    - rvm: 2.4.4
+      gemfile: gemfiles/rails_4_1.gemfile
+    - rvm: 2.5.1
+      gemfile: gemfiles/rails_3_2.gemfile
+    - rvm: 2.5.1
+      gemfile: gemfiles/rails_4_1.gemfile
+    - env: DB=postgresql
+      gemfile: gemfiles/rails_3_2.gemfile
+

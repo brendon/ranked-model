@@ -603,6 +603,35 @@ describe Duck do
 
       end
 
+      context "from position without gaps with rebalance" do
+
+        before {
+          [:quacky, :feathers, :wingy, :webby, :waddly, :beaky].each_with_index do |name, i|
+            Duck.where(id: @ducks[name].id).update_all(row: i)
+            @ducks[name].reload
+          end
+          @ducks[:wingy].update_attribute :row_position, :up
+        }
+
+        context {
+
+          subject { Duck.ranker(:row).with(Duck.new).current_at_position(1).instance }
+
+          its(:id) { should == @ducks[:wingy].id }
+
+        }
+
+        context {
+
+          subject { Duck.ranker(:row).with(Duck.new).current_at_position(2).instance }
+
+          its(:id) { should == @ducks[:feathers].id }
+
+        }
+
+      end
+
+
     end
 
     describe "up with string" do
