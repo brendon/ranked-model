@@ -17,7 +17,7 @@ group :mysql do
 end
 
 group :postgresql do
-  gem "pg", "~> 1.0.0", platform: :ruby
+  gem "pg", "~> 0.21.0", platform: :ruby
   gem "activerecord-jdbcpostgresql-adapter", "~> 50.1", platform: :jruby
 end
 
