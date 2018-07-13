@@ -11,7 +11,7 @@ group :sqlite do
 end
 
 group :mysql do
-  gem "mysql2", "~> 0.5.2", platform: :ruby
+  gem "mysql2", "~> 0.4.10", platform: :ruby
 end
 
 group :postgresql do

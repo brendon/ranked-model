@@ -12,7 +12,7 @@ group :sqlite do
 end
 
 group :mysql do
-  gem "mysql2", "~> 0.5.2", platform: :ruby
+  gem "mysql2", "~> 0.4.10", platform: :ruby
   gem "activerecord-jdbcmysql-adapter", "~> 50.1", platform: :jruby
 end
 

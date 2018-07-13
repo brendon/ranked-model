@@ -55,7 +55,7 @@ appraise "rails-5-0" do
     gem "activerecord-jdbcsqlite3-adapter", "~> 50.1", platform: :jruby
   end
   group :mysql do
-    gem "mysql2", "~> 0.5.2", platform: :ruby
+    gem "mysql2", "~> 0.4.10", platform: :ruby
     gem "activerecord-jdbcmysql-adapter", "~> 50.1", platform: :jruby
   end
   group :postgresql do
@@ -72,7 +72,7 @@ appraise "rails-5-1" do
     gem "activerecord-jdbcsqlite3-adapter", "~> 51.1", platform: :jruby
   end
   group :mysql do
-    gem "mysql2", "~> 0.5.2", platform: :ruby
+    gem "mysql2", "~> 0.4.10", platform: :ruby
     gem "activerecord-jdbcmysql-adapter", "~> 51.1", platform: :jruby
   end
   group :postgresql do
@@ -88,7 +88,7 @@ appraise "rails-5-2" do
     gem "sqlite3", platform: :ruby
   end
   group :mysql do
-    gem "mysql2", "~> 0.5.2", platform: :ruby
+    gem "mysql2", "~> 0.4.10", platform: :ruby
   end
   group :postgresql do
     gem "pg", "~> 0.21.0", platform: :ruby
