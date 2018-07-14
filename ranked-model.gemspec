@@ -16,7 +16,6 @@ Gem::Specification.new do |s|
   s.add_dependency "activerecord", ">= 3.2.22.5"
   s.add_development_dependency "rspec", "~> 3"
   s.add_development_dependency "rspec-its"
-  s.add_development_dependency "sqlite3"
   s.add_development_dependency "mocha"
   s.add_development_dependency "database_cleaner", "~> 1.7.0"
   s.add_development_dependency "rake", "~> 10.1.0"
