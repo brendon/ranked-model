@@ -43,7 +43,7 @@ describe Vehicle do
     describe "Vehicle" do
 
       it "should have one ranker object" do
-        Vehicle.rankers.count.should == 1
+        expect(Vehicle.rankers.count).to eq(1)
       end
 
       subject { Vehicle.rankers.first }
@@ -57,7 +57,7 @@ describe Vehicle do
     describe "MotorBike" do
 
       it "should have one ranker object" do
-        MotorBike.rankers.count.should == 1
+        expect(MotorBike.rankers.count).to eq(1)
       end
 
       subject { MotorBike.rankers.first }
