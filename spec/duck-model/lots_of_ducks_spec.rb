@@ -81,7 +81,7 @@ describe Duck do
 
         subject { Duck.rank(:row).collect {|d| d.id } }
 
-        it { should == (@ordered[0..-2] + [@ordered[-1], @first.id, @second.id]) }
+        it { is_expected.to eq(@ordered[0..-2] + [@ordered[-1], @first.id, @second.id]) }
 
       }
 
@@ -103,12 +103,12 @@ describe Duck do
       context {
         subject { Duck.where(:pond => 'Pond 1').rank(:age).collect {|d| d.id } }
 
-        it { should == (@ordered[0..-2] + [@ordered[-1], @duck_11.id, @duck_12.id]) }
+        it { is_expected.to eq(@ordered[0..-2] + [@ordered[-1], @duck_11.id, @duck_12.id]) }
       }
 
       context {
         subject { Duck.first.age }
-        it { should == 0}
+        it { is_expected.to eq(0)}
       }
       
     end
@@ -127,7 +127,7 @@ describe Duck do
 
         subject { Duck.rank(:row).collect {|d| d.id } }
 
-        it { should == ([@second.id, @first.id] + @ordered) }
+        it { is_expected.to eq([@second.id, @first.id] + @ordered) }
 
       }
 
@@ -158,7 +158,7 @@ describe Duck do
 
         subject { Duck.rank(:row).collect {|d| d.id } }
 
-        it { should == ([@first.id] + @lower + [@fourth.id, @third.id] + @upper + [@second.id]) }
+        it { is_expected.to eq([@first.id] + @lower + [@fourth.id, @third.id] + @upper + [@second.id]) }
 
       }
 

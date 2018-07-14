@@ -8,14 +8,14 @@ describe Duck do
 
   subject { @duck }
 
-  it { subject.respond_to?(:row_position).should be_true }
-  it { subject.respond_to?(:row_position=).should be_true }
-  it { subject.respond_to?(:size_position).should be_true }
-  it { subject.respond_to?(:size_position=).should be_true }
-  it { subject.respond_to?(:age_position).should be_true }
-  it { subject.respond_to?(:age_position=).should be_true }
-  it { subject.respond_to?(:landing_order_position).should be_true }
-  it { subject.respond_to?(:landing_order_position=).should be_true }
+  it { expect(subject).to respond_to(:row_position) }
+  it { expect(subject).to respond_to(:row_position=) }
+  it { expect(subject).to respond_to(:size_position) }
+  it { expect(subject).to respond_to(:size_position=) }
+  it { expect(subject).to respond_to(:age_position) }
+  it { expect(subject).to respond_to(:age_position=) }
+  it { expect(subject).to respond_to(:landing_order_position) }
+  it { expect(subject).to respond_to(:landing_order_position=) }
 
 end
 
@@ -148,9 +148,9 @@ describe Duck do
     it "doesn't change ranking" do
       # puts Duck.rank(:age).collect {|duck| "#{duck.name} #{duck.age}" }
       duck = Duck.rank(:age)[2]
-      ->{
+      expect(->{
         duck.update_attribute :name, 'New Name'
-      }.should_not change(duck.reload, :age)
+      }).to_not change(duck.reload, :age)
       # puts Duck.rank(:age).collect {|duck| "#{duck.name} #{duck.age}" }
     end
 
@@ -161,7 +161,7 @@ describe Duck do
     it "marks record as changed" do
       duck = Duck.rank(:age)[2]
       duck.age_position = 1
-      duck.changed?.should be_true
+      expect(duck.changed?).to be true
     end
 
   end
@@ -172,7 +172,7 @@ describe Duck do
 
     it "doesnt set empty string" do
       subject.age_position = ''
-      subject.age_position.should be_nil
+      expect(subject.age_position).to be_nil
     end
 
   end
@@ -198,9 +198,9 @@ describe Duck do
 
         subject { Duck.rank(:row).collect {|duck| duck.id } }
 
-        it { subject[0..1].should == @ordered[0..1] }
+        it { expect(subject[0..1]).to eq(@ordered[0..1]) }
 
-        it { subject[3..subject.length].should == @ordered[2..@ordered.length] }
+        it { expect(subject[3..subject.length]).to eq(@ordered[2..@ordered.length]) }
 
       }
 
@@ -233,7 +233,7 @@ describe Duck do
 
         subject { Duck.rank(:row).collect {|duck| duck.id } }
 
-        it { subject[1..subject.length].should == @ordered }
+        it { expect(subject[1..subject.length]).to eq(@ordered) }
 
       }
 
@@ -274,7 +274,7 @@ describe Duck do
 
         subject { Duck.rank(:row).collect {|duck| duck.id } }
 
-        it { subject[0..-2].should == @ordered }
+        it { expect(subject[0..-2]).to eq(@ordered) }
 
       }
 
@@ -315,7 +315,7 @@ describe Duck do
 
         subject { Duck.rank(:row).collect {|duck| duck.id } }
 
-        it { subject[0..-2].should == @ordered }
+        it { expect(subject[0..-2]).to eq(@ordered) }
 
       }
 
@@ -356,7 +356,7 @@ describe Duck do
 
         subject { Duck.rank(:row).collect {|duck| duck.id } }
 
-        it { subject[0..-2].should == @ordered }
+        it { expect(subject[0..-2]).to eq(@ordered) }
 
       }
 
@@ -383,9 +383,9 @@ describe Duck do
 
           subject { Duck.rank(:row).collect { |duck| duck.id } }
 
-          it { subject[0..3].should == @ordered[0..3] }
+          it { expect(subject[0..3]).to eq(@ordered[0..3]) }
 
-          it { subject[5..subject.length].should == @ordered[4..@ordered.length] }
+          it { expect(subject[5..subject.length]).to eq(@ordered[4..@ordered.length]) }
 
         }
 
@@ -410,7 +410,7 @@ describe Duck do
 
           subject { Duck.rank(:row).collect { |duck| duck.id } }
 
-          it { subject[0..-2].should eq(@ordered) }
+          it { expect(subject[0..-2]).to eq(@ordered) }
 
         }
 
@@ -435,7 +435,7 @@ describe Duck do
 
           subject { Duck.rank(:row).collect { |duck| duck.id } }
 
-          it { subject[0..-2].should eq(@ordered) }
+          it { expect(subject[0..-2]).to eq(@ordered) }
 
         }
 
@@ -464,9 +464,9 @@ describe Duck do
 
           subject { Duck.rank(:row).collect { |duck| duck.id } }
 
-          it { subject[0..3].should == @ordered[0..3] }
+          it { expect(subject[0..3]).to eq(@ordered[0..3]) }
 
-          it { subject[5..subject.length].should == @ordered[4..@ordered.length] }
+          it { expect(subject[5..subject.length]).to eq(@ordered[4..@ordered.length]) }
 
         }
 
@@ -491,7 +491,7 @@ describe Duck do
 
           subject { Duck.rank(:row).collect { |duck| duck.id } }
 
-          it { subject[0..-2].should eq(@ordered) }
+          it { expect(subject[0..-2]).to eq(@ordered) }
 
         }
 
@@ -516,7 +516,7 @@ describe Duck do
 
           subject { Duck.rank(:row).collect { |duck| duck.id } }
 
-          it { subject[0..-2].should eq(@ordered) }
+          it { expect(subject[0..-2]).to eq(@ordered) }
 
         }
 
@@ -545,9 +545,9 @@ describe Duck do
 
           subject { Duck.rank(:row).collect { |duck| duck.id } }
 
-          it { subject[0..1].should == @ordered[0..1] }
+          it { expect(subject[0..1]).to eq(@ordered[0..1]) }
 
-          it { subject[3..subject.length].should == @ordered[2..@ordered.length] }
+          it { expect(subject[3..subject.length]).to eq(@ordered[2..@ordered.length]) }
 
         }
 
@@ -572,7 +572,7 @@ describe Duck do
 
           subject { Duck.rank(:row).collect { |duck| duck.id } }
 
-          it { subject[1..subject.length].should eq(@ordered) }
+          it { expect(subject[1..subject.length]).to eq(@ordered) }
 
         }
 
@@ -597,7 +597,7 @@ describe Duck do
 
           subject { Duck.rank(:row).collect { |duck| duck.id } }
 
-          it { subject[1..subject.length].should eq(@ordered) }
+          it { expect(subject[1..subject.length]).to eq(@ordered) }
 
         }
 
@@ -655,9 +655,9 @@ describe Duck do
 
           subject { Duck.rank(:row).collect { |duck| duck.id } }
 
-          it { subject[0..1].should == @ordered[0..1] }
+          it { expect(subject[0..1]).to eq(@ordered[0..1]) }
 
-          it { subject[3..subject.length].should == @ordered[2..@ordered.length] }
+          it { expect(subject[3..subject.length]).to eq(@ordered[2..@ordered.length]) }
 
         }
 
@@ -682,7 +682,7 @@ describe Duck do
 
           subject { Duck.rank(:row).collect { |duck| duck.id } }
 
-          it { subject[1..subject.length].should eq(@ordered) }
+          it { expect(subject[1..subject.length]).to eq(@ordered) }
 
         }
 
@@ -707,7 +707,7 @@ describe Duck do
 
           subject { Duck.rank(:row).collect { |duck| duck.id } }
 
-          it { subject[1..subject.length].should eq(@ordered) }
+          it { expect(subject[1..subject.length]).to eq(@ordered) }
 
         }
 
@@ -792,7 +792,7 @@ describe Duck do
 
     subject { @untouchable_ranks.call }
 
-    it { should == @previous_ranks }
+    it { is_expected.to eq(@previous_ranks) }
 
   end
 
