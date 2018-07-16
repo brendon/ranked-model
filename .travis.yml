@@ -14,7 +14,7 @@ rvm:
   - 2.4.4
   - 2.5.1
   - jruby-9.1.17.0
-  - rbx-3.100
+  - rbx-3.107
 env:
   - DB=sqlite
   - DB=mysql
@@ -52,6 +52,3 @@ matrix:
       gemfile: gemfiles/rails_4_1.gemfile
     - env: DB=postgresql
       gemfile: gemfiles/rails_3_2.gemfile
-    - rvm: rbx-3.100
-      gemfile: gemfiles/rails_5_2.gemfile
-
