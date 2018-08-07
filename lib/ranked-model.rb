@@ -55,6 +55,40 @@ module RankedModel
       end
 
       public "#{ranker.name}_position", "#{ranker.name}_position="
+
+      singleton_class.instance_eval do
+        define_method "with_#{ranker.name}_position" do
+          if ranker.with_same
+            instances = self.all.to_a
+            key_from_instance = case ranker.with_same
+              when Symbol
+                Proc.new do |t|
+                  t.send(ranker.with_same)
+                end
+              when Array
+                Proc.new do |t|
+                  ranker.with_same.map { |c| t.send(c) }
+                end
+            end
+            indexes = {}
+
+            instances.map do |instance|
+              key = key_from_instance.call instance
+              indexes[key] ||= 0
+              instance.send("#{ranker.name}_position=", indexes[key])
+              indexes[key] += 1
+              instance
+            end
+          else
+            self.all.map.with_index do |instance, index|
+              instance.send("#{ranker.name}_position=", index)
+              instance
+            end
+          end
+        end
+
+        public "with_#{ranker.name}_position"
+      end
     end
 
   end

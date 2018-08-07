@@ -82,11 +82,11 @@ class Duck < ActiveRecord::Base
 
   ranks :row_order,           # Name this ranker, used with rank()
     :column => :sort_order    # Override the default column, which defaults to the name
-  
+
   belongs_to :pond
   ranks :swimming_order,
     :with_same => :pond_id    # Ducks belong_to Ponds, make the ranker scoped to one pond
-  
+
   scope :walking, where(:walking => true )
   ranks :walking_order,
     :scope => :walking        # Narrow this ranker to a scope
@@ -102,6 +102,12 @@ Duck.rank(:row_order)
 Pond.first.ducks.rank(:swimming_order)
 
 Duck.walking.rank(:walking)
+```
+
+If you want to serialize them with the position:
+
+``` ruby
+Duck.rank(:swimming_order).with_swimming_order_position
 ```
 
 Single Table Inheritance (STI)
