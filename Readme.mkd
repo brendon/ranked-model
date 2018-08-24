@@ -21,6 +21,22 @@ gem 'ranked-model'
 
 Then use `bundle install` to update your `Gemfile.lock`.
 
+Fork Notice
+-----------
+
+This gem was forked to add compatibility with database partitioning solutions such as Citus.
+
+`:partition_key` and `:partition_value` options were added which will be injected into queries.
+
+``` ruby
+class Duck < ActiveRecord::Base
+
+  include RankedModel
+  ranks :row_order, partition_key: :partner_id
+
+end
+```
+
 Simple Use
 ----------
 
@@ -82,11 +98,11 @@ class Duck < ActiveRecord::Base
 
   ranks :row_order,           # Name this ranker, used with rank()
     :column => :sort_order    # Override the default column, which defaults to the name
-  
+
   belongs_to :pond
   ranks :swimming_order,
     :with_same => :pond_id    # Ducks belong_to Ponds, make the ranker scoped to one pond
-  
+
   scope :walking, where(:walking => true )
   ranks :walking_order,
     :scope => :walking        # Narrow this ranker to a scope
