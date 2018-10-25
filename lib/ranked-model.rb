@@ -40,7 +40,7 @@ module RankedModel
       end
     end
 
-  private
+    private
 
     def ranks *args
       self.rankers ||= []
