@@ -167,10 +167,6 @@ module RankedModel
 
       def assure_unique_position
         if ( new_record? || rank_changed? )
-          unless rank
-            rank_at( RankedModel::MAX_RANK_VALUE )
-          end
-
           if (rank > RankedModel::MAX_RANK_VALUE) || current_at_rank(rank)
             rearrange_ranks
           end
