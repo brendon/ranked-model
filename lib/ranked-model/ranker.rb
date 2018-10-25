@@ -178,7 +178,7 @@ module RankedModel
           _scope.
             where( instance_class.arel_table[ranker.column].lteq(rank) ).
             update_all( %Q{#{ranker.column} = #{ranker.column} - 1} )
-        elsif current_last.rank && current_last.rank < (RankedModel::MAX_RANK_VALUE - 1) && rank < current_last.rank
+        elsif current_last.rank && current_last.rank < (RankedModel::MAX_RANK_VALUE - 1) && rank <= current_last.rank
           _scope.
             where( instance_class.arel_table[ranker.column].gteq(rank) ).
             update_all( %Q{#{ranker.column} = #{ranker.column} + 1} )

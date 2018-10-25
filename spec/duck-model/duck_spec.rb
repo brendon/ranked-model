@@ -797,3 +797,11 @@ describe Duck do
   end
 
 end
+
+describe Duck do
+  let! (:ducks) { 4.times.map { |counter| Duck.create( name: "Duck #{counter}", pond: 'foobar', age: 0 ) } }
+
+  subject { Duck.rank(:age).map(&:id) }
+
+  it { should eq ducks.map(&:id).reverse }
+end
