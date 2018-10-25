@@ -265,7 +265,7 @@ module RankedModel
 
       def current_order
         @current_order ||= begin
-          finder.collect { |ordered_instance|
+          finder.unscope(where: instance_class.primary_key.to_sym).collect { |ordered_instance|
             RankedModel::Ranker::Mapper.new ranker, ordered_instance
           }
         end
