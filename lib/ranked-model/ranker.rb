@@ -174,15 +174,15 @@ module RankedModel
           # Never update ourself, shift others around us.
           _scope = _scope.where( instance_class.arel_table[instance_class.primary_key].not_eq(instance.id) )
         end
-        if current_first.rank && current_first.rank > RankedModel::MIN_RANK_VALUE && rank == RankedModel::MAX_RANK_VALUE
+        if !current_first.nil? && current_first.rank && current_first.rank > RankedModel::MIN_RANK_VALUE && rank == RankedModel::MAX_RANK_VALUE
           _scope.
             where( instance_class.arel_table[ranker.column].lteq(rank) ).
             update_all( %Q{#{ranker.column} = #{ranker.column} - 1} )
-        elsif current_last.rank && current_last.rank < (RankedModel::MAX_RANK_VALUE - 1) && rank < current_last.rank
+        elsif !current_last.nil? && current_last.rank && current_last.rank < (RankedModel::MAX_RANK_VALUE - 1) && rank < current_last.rank
           _scope.
             where( instance_class.arel_table[ranker.column].gteq(rank) ).
             update_all( %Q{#{ranker.column} = #{ranker.column} + 1} )
-        elsif current_first.rank && current_first.rank > RankedModel::MIN_RANK_VALUE && rank > current_first.rank
+        elsif !current_first.nil? && current_first.rank && current_first.rank > RankedModel::MIN_RANK_VALUE && rank > current_first.rank
           _scope.
             where( instance_class.arel_table[ranker.column].lt(rank) ).
             update_all( %Q{#{ranker.column} = #{ranker.column} - 1} )
