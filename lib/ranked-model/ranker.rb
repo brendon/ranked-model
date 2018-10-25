@@ -66,7 +66,7 @@ module RankedModel
         #
         instance_class.
           where(instance_class.primary_key => instance.id).
-          update_all([%Q{#{ranker.column} = ?}, value])
+          update_all(ranker.column => value)
       end
 
       def position
@@ -188,19 +188,19 @@ module RankedModel
           # ...then move everyone else down 1 to make room for us at the end
           _scope.
             where( instance_class.arel_table[ranker.column].lteq(rank) ).
-            update_all( %Q{#{ranker.column} = #{ranker.column} - 1} )
+            update_all( "#{ranker.column} = #{ranker.column} - 1" )
         # If there is room at the top of the list and we're added below the last value in the list...
         elsif current_last.rank && current_last.rank < (RankedModel::MAX_RANK_VALUE - 1) && rank < current_last.rank
           # ...then move everyone else at or above our desired rank up 1 to make room for us
           _scope.
             where( instance_class.arel_table[ranker.column].gteq(rank) ).
-            update_all( %Q{#{ranker.column} = #{ranker.column} + 1} )
+            update_all( "#{ranker.column} = #{ranker.column} + 1" )
         # If there is room at the bottom of the list and we're added above the lowest value in the list...
         elsif current_first.rank && current_first.rank > RankedModel::MIN_RANK_VALUE && rank > current_first.rank
           # ...then move everyone else below us down 1 and change our rank down 1 to avoid the collission
           _scope.
             where( instance_class.arel_table[ranker.column].lt(rank) ).
-            update_all( %Q{#{ranker.column} = #{ranker.column} - 1} )
+            update_all( "#{ranker.column} = #{ranker.column} - 1" )
           rank_at( rank - 1 )
         else
           rebalance_ranks
