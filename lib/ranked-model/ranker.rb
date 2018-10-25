@@ -89,6 +89,10 @@ module RankedModel
 
     private
 
+      def reset_cache
+        @finder, @current_order, @current_first, @current_last = nil
+      end
+
       def instance_class
         ranker.class_name.nil? ? instance.class : ranker.class_name.constantize
       end
@@ -200,25 +204,33 @@ module RankedModel
       end
 
       def rebalance_ranks
-        total = current_order.size + 2
-        has_set_self = false
-        total.times do |index|
-          next if index == 0 || index == total
-          rank_value = ((((RankedModel::MAX_RANK_VALUE - RankedModel::MIN_RANK_VALUE).to_f / total) * index ).ceil + RankedModel::MIN_RANK_VALUE)
-          index = index - 1
-          if has_set_self
-            index = index - 1
-          else
-            if !current_order[index] ||
-               ( !current_order[index].rank.nil? &&
-                 current_order[index].rank >= rank )
-              rank_at rank_value
-              has_set_self = true
-              next
-            end
+        gaps = current_order.size + 1
+        range = (RankedModel::MAX_RANK_VALUE - RankedModel::MIN_RANK_VALUE).to_f
+        gap_size = (range / gaps).ceil
+
+        # In the case that the current item's proposed rank collides with an existing
+        # item, then give priority to the current item (position it before the others)
+        priority_rank = nil
+        collision_count = 0
+
+        current_order.each.with_index(1) do |item, position|
+          next if item.instance.id == instance.id
+
+          rank_value = (gap_size * position) + RankedModel::MIN_RANK_VALUE
+
+          if item.rank == rank
+            priority_rank ||= rank_value
+            collision_count += 1
+
+            rank_value = (gap_size * (position + collision_count)) + RankedModel::MIN_RANK_VALUE
           end
-          current_order[index].update_rank! rank_value
+
+          item.update_rank! rank_value
         end
+
+        rank_at priority_rank if priority_rank
+
+        reset_cache
       end
 
       def finder(order = :asc)
