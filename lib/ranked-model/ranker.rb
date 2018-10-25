@@ -237,36 +237,29 @@ module RankedModel
         @finder ||= {}
         @finder[order] ||= begin
           _finder = instance_class
-          columns = [instance_class.arel_table[instance_class.primary_key], instance_class.arel_table[ranker.column]]
+          columns = [instance_class.primary_key.to_sym, ranker.column]
+
           if ranker.scope
             _finder = _finder.send ranker.scope
           end
+
           case ranker.with_same
-            when Symbol
-              columns << instance_class.arel_table[ranker.with_same]
-              _finder = _finder.where \
-                instance_class.arel_table[ranker.with_same].eq(instance.attributes["#{ranker.with_same}"])
-            when Array
-              ranker.with_same.each {|c| columns.push instance_class.arel_table[c] }
-              _finder = _finder.where(
-                ranker.with_same[1..-1].inject(
-                  instance_class.arel_table[ranker.with_same.first].eq(
-                    instance.attributes["#{ranker.with_same.first}"]
-                  )
-                ) {|scoper, attr|
-                  scoper.and(
-                    instance_class.arel_table[attr].eq(
-                      instance.attributes["#{attr}"]
-                    )
-                  )
-                }
-              )
-          end
-          if !new_record?
+          when Symbol
+            columns << ranker.with_same
             _finder = _finder.where \
-              instance_class.arel_table[instance_class.primary_key].not_eq(instance.id)
+              ranker.with_same => instance.attributes[ranker.with_same.to_s]
+          when Array
+            ranker.with_same.each do |column|
+              columns << column
+              _finder = _finder.where column => instance.attributes[column.to_s]
+            end
           end
-          _finder.order(instance_class.arel_table[ranker.column].send(order)).select(columns)
+
+          unless new_record?
+            _finder = _finder.where.not instance_class.primary_key.to_sym => instance.id
+          end
+
+          _finder.order(ranker.column.to_sym => order).select(columns)
         end
       end
 
