@@ -114,31 +114,31 @@ module RankedModel
         case position
           when :first, 'first'
             if current_first && current_first.rank
-              rank_at( ( ( RankedModel::MIN_RANK_VALUE - current_first.rank ).to_f / 2 ).ceil + current_first.rank)
+              rank_at_average current_first.rank, RankedModel::MIN_RANK_VALUE
             else
               position_at :middle
             end
           when :last, 'last'
             if current_last && current_last.rank
-              rank_at( ( ( RankedModel::MAX_RANK_VALUE - current_last.rank ).to_f / 2 ).ceil + current_last.rank )
+              rank_at_average current_last.rank, RankedModel::MAX_RANK_VALUE
             else
               position_at :middle
             end
           when :middle, 'middle'
-            rank_at( ( ( RankedModel::MAX_RANK_VALUE - RankedModel::MIN_RANK_VALUE ).to_f / 2 ).ceil + RankedModel::MIN_RANK_VALUE )
+            rank_at_average RankedModel::MIN_RANK_VALUE, RankedModel::MAX_RANK_VALUE
           when :down, 'down'
             neighbors = find_next_two(rank)
             if neighbors[:lower]
               min = neighbors[:lower].rank
               max = neighbors[:upper] ? neighbors[:upper].rank : RankedModel::MAX_RANK_VALUE
-              rank_at( ( ( max - min ).to_f / 2 ).ceil + min )
+              rank_at_average min, max
             end
           when :up, 'up'
             neighbors = find_previous_two(rank)
             if neighbors[:upper]
               max = neighbors[:upper].rank
               min = neighbors[:lower] ? neighbors[:lower].rank : RankedModel::MIN_RANK_VALUE
-              rank_at( ( ( max - min ).to_f / 2 ).ceil + min )
+              rank_at_average min, max
             end
           when String
             position_at position.to_i
@@ -148,11 +148,20 @@ module RankedModel
             neighbors = neighbors_at_position(position)
             min = ((neighbors[:lower] && neighbors[:lower].has_rank?) ? neighbors[:lower].rank : RankedModel::MIN_RANK_VALUE)
             max = ((neighbors[:upper] && neighbors[:upper].has_rank?) ? neighbors[:upper].rank : RankedModel::MAX_RANK_VALUE)
-            rank_at( ( ( max - min ).to_f / 2 ).ceil + min )
+            rank_at_average min, max
           when NilClass
             if !rank
               position_at :last
             end
+        end
+      end
+
+      def rank_at_average(min, max)
+        if (max - min).between?(-1, 1) # No room at the inn...
+          rebalance_ranks
+          position_at position
+        else
+          rank_at( ( ( max - min ).to_f / 2 ).ceil + min )
         end
       end
 
