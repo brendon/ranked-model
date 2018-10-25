@@ -9,6 +9,20 @@ describe Duck do
     end
   }
 
+  describe "a large number of records" do
+    before { @ducks = Duck.all }
+
+    describe "the last two ducks' rows' difference" do
+      subject { @ducks[-1].row - @ducks[-2].row }
+      it { is_expected.not_to be_between(-1, 1) }
+    end
+
+    describe "the second to last two ducks' rows' difference" do
+      subject { @ducks[-2].row - @ducks[-3].row }
+      it { is_expected.not_to be_between(-1, 1) }
+    end
+  end
+
   describe "setting and fetching by position" do
 
     describe '137' do

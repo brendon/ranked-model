@@ -246,10 +246,21 @@ describe Duck do
            Duck.where(id: @ducks[name].id).update_all(row: RankedModel::MAX_RANK_VALUE - i)
            @ducks[name].reload
          end
-         @ducks[:wingy].update_attribute :row_position, (@ducks.size - 2) # Second to last position
       }
 
       context {
+
+        before { @ducks[:wingy].update_attribute :row_position, (@ducks.size - 2) }
+
+        subject { Duck.ranker(:row).with(Duck.new).current_at_position(@ducks.size - 2).instance }
+
+        its(:id) { should == @ducks[:wingy].id }
+
+      }
+
+      context {
+
+        before { @ducks[:wingy].update_attribute :row_position, :up }
 
         subject { Duck.ranker(:row).with(Duck.new).current_at_position(@ducks.size - 2).instance }
 
