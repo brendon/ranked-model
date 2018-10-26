@@ -260,7 +260,7 @@ describe Duck do
 
       context {
 
-        before { @ducks[:wingy].update_attribute :row_position, :up }
+        before { @ducks[:wingy].update_attribute :row_position, :down }
 
         subject { Duck.ranker(:row).with(Duck.new).current_at_position(@ducks.size - 2).instance }
 
