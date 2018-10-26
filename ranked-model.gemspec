@@ -20,6 +20,7 @@ Gem::Specification.new do |s|
   s.add_development_dependency "database_cleaner", "~> 1.7.0"
   s.add_development_dependency "rake", "~> 10.1.0"
   s.add_development_dependency "appraisal"
+  s.add_development_dependency "pry"
 
   s.files         = `git ls-files`.split("\n")
   s.test_files    = `git ls-files -- {test,spec,features}/*`.split("\n")

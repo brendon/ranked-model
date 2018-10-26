@@ -3,11 +3,15 @@ require 'bundler/setup'
 require 'rspec/its'
 
 require 'ranked-model'
+require 'pry'
 
 Dir[File.join(File.dirname(__FILE__), 'support/**/*.rb')].each {|f| require f}
 
 # After the DB connection is setup
 require 'database_cleaner'
+
+# Uncomment this to see Active Record logging for tests
+# ActiveRecord::Base.logger = Logger.new(STDOUT)
 
 RSpec.configure do |config|
   config.mock_with :mocha
