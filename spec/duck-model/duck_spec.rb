@@ -239,6 +239,37 @@ describe Duck do
 
     end
 
+    describe "second to last" do
+
+      before {
+        [:quacky, :feathers, :wingy, :webby, :waddly, :beaky].each_with_index do |name, i|
+           Duck.where(id: @ducks[name].id).update_all(row: RankedModel::MAX_RANK_VALUE - i)
+           @ducks[name].reload
+         end
+      }
+
+      context {
+
+        before { @ducks[:wingy].update_attribute :row_position, (@ducks.size - 2) }
+
+        subject { Duck.ranker(:row).with(Duck.new).current_at_position(@ducks.size - 2).instance }
+
+        its(:id) { should == @ducks[:wingy].id }
+
+      }
+
+      context {
+
+        before { @ducks[:wingy].update_attribute :row_position, :down }
+
+        subject { Duck.ranker(:row).with(Duck.new).current_at_position(@ducks.size - 2).instance }
+
+        its(:id) { should == @ducks[:wingy].id }
+
+      }
+
+    end
+
     describe "at the end" do
 
       before {

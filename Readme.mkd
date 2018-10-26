@@ -5,7 +5,7 @@
 Installation
 ------------
 
-ranked-model passes specs with Rails 3.2, 4.1, 4.2, 5.0, 5.1 and 5.2 for MySQL, Postgres, and SQLite on Ruby 1.9.3, 2.1 through 2.5, jruby-9.1.17.0, and rbx-3.107 where Rails supports the platform. This is with the exception of Postgres before Rails 4.0 on all platforms, which is unsupported by `ranked-model`. Note that the `pg` gem has pulled support for rbx (Rubinius) from version 1 onward.
+ranked-model passes specs with Rails 4.1, 4.2, 5.0, 5.1 and 5.2 for MySQL, Postgres, and SQLite on Ruby 1.9.3, 2.1 through 2.5, jruby-9.1.17.0, and rbx-3.107 where Rails supports the platform. This is with the exception of Postgres before Rails 4.0 on all platforms, which is unsupported by `ranked-model`. Note that the `pg` gem has pulled support for rbx (Rubinius) from version 1 onward.
 
 TL;DR, if you are using Rails 4 and up you are 100% good to go. Before Rails 4, be wary of Postgres.
 
