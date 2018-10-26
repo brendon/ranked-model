@@ -204,31 +204,27 @@ module RankedModel
       end
 
       def rebalance_ranks
+        if rank
+          origin = current_order.index { |item| item.instance.id == instance.id }
+          destination = current_order.index { |item| rank <= item.rank }
+          destination -= 1 if origin < destination
+
+          current_order.insert destination, current_order.delete_at(origin)
+        end
+
         gaps = current_order.size + 1
         range = (RankedModel::MAX_RANK_VALUE - RankedModel::MIN_RANK_VALUE).to_f
         gap_size = (range / gaps).ceil
 
-        # In the case that the current item's proposed rank collides with an existing
-        # item, then give priority to the current item (position it before the others)
-        priority_rank = nil
-        collision_count = 0
-
         current_order.each.with_index(1) do |item, position|
-          next if item.instance.id == instance.id
+          new_rank = (gap_size * position) + RankedModel::MIN_RANK_VALUE
 
-          rank_value = (gap_size * position) + RankedModel::MIN_RANK_VALUE
-
-          if item.rank == rank
-            priority_rank ||= rank_value
-            collision_count += 1
-
-            rank_value = (gap_size * (position + collision_count)) + RankedModel::MIN_RANK_VALUE
+          if item.instance.id == instance.id
+            rank_at new_rank
+          else
+            item.update_rank! new_rank
           end
-
-          item.update_rank! rank_value
         end
-
-        rank_at priority_rank if priority_rank
 
         reset_cache
       end
