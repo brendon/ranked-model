@@ -56,6 +56,11 @@ ActiveRecord::Schema.define :version => 0 do
     t.string :city
     t.integer :score
   end
+
+  create_table :numbers, :force => true do |t|
+    t.float :value
+    t.integer :order
+  end
 end
 
 class Duck < ActiveRecord::Base
@@ -144,4 +149,9 @@ end
 
 class Player < ActiveRecord::Base
   # don't add rank yet, do it in the specs
+end
+
+class Number < ActiveRecord::Base
+  include RankedModel
+  ranks :order
 end
