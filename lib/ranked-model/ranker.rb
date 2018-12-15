@@ -256,7 +256,7 @@ module RankedModel
             _finder = _finder.where.not instance_class.primary_key.to_sym => instance.id
           end
 
-          _finder.order(ranker.column.to_sym => order).select(columns)
+          _finder.reorder(ranker.column.to_sym => order).select(columns)
         end
       end
 
