@@ -18,7 +18,7 @@ module RankedModel
       before_save :handle_ranking
 
       scope :rank, lambda { |name|
-        order ranker(name.to_sym).column
+        reorder ranker(name.to_sym).column
       }
     end
 
