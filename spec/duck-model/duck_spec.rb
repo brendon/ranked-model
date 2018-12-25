@@ -10,12 +10,16 @@ describe Duck do
 
   it { expect(subject).to respond_to(:row_position) }
   it { expect(subject).to respond_to(:row_position=) }
+  it { expect(subject).to respond_to(:row_rank) }
   it { expect(subject).to respond_to(:size_position) }
   it { expect(subject).to respond_to(:size_position=) }
+  it { expect(subject).to respond_to(:size_rank) }
   it { expect(subject).to respond_to(:age_position) }
   it { expect(subject).to respond_to(:age_position=) }
+  it { expect(subject).to respond_to(:age_rank) }
   it { expect(subject).to respond_to(:landing_order_position) }
   it { expect(subject).to respond_to(:landing_order_position=) }
+  it { expect(subject).to respond_to(:landing_order_rank) }
 
 end
 
@@ -746,6 +750,33 @@ describe Duck do
 
     end
 
+  end
+
+  describe "fetching rank for an instance" do
+    before {
+      [:quacky, :feathers, :wingy, :webby, :waddly, :beaky].each_with_index do |name, i|
+         Duck.where(id: @ducks[name].id).update_all(row: RankedModel::MAX_RANK_VALUE - i)
+         @ducks[name].reload
+      end
+    }
+
+    context {
+      subject { Duck.find_by(id: @ducks[:beaky]).row_rank }
+
+      it { should == 0 }
+    }
+
+    context {
+      subject { Duck.find_by(id: @ducks[:wingy]).row_rank }
+
+      it { should == 3 }
+    }
+
+    context {
+      subject { Duck.find_by(id: @ducks[:quacky]).row_rank }
+
+      it { should == 5 }
+    }
   end
 
 end

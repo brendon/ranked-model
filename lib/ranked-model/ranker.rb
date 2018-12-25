@@ -73,6 +73,10 @@ module RankedModel
         instance.send "#{ranker.name}_position"
       end
 
+      def relative_rank
+        finder.where("#{ranker.column} < #{rank}").count(:all)
+      end
+
       def rank
         instance.send "#{ranker.column}"
       end
