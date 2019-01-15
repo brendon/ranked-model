@@ -205,7 +205,7 @@ module RankedModel
       end
 
       def rebalance_ranks
-        if rank
+        if rank && instance.persisted?
           origin = current_order.index { |item| item.instance.id == instance.id }
           destination = current_order.index { |item| rank <= item.rank }
           destination -= 1 if origin < destination
