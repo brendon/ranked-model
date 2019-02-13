@@ -1,6 +1,6 @@
 appraise "rails-4-1" do
   group :sqlite do
-    gem "sqlite3", platform: :ruby
+    gem "sqlite3", "~> 1.3.13", platform: :ruby
     gem "activerecord-jdbcsqlite3-adapter", "~> 1.3.24", platform: :jruby
   end
   group :mysql do
@@ -17,7 +17,7 @@ end
 
 appraise "rails-4-2" do
   group :sqlite do
-    gem "sqlite3", platform: :ruby
+    gem "sqlite3", "~> 1.3.13", platform: :ruby
     gem "activerecord-jdbcsqlite3-adapter", "~> 1.3.24", platform: :jruby
   end
   group :mysql do
@@ -34,7 +34,7 @@ end
 
 appraise "rails-5-0" do
   group :sqlite do
-    gem "sqlite3", platform: :ruby
+    gem "sqlite3", "~> 1.3.13", platform: :ruby
     gem "activerecord-jdbcsqlite3-adapter", "~> 50.1", platform: :jruby
   end
   group :mysql do
@@ -51,7 +51,7 @@ end
 
 appraise "rails-5-1" do
   group :sqlite do
-    gem "sqlite3", platform: :ruby
+    gem "sqlite3", "~> 1.3.13", platform: :ruby
     gem "activerecord-jdbcsqlite3-adapter", "~> 51.1", platform: :jruby
   end
   group :mysql do
@@ -68,7 +68,7 @@ end
 
 appraise "rails-5-2" do
   group :sqlite do
-    gem "sqlite3", platform: :ruby
+    gem "sqlite3", "~> 1.3.13", platform: :ruby
   end
   group :mysql do
     gem "mysql2", "~> 0.4.10", platform: :ruby
