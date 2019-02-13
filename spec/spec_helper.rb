@@ -29,6 +29,8 @@ RSpec.configure do |config|
     DatabaseCleaner.clean
   end
 
+  config.order = :random
+  Kernel.srand config.seed
 end
 
 RSpec::Matchers.define :define_constant do |expected|
