@@ -3,6 +3,8 @@ require File.dirname(__FILE__)+'/ranked-model/railtie' if defined?(Rails::Railti
 
 module RankedModel
 
+  class NonNilColumnDefault < StandardError; end
+
   # Signed INT in MySQL
   #
   MAX_RANK_VALUE = 2147483647
@@ -45,6 +47,11 @@ module RankedModel
     def ranks *args
       self.rankers ||= []
       ranker = RankedModel::Ranker.new(*args)
+
+      if column_defaults[ranker.name.to_s]
+        raise NonNilColumnDefault, %Q{Your ranked model column "#{ranker.name}" must not have a default value in the database.}
+      end
+
       self.rankers << ranker
       attr_reader "#{ranker.name}_position"
       define_method "#{ranker.name}_position=" do |position|

@@ -33,6 +33,12 @@ ActiveRecord::Schema.define :version => 0 do
     t.string :pond
   end
 
+  create_table :column_default_ducks, :force => true do |t|
+    t.string :name
+    t.integer :size, default: 0
+    t.string :pond
+  end
+
   create_table :elements, :force => true do |t|
     t.string :symbol
     t.string :type
