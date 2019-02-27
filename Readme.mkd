@@ -72,6 +72,15 @@ $.ajax({
 });
 ```
 
+If you need to find the rank of an item with respect to other ranked items, you can use the `{column_name}_rank` method on the model instance. `{column_name}` is your resource ranking column.
+
+Following on from our examples above, the `row_order_rank` method will return the position of the duck object in the list with respect to the order defined by the row_order column.
+
+``` ruby
+Duck.rank(:row_order).first.row_order_rank # => 0
+Duck.rank(:row_order).third.row_order_rank # => 2
+```
+
 Complex Use
 -----------
 
