@@ -427,7 +427,7 @@ describe Duck do
       end
 
       context "when last" do
-        
+
         before {
           @ordered = Duck.rank(:row).where(Duck.arel_table[:id].not_eq @ducks[:quacky].id).collect { |duck| duck.id }
           @ducks[:quacky].update_attribute :row_position, :down
@@ -452,7 +452,7 @@ describe Duck do
       end
 
       context "when second last" do
-        
+
         before {
           @ordered = Duck.rank(:row).where(Duck.arel_table[:id].not_eq @ducks[:feathers].id).collect { |duck| duck.id }
           @ducks[:feathers].update_attribute :row_position, :down
@@ -508,7 +508,7 @@ describe Duck do
       end
 
       context "when last" do
-        
+
         before {
           @ordered = Duck.rank(:row).where(Duck.arel_table[:id].not_eq @ducks[:quacky].id).collect { |duck| duck.id }
           @ducks[:quacky].update_attribute :row_position, 'down'
@@ -533,7 +533,7 @@ describe Duck do
       end
 
       context "when second last" do
-        
+
         before {
           @ordered = Duck.rank(:row).where(Duck.arel_table[:id].not_eq @ducks[:feathers].id).collect { |duck| duck.id }
           @ducks[:feathers].update_attribute :row_position, 'down'
@@ -589,7 +589,7 @@ describe Duck do
       end
 
       context "when first" do
-        
+
         before {
           @ordered = Duck.rank(:row).where(Duck.arel_table[:id].not_eq @ducks[:beaky].id).collect { |duck| duck.id }
           @ducks[:beaky].update_attribute :row_position, :up
@@ -614,7 +614,7 @@ describe Duck do
       end
 
       context "when second" do
-        
+
         before {
           @ordered = Duck.rank(:row).where(Duck.arel_table[:id].not_eq @ducks[:waddly].id).collect { |duck| duck.id }
           @ducks[:waddly].update_attribute :row_position, :up
@@ -699,7 +699,7 @@ describe Duck do
       end
 
       context "when first" do
-        
+
         before {
           @ordered = Duck.rank(:row).where(Duck.arel_table[:id].not_eq @ducks[:beaky].id).collect { |duck| duck.id }
           @ducks[:beaky].update_attribute :row_position, 'up'
@@ -724,7 +724,7 @@ describe Duck do
       end
 
       context "when second" do
-        
+
         before {
           @ordered = Duck.rank(:row).where(Duck.arel_table[:id].not_eq @ducks[:waddly].id).collect { |duck| duck.id }
           @ducks[:waddly].update_attribute :row_position, 'up'
@@ -779,6 +779,149 @@ describe Duck do
     }
   end
 
+  describe "moving the first duck to the last position using rank_after interface" do
+    before {
+      [:quacky, :feathers, :wingy, :webby, :waddly, :beaky].each_with_index do |name, i|
+         Duck.where(id: @ducks[name].id).update_all(row: i)
+         @ducks[name].reload
+      end
+
+      @ducks[:quacky].row_rank_after!(@ducks[:beaky])
+      @ordered_instances = [:feathers, :wingy, :webby, :waddly, :beaky, :quacky].map { |name| @ducks[name].id }
+    }
+
+    context {
+      subject { Duck.rank(:row).collect { |duck| duck.id } }
+
+      it { should == @ordered_instances }
+    }
+  end
+
+  describe "moving the first duck to the middle position using rank_after interface" do
+    before {
+      [:quacky, :feathers, :wingy, :webby, :waddly, :beaky].each_with_index do |name, i|
+         Duck.where(id: @ducks[name].id).update_all(row: i)
+         @ducks[name].reload
+      end
+
+      @ducks[:quacky].row_rank_after!(@ducks[:wingy])
+      @ordered_instances = [:feathers, :wingy, :quacky, :webby, :waddly, :beaky].map { |name| @ducks[name].id }
+    }
+
+    context {
+      subject { Duck.rank(:row).collect { |duck| duck.id } }
+
+      it { should == @ordered_instances }
+    }
+  end
+
+  describe "moving the last duck to the first position using rank_after interface" do
+    before {
+      [:quacky, :feathers, :wingy, :webby, :waddly, :beaky].each_with_index do |name, i|
+         Duck.where(id: @ducks[name].id).update_all(row: i)
+         @ducks[name].reload
+      end
+
+      @ducks[:beaky].row_rank_after!(nil)
+      @ordered_instances = [:beaky, :quacky, :feathers, :wingy, :webby, :waddly].map { |name| @ducks[name].id }
+    }
+
+    context {
+      subject { Duck.rank(:row).collect { |duck| duck.id } }
+
+      it { should == @ordered_instances }
+    }
+  end
+
+  describe "moving the last duck to the middle position using rank_after interface" do
+    before {
+      [:quacky, :feathers, :wingy, :webby, :waddly, :beaky].each_with_index do |name, i|
+         Duck.where(id: @ducks[name].id).update_all(row: i)
+         @ducks[name].reload
+      end
+
+      @ducks[:beaky].row_rank_after!(@ducks[:wingy])
+      @ordered_instances = [:quacky, :feathers, :wingy, :beaky, :webby, :waddly].map { |name| @ducks[name].id }
+    }
+
+    context {
+      subject { Duck.rank(:row).collect { |duck| duck.id } }
+
+      it { should == @ordered_instances }
+    }
+  end
+
+  describe "moving the middle duck to the first position using rank_after interface" do
+    before {
+      [:quacky, :feathers, :wingy, :webby, :waddly, :beaky].each_with_index do |name, i|
+         Duck.where(id: @ducks[name].id).update_all(row: i)
+         @ducks[name].reload
+      end
+
+      @ducks[:wingy].row_rank_after!(nil)
+      @ordered_instances = [:wingy, :quacky, :feathers, :webby, :waddly, :beaky].map { |name| @ducks[name].id }
+    }
+
+    context {
+      subject { Duck.rank(:row).collect { |duck| duck.id } }
+
+      it { should == @ordered_instances }
+    }
+  end
+
+  describe "moving the middle duck to the last position using rank_after interface" do
+    before {
+      [:quacky, :feathers, :wingy, :webby, :waddly, :beaky].each_with_index do |name, i|
+         Duck.where(id: @ducks[name].id).update_all(row: i)
+         @ducks[name].reload
+      end
+
+      @ducks[:wingy].row_rank_after!(@ducks[:beaky])
+      @ordered_instances = [:quacky, :feathers, :webby, :waddly, :beaky, :wingy].map { |name| @ducks[name].id }
+    }
+
+    context {
+      subject { Duck.rank(:row).collect { |duck| duck.id } }
+
+      it { should == @ordered_instances }
+    }
+  end
+
+  describe "moving the middle duck to a relatively earlier position using rank_after interface" do
+    before {
+      [:quacky, :feathers, :wingy, :webby, :waddly, :beaky].each_with_index do |name, i|
+         Duck.where(id: @ducks[name].id).update_all(row: i)
+         @ducks[name].reload
+      end
+
+      @ducks[:wingy].row_rank_after!(@ducks[:quacky])
+      @ordered_instances = [:quacky, :wingy, :feathers, :webby, :waddly, :beaky].map { |name| @ducks[name].id }
+    }
+
+    context {
+      subject { Duck.rank(:row).collect { |duck| duck.id } }
+
+      it { should == @ordered_instances }
+    }
+  end
+
+  describe "moving the middle duck to a relatively later position using rank_after interface" do
+    before {
+      [:quacky, :feathers, :wingy, :webby, :waddly, :beaky].each_with_index do |name, i|
+         Duck.where(id: @ducks[name].id).update_all(row: i)
+         @ducks[name].reload
+      end
+
+      @ducks[:wingy].row_rank_after!(@ducks[:waddly])
+      @ordered_instances = [:quacky, :feathers, :webby, :waddly, :wingy, :beaky].map { |name| @ducks[name].id }
+    }
+
+    context {
+      subject { Duck.rank(:row).collect { |duck| duck.id } }
+
+      it { should == @ordered_instances }
+    }
+  end
 end
 
 describe Duck do

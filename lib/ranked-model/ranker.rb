@@ -69,6 +69,14 @@ module RankedModel
           update_all(ranker.column => value)
       end
 
+      def rank_after(ranked_record)
+        preceeding_object_rank = ranked_record.relative_rank
+
+        new_rank = preceeding_object_rank > relative_rank ? preceeding_object_rank : preceeding_object_rank + 1
+
+        instance.send "#{ranker.name}_position=", new_rank
+      end
+
       def position
         instance.send "#{ranker.name}_position"
       end

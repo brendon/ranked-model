@@ -81,6 +81,27 @@ Duck.rank(:row_order).first.row_order_rank # => 0
 Duck.rank(:row_order).third.row_order_rank # => 2
 ```
 
+More Methods For Reordering
+----------
+
+This gem provides the `{column_name}_rank_after!` method to position a record directly after another record in the list. `{column_name}` is the resource ranking column and the method accepts the previous record as a parameter.
+
+If you send nil as the parameter to the method above, the record will be moved to the top of the list.
+
+#### Example -
+
+Let's assume the duck-list contains the following five duck objects in order -
+
+``` ruby
+
+quacky, beaky, wingy, feathers, webby = Duck.rank(:row_order)
+
+quacky.row_order_rank_after!(feathers) # => `beaky, wingy, feathers, quacky, webby`
+feathers.row_order_rank_after!(webby) # => `beaky, wingy, quacky, webby, feathers`
+webby.row_order_rank_after!(nil) # => `webby, beaky, feathers, quacky, webby`
+```
+
+
 Complex Use
 -----------
 
