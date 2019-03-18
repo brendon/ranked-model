@@ -61,6 +61,10 @@ module RankedModel
         end
       end
 
+      define_method "#{ranker.name}_rank" do
+        ranker.with(self).relative_rank
+      end
+
       public "#{ranker.name}_position", "#{ranker.name}_position="
     end
 
