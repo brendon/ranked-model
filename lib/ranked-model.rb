@@ -48,7 +48,7 @@ module RankedModel
       self.rankers ||= []
       ranker = RankedModel::Ranker.new(*args)
 
-      if column_defaults[ranker.name.to_s]
+      if column_default(ranker)
         raise NonNilColumnDefault, %Q{Your ranked model column "#{ranker.name}" must not have a default value in the database.}
       end
 
@@ -62,6 +62,14 @@ module RankedModel
       end
 
       public "#{ranker.name}_position", "#{ranker.name}_position="
+    end
+
+    def column_default ranker
+      begin
+        column_defaults[ranker.name.to_s]
+      rescue ActiveRecord::NoDatabaseError
+        nil
+      end
     end
 
   end
