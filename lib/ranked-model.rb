@@ -69,11 +69,7 @@ module RankedModel
     end
 
     def column_default ranker
-      begin
-        column_defaults[ranker.name.to_s]
-      rescue ActiveRecord::NoDatabaseError
-        nil
-      end
+      column_defaults[ranker.name.to_s] if ActiveRecord::Base.connected?
     end
 
   end
