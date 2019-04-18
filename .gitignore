@@ -5,3 +5,6 @@ pkg/*
 
 Gemfile.lock
 *.gemfile.lock
+
+.ruby-version
+.tool-versions

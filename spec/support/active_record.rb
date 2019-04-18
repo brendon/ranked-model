@@ -72,7 +72,7 @@ end
 class Duck < ActiveRecord::Base
 
   include RankedModel
-  ranks :row
+  ranks :row, :allow_nil => true
   ranks :size, :scope => :in_shin_pond
   ranks :age, :with_same => :pond
 

@@ -133,7 +133,7 @@ describe Duck do
 
     end
 
-    describe "row" do
+    describe "size" do
 
       subject { Duck.in_shin_pond.rank(:size).to_a }
 
@@ -178,6 +178,28 @@ describe Duck do
       subject.age_position = ''
       expect(subject.age_position).to be_nil
     end
+
+  end
+
+  describe "#allow_nil" do
+
+    context {
+      subject { Duck.rank(:row).first }
+
+      it "will allow a rank to be removed" do
+        subject.update_attribute :row_position, nil
+        expect(subject.row).to be_nil
+      end
+    }
+
+    context {
+      subject { Duck.rank(:age).first }
+
+      it "will not allow a rank to be removed if option is not set" do
+        subject.update_attribute :age_position, nil
+        expect(subject.age).to_not be_nil
+      end
+    }
 
   end
 
