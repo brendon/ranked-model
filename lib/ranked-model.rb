@@ -11,6 +11,7 @@ module RankedModel
   MIN_RANK_VALUE = -2147483648
 
   def self.included base
+    super
 
     base.class_eval do
       class_attribute :rankers
