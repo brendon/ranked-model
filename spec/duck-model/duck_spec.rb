@@ -24,6 +24,32 @@ describe Duck do
 end
 
 describe Duck do
+  describe "when re-arranging ranks " do
+    context "cannot be re-arranged" do
+
+      it "fails to save" do
+        patched_duck = Duck.new(
+          :name => 'Quacky',
+          :pond => 'Shin',
+          :age_position => 1,
+        )
+        age_ranker = Duck.rankers.detect {|ranker| ranker.name == :age }
+        Duck.expects(:rankers).once.returns([age_ranker])
+        patched_duck_ranker = age_ranker.with(patched_duck)
+        age_ranker.expects(:with).once.returns(patched_duck_ranker)
+        patched_duck_ranker.expects(:current_first).returns(nil)
+        patched_duck_ranker.expects(:current_at_rank).returns(:something_truthy)
+
+        expect(patched_duck.save).to eq(false)
+        expect(patched_duck.errors.messages).to eq({
+          :age=>["Could not re-rank: current_first not found."]
+        })
+      end
+    end
+
+  end
+end
+describe Duck do
 
   before {
     @ducks = {
