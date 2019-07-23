@@ -42,6 +42,10 @@ module RankedModel
       end
     end
 
+    def ranker_connection_class
+      ActiveRecord::Base
+    end
+
     private
 
     def ranks *args
@@ -69,7 +73,7 @@ module RankedModel
     end
 
     def column_default ranker
-      column_defaults[ranker.name.to_s] if ActiveRecord::Base.connected?
+      column_defaults[ranker.name.to_s] if ranker_connection_class.connected?
     end
 
   end
