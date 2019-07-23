@@ -5,3 +5,5 @@ pkg/*
 
 Gemfile.lock
 *.gemfile.lock
+
+spec/examples.txt

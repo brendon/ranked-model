@@ -31,6 +31,8 @@ RSpec.configure do |config|
 
   config.order = :random
   Kernel.srand config.seed
+
+  config.example_status_persistence_file_path = "spec/examples.txt"
 end
 
 RSpec::Matchers.define :define_constant do |expected|
