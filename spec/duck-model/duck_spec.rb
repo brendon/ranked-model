@@ -40,10 +40,7 @@ describe Duck do
         patched_duck_ranker.expects(:current_first).returns(nil)
         patched_duck_ranker.expects(:current_at_rank).returns(:something_truthy)
 
-        expect(patched_duck.save).to eq(false)
-        expect(patched_duck.errors.messages).to eq({
-          :age=>["Could not re-rank: current_first not found."]
-        })
+        expect(patched_duck.save).to eq(true)
       end
     end
 
