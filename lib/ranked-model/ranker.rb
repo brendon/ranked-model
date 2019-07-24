@@ -184,6 +184,12 @@ module RankedModel
       def rearrange_ranks
         _scope = finder
         escaped_column = ActiveRecord::Base.connection.quote_column_name ranker.column
+        if current_first.nil?
+          return if handle_cannot_rearrange_ranks("current_first not found").nil?
+        end
+        if current_last.nil?
+          return if handle_cannot_rearrange_ranks("current_last not found").nil?
+        end
         # If there is room at the bottom of the list and we're added to the very top of the list...
         if current_first.rank && current_first.rank > RankedModel::MIN_RANK_VALUE && rank == RankedModel::MAX_RANK_VALUE
           # ...then move everyone else down 1 to make room for us at the end
@@ -206,6 +212,10 @@ module RankedModel
         else
           rebalance_ranks
         end
+      end
+
+      def handle_cannot_rearrange_ranks(message)
+        throw :ranking_failed, "Could not re-rank: #{message}."
       end
 
       def rebalance_ranks

@@ -24,14 +24,49 @@ module RankedModel
       }
     end
 
+    rails_version = ActiveRecord.version.to_s
+    if rails_version < '5.0'
+      base.module_eval <<-EOS, __FILE__, __LINE__ + 1
+        def handle_ranking_return_value(return_value)
+          @ranked_model_ranking_succeeded
+        end
+
+        def abort_handle_ranking
+          nil
+        end
+      EOS
+    end
   end
 
   private
 
   def handle_ranking
-    self.class.rankers.each do |ranker|
-      ranker.with(self).handle_ranking
+    @ranked_model_ranking_succeeded = true
+    return_value = self.class.rankers.each do |ranker|
+      ranking_failed_reason = catch :ranking_failed do
+        ranker.with(self).handle_ranking
+        nil
+      end
+      handle_ranking_failure(ranker, ranking_failed_reason)
     end
+    handle_ranking_return_value(return_value)
+  end
+
+  def handle_ranking_failure(ranker, ranking_failed_reason)
+    return if ranking_failed_reason.nil?
+    errors.add ranker.column, ranking_failed_reason
+    @ranked_model_ranking_succeeded = false
+    abort_handle_ranking
+  end
+
+  # May be overriden
+  def handle_ranking_return_value(return_value)
+    return_value
+  end
+
+  # May be overriden
+  def abort_handle_ranking
+    throw :abort
   end
 
   module ClassMethods
