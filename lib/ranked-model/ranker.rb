@@ -174,24 +174,28 @@ module RankedModel
       end
 
       def assure_unique_position
-        if ( new_record? || rank_changed? )
-          if (rank > RankedModel::MAX_RANK_VALUE) || current_at_rank(rank)
-            rearrange_ranks
-          end
+        if ( new_record? || rank_changed? ) && rearrange_ranks?
+          rearrange_ranks
+        end
+      end
+
+      def rearrange_ranks?
+        return true if rank > RankedModel::MAX_RANK_VALUE
+        _current_at_rank = current_at_rank(rank)
+        return false if _current_at_rank.nil?
+        _current_first = current_first
+        _current_last = current_last
+        if _current_first.nil? || _current_last.nil?
+          instance.logger.warn "[RANKED_MODEL] cannot rearrange ranks current_first=#{_current_first.inspect} current_last=#{_current_last.inspect} current_at_rank=#{_current_at_rank.inspect} instance=#{instance.inspect}"
+          false
+        else
+          true
         end
       end
 
       def rearrange_ranks
         _scope = finder
         escaped_column = ActiveRecord::Base.connection.quote_column_name ranker.column
-        if current_first.nil?
-          instance.logger.warn "[RANKED_MODEL] current_first is nil. Skipping re-ranking of #{instance.model_name.name} column #{escaped_column} #{instance.id}"
-          return
-        end
-        if current_last.nil?
-          instance.logger.warn "[RANKED_MODEL] current_last is nil. Skipping re-ranking of #{instance.model_name.name} column #{escaped_column} #{instance.id}"
-          return
-        end
         # If there is room at the bottom of the list and we're added to the very top of the list...
         if current_first.rank && current_first.rank > RankedModel::MIN_RANK_VALUE && rank == RankedModel::MAX_RANK_VALUE
           # ...then move everyone else down 1 to make room for us at the end
