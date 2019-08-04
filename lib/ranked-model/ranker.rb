@@ -175,7 +175,7 @@ module RankedModel
 
       def assure_unique_position
         if ( new_record? || rank_changed? )
-          if (rank > RankedModel::MAX_RANK_VALUE) || current_at_rank(rank)
+          if (rank > RankedModel::MAX_RANK_VALUE) || rank_taken?
             rearrange_ranks
           end
         end
@@ -290,13 +290,8 @@ module RankedModel
         end
       end
 
-      def current_at_rank _rank
-        if (ordered_instance = finder.
-                                 except( :order ).
-                                 where( ranker.column => _rank ).
-                                 first)
-          RankedModel::Ranker::Mapper.new ranker, ordered_instance
-        end
+      def rank_taken?
+        finder.except(:order).where(ranker.column => rank).exists?
       end
 
       def neighbors_at_position _pos
