@@ -69,7 +69,7 @@ module RankedModel
     end
 
     def column_default ranker
-      column_defaults[ranker.name.to_s] if ActiveRecord::Base.connected?
+      column_defaults[ranker.name.to_s] if ActiveRecord::Base.connected? && table_exists?
     end
 
   end
