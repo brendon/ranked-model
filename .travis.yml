@@ -1,7 +1,10 @@
 sudo: false # use newer travis infrastructure
 language: ruby
 cache: bundler
-dist: trusty
+dist: xenial
+services:
+  - mysql
+  - postgresql
 before_install:
   - gem install bundler -v 1.16.1
 before_script:
