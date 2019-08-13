@@ -16,7 +16,7 @@ describe Player do
 
   describe "setting the position of a record that already exists" do
     it "sets the rank without error" do
-      expect{@players[:bob].update_attributes! :score_position => 1}.to_not raise_error
+      expect{@players[:bob].update! :score_position => 1}.to_not raise_error
     end
   end
 end

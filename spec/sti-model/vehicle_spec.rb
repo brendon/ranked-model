@@ -12,7 +12,7 @@ describe Vehicle do
     }
     @vehicles.each { |name, vehicle|
       vehicle.reload
-      vehicle.update_attribute :parking_order_position, 0
+      vehicle.update :parking_order_position => 0
     }
     @vehicles.each {|name, vehicle| vehicle.reload }
   }
@@ -20,8 +20,8 @@ describe Vehicle do
   describe "ranking by STI parent" do
 
     before {
-      @vehicles[:volvo].update_attribute :parking_order_position, :first
-      @vehicles[:ford].update_attribute :parking_order_position, :first
+      @vehicles[:volvo].update :parking_order_position => :first
+      @vehicles[:ford].update :parking_order_position => :first
     }
 
     describe "Vehicle" do

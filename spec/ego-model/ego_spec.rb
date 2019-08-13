@@ -10,7 +10,7 @@ describe Ego do
     }
     @egos.each { |name, ego|
       ego.reload
-      ego.update_attribute :size_position, 0
+      ego.update :size_position => 0
       ego.save!
     }
     @egos.each {|name, ego| ego.reload }
@@ -19,8 +19,8 @@ describe Ego do
   describe "sorting on size alternative primary key" do
 
     before {
-      @egos[:nick].update_attribute :size_position, 0
-      @egos[:sally].update_attribute :size_position, 2
+      @egos[:nick].update :size_position => 0
+      @egos[:sally].update :size_position => 2
     }
 
     subject { Ego.rank(:size).to_a }
