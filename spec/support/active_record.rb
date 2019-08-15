@@ -1,9 +1,9 @@
 require 'active_record'
 require 'logger'
 
-ROOT = File.join(File.dirname(__FILE__), '..')
+ROOT = File.join(File.dirname(__FILE__), '..') unless defined?(ROOT)
 
-DB_CONFIG = ENV["DB"] || "sqlite"
+DB_CONFIG = ENV["DB"] || "sqlite" unless defined?(DB_CONFIG)
 
 ActiveRecord::Base.logger = Logger.new('tmp/ar_debug.log')
 ActiveRecord::Base.configurations = YAML::load(IO.read('spec/support/database.yml'))
