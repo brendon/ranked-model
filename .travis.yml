@@ -1,10 +1,13 @@
-sudo: false # use newer travis infrastructure
+sudo: true
 language: ruby
 cache: bundler
 dist: trusty
 before_install:
   - gem install bundler -v 1.16.1
 before_script:
+  - sudo sed -i -e '/local.*peer/s/postgres/all/' -e 's/peer\|md5/trust/g' /etc/postgresql/*/main/pg_hba.conf
+  - sudo service postgresql restart
+  - sleep 1
   - mysql -e 'create database ranked_model_test;'
   - psql -c 'create database ranked_model_test;' -U postgres
 rvm:
