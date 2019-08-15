@@ -148,7 +148,7 @@ class MotorBike < Vehicle
 end
 
 class Ego < ActiveRecord::Base
-  primary_key = :alternative_to_id
+  self.primary_key = :alternative_to_id
   include RankedModel
   ranks :size
 end
