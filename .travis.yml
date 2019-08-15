@@ -16,6 +16,14 @@ env:
   - DB=sqlite
   - DB=mysql
   - DB=postgresql
+  - PGPORT=5433
+addons:
+  postgresql: "10"
+  apt:
+    packages:
+      - postgresql-10
+      - postgresql-client-10
+
 gemfile:
   - gemfiles/rails_4_2.gemfile
   - gemfiles/rails_5_0.gemfile
