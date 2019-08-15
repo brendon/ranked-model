@@ -17,6 +17,9 @@ env:
   - DB=mysql
   - DB=postgresql
   - PGPORT=5433
+services:
+  - mysql
+  - postgresql
 addons:
   postgresql: "10"
   apt:
