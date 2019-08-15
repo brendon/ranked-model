@@ -1,13 +1,13 @@
 require 'active_record'
 require 'logger'
 
-ROOT = File.join(File.dirname(__FILE__), '..') unless defined?(ROOT)
-
-DB_CONFIG = ENV["DB"] || "sqlite" unless defined?(DB_CONFIG)
+unless ENV['DB']
+  ENV['DB'] = 'sqlite'
+end
 
 ActiveRecord::Base.logger = Logger.new('tmp/ar_debug.log')
 ActiveRecord::Base.configurations = YAML::load(IO.read('spec/support/database.yml'))
-ActiveRecord::Base.establish_connection(DB_CONFIG.to_sym)
+ActiveRecord::Base.establish_connection(ENV['DB'].to_sym)
 
 ActiveRecord::Schema.define :version => 0 do
   create_table :ducks, :force => true do |t|
