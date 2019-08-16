@@ -1,20 +1,3 @@
-appraise "rails-4-1" do
-  group :sqlite do
-    gem "sqlite3", "~> 1.3.13", platform: :ruby
-    gem "activerecord-jdbcsqlite3-adapter", "~> 1.3.24", platform: :jruby
-  end
-  group :mysql do
-    gem "mysql2", "~> 0.3.21", platform: :ruby
-    gem "activerecord-jdbcmysql-adapter", "~> 1.3.24", platform: :jruby
-  end
-  group :postgresql do
-    gem "pg", "~> 0.18.0", platform: :ruby
-    gem "activerecord-jdbcpostgresql-adapter", "~> 1.3.24", platform: :jruby
-  end
-
-  gem "activerecord", "~> 4.1.16"
-end
-
 appraise "rails-4-2" do
   group :sqlite do
     gem "sqlite3", "~> 1.3.13", platform: :ruby
