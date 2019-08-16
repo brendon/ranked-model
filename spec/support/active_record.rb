@@ -1,13 +1,13 @@
 require 'active_record'
 require 'logger'
 
-ROOT = File.join(File.dirname(__FILE__), '..')
-
-DB_CONFIG = ENV["DB"] || "sqlite"
+unless ENV['DB']
+  ENV['DB'] = 'sqlite'
+end
 
 ActiveRecord::Base.logger = Logger.new('tmp/ar_debug.log')
 ActiveRecord::Base.configurations = YAML::load(IO.read('spec/support/database.yml'))
-ActiveRecord::Base.establish_connection(DB_CONFIG.to_sym)
+ActiveRecord::Base.establish_connection(ENV['DB'].to_sym)
 
 ActiveRecord::Schema.define :version => 0 do
   create_table :ducks, :force => true do |t|
@@ -148,7 +148,7 @@ class MotorBike < Vehicle
 end
 
 class Ego < ActiveRecord::Base
-  primary_key = :alternative_to_id
+  self.primary_key = :alternative_to_id
   include RankedModel
   ranks :size
 end
