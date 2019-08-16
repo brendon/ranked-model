@@ -8,7 +8,6 @@ before_script:
   - mysql -e 'create database ranked_model_test;'
   - psql -c 'create database ranked_model_test;' -U postgres
 rvm:
-  - 2.3.7
   - 2.4.4
   - 2.5.1
   - jruby-9.1.17.0
@@ -18,7 +17,6 @@ env:
   - DB=mysql
   - DB=postgresql
 gemfile:
-  - gemfiles/rails_4_1.gemfile
   - gemfiles/rails_4_2.gemfile
   - gemfiles/rails_5_0.gemfile
   - gemfiles/rails_5_1.gemfile
@@ -27,9 +25,5 @@ matrix:
   exclude:
     - rvm: jruby-9.1.17.0
       gemfile: gemfiles/rails_5_2.gemfile
-    - rvm: 2.4.4
-      gemfile: gemfiles/rails_4_1.gemfile
-    - rvm: 2.5.1
-      gemfile: gemfiles/rails_4_1.gemfile
     - rvm: rbx-3.107
       gemfile: gemfiles/rails_5_2.gemfile
