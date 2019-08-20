@@ -40,11 +40,13 @@ gemfile:
   - gemfiles/rails_6_0.gemfile
 matrix:
   exclude:
-    - rvm: 2.4.4
-      gemfile: gemfiles/rails_6_0.gemfile
     - rvm: jruby-9.1.17.0
       gemfile: gemfiles/rails_5_2.gemfile
     - rvm: rbx-3.107
       gemfile: gemfiles/rails_5_2.gemfile
+    - rvm: 2.4.4
+      gemfile: gemfiles/rails_6_0.gemfile
     - rvm: rbx-3.107
+      gemfile: gemfiles/rails_6_0.gemfile
+    - rvm: jruby-9.1.17.0
       gemfile: gemfiles/rails_6_0.gemfile
