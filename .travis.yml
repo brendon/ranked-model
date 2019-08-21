@@ -5,6 +5,8 @@ dist: trusty
 before_install:
   - gem install bundler -v 1.16.1
 before_script:
+  - sudo service postgresql restart
+  - sleep 1
   - mysql -e 'create database ranked_model_test;'
   - psql -c 'create database ranked_model_test;' -U postgres
 rvm:
