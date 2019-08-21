@@ -5,9 +5,6 @@ dist: trusty
 before_install:
   - gem install bundler -v 1.16.1
 before_script:
-  - sudo sed -i -e '/local.*peer/s/postgres/all/' -e 's/peer\|md5/trust/g' /etc/postgresql/*/main/pg_hba.conf
-  - sudo service postgresql restart
-  - sleep 1
   - mysql -e 'create database ranked_model_test;'
   - psql -c 'create database ranked_model_test;' -U postgres
 rvm:
@@ -26,11 +23,7 @@ services:
   - mysql
   - postgresql
 addons:
-  postgresql: "10"
-  apt:
-    packages:
-      - postgresql-10
-      - postgresql-client-10
+  postgresql: "9.6"
 
 gemfile:
   - gemfiles/rails_4_2.gemfile
