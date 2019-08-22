@@ -15,8 +15,6 @@ rvm:
   - jruby-9.1.17.0
   - rbx-3.107
 env:
-  global:
-    - PGPORT=5433
   matrix:
     - DB=sqlite
     - DB=mysql
