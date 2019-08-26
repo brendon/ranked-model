@@ -14,8 +14,8 @@ describe Number do
       @first = Number.first
       @second = Number.offset(1).first
       @ordered = Number.rank(:order).where(Number.arel_table[:id].not_in([@first.id, @second.id])).collect {|d| d.id }
-      @first.update_attribute :order, RankedModel::MAX_RANK_VALUE
-      @second.update_attribute :order, RankedModel::MAX_RANK_VALUE
+      @first.update :order => RankedModel::MAX_RANK_VALUE
+      @second.update :order => RankedModel::MAX_RANK_VALUE
     }
 
     context {

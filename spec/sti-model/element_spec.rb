@@ -12,7 +12,7 @@ describe Element do
     }
     @elements.each { |name, element|
       element.reload
-      element.update_attribute :combination_order_position, 0
+      element.update :combination_order_position => 0
     }
     @elements.each {|name, element| element.reload }
   }
@@ -20,9 +20,9 @@ describe Element do
   describe "rebalancing on an STI class should not affect the other class" do
 
     before {
-      @elements[:helium].update_attribute :combination_order_position, :first
-      @elements[:xenon].update_attribute :combination_order_position, :first
-      @elements[:argon].update_attribute :combination_order_position, :last
+      @elements[:helium].update :combination_order_position => :first
+      @elements[:xenon].update :combination_order_position => :first
+      @elements[:argon].update :combination_order_position => :last
 
       TransitionMetal.ranker(:combination_order).with(@elements[:chromium]).instance_eval { rebalance_ranks }
     }
@@ -40,16 +40,16 @@ describe Element do
   describe "setting positions on STI classes" do
 
     before {
-      @elements[:helium].update_attribute :combination_order_position, :first
-      @elements[:xenon].update_attribute :combination_order_position, :first
-      @elements[:argon].update_attribute :combination_order_position, :first
+      @elements[:helium].update :combination_order_position => :first
+      @elements[:xenon].update :combination_order_position => :first
+      @elements[:argon].update :combination_order_position => :first
 
-      @elements[:chromium].update_attribute :combination_order_position, 1
-      @elements[:manganese].update_attribute :combination_order_position, 1
-      @elements[:manganese].update_attribute :combination_order_position, 0
-      @elements[:chromium].update_attribute :combination_order_position, 0
-      @elements[:manganese].update_attribute :combination_order_position, 0
-      @elements[:chromium].update_attribute :combination_order_position, 0
+      @elements[:chromium].update :combination_order_position => 1
+      @elements[:manganese].update :combination_order_position => 1
+      @elements[:manganese].update :combination_order_position => 0
+      @elements[:chromium].update :combination_order_position => 0
+      @elements[:manganese].update :combination_order_position => 0
+      @elements[:chromium].update :combination_order_position => 0
     }
 
     describe "NobleGas" do
@@ -81,16 +81,16 @@ describe Element do
   describe "setting positions on STI classes" do
 
     before {
-      @elements[:helium].update_attribute :combination_order_position, :first
-      @elements[:xenon].update_attribute :combination_order_position, :first
-      @elements[:argon].update_attribute :combination_order_position, :first
+      @elements[:helium].update :combination_order_position => :first
+      @elements[:xenon].update :combination_order_position => :first
+      @elements[:argon].update :combination_order_position => :first
 
-      @elements[:chromium].update_attribute :combination_order_position, 1
-      @elements[:manganese].update_attribute :combination_order_position, 1
-      @elements[:manganese].update_attribute :combination_order_position, 0
-      @elements[:chromium].update_attribute :combination_order_position, 0
-      @elements[:manganese].update_attribute :combination_order_position, 0
-      @elements[:chromium].update_attribute :combination_order_position, 0
+      @elements[:chromium].update :combination_order_position => 1
+      @elements[:manganese].update :combination_order_position => 1
+      @elements[:manganese].update :combination_order_position => 0
+      @elements[:chromium].update :combination_order_position => 0
+      @elements[:manganese].update :combination_order_position => 0
+      @elements[:chromium].update :combination_order_position => 0
     }
 
     describe "NobleGas" do

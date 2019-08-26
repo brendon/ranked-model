@@ -29,7 +29,7 @@ describe Duck do
 
       before {
         @last = Duck.last
-        @last.update_attribute :row_position, 137
+        @last.update :row_position => 137
       }
 
       subject { Duck.ranker(:row).with(Duck.new).current_at_position(137).instance }
@@ -42,7 +42,7 @@ describe Duck do
 
       before {
         @last = Duck.last
-        @last.update_attribute :row_position, 2
+        @last.update :row_position => 2
       }
 
       subject { Duck.ranker(:row).with(Duck.new).current_at_position(2).instance }
@@ -55,7 +55,7 @@ describe Duck do
 
       before {
         @last = Duck.last
-        @last.update_attribute :row_position, :last
+        @last.update :row_position => :last
       }
 
       subject { Duck.rank(:row).last }
@@ -68,7 +68,7 @@ describe Duck do
 
       before {
         @last = Duck.last
-        @last.update_attribute :row_position, :first
+        @last.update :row_position => :first
       }
 
       subject { Duck.rank(:row).first }
@@ -87,8 +87,8 @@ describe Duck do
         @first = Duck.first
         @second = Duck.offset(1).first
         @ordered = Duck.rank(:row).where(Duck.arel_table[:id].not_in([@first.id, @second.id])).collect {|d| d.id }
-        @first.update_attribute :row, RankedModel::MAX_RANK_VALUE
-        @second.update_attribute :row, RankedModel::MAX_RANK_VALUE
+        @first.update :row => RankedModel::MAX_RANK_VALUE
+        @second.update :row => RankedModel::MAX_RANK_VALUE
       }
 
       context {
@@ -105,13 +105,13 @@ describe Duck do
 
       before {
         Duck.first(50).each_with_index do |d, index|
-          d.update_attributes :age => index % 10, :pond => "Pond #{index / 10}"
+          d.update :age => index % 10, :pond => "Pond #{index / 10}"
         end
         @duck_11 = Duck.where(:pond => 'Pond 1').rank(:age).first
         @duck_12 = Duck.where(:pond => 'Pond 1').rank(:age).second
         @ordered = Duck.where(:pond => 'Pond 1').rank(:age).where(Duck.arel_table[:id].not_in([@duck_11.id, @duck_12.id])).collect {|d| d.id }
-        @duck_11.update_attribute :age, RankedModel::MAX_RANK_VALUE
-        @duck_12.update_attribute :age, RankedModel::MAX_RANK_VALUE
+        @duck_11.update :age => RankedModel::MAX_RANK_VALUE
+        @duck_12.update :age => RankedModel::MAX_RANK_VALUE
       }
 
       context {
@@ -133,8 +133,8 @@ describe Duck do
         @first = Duck.first
         @second = Duck.offset(1).first
         @ordered = Duck.rank(:row).where(Duck.arel_table[:id].not_in([@first.id, @second.id])).collect {|d| d.id }
-        @first.update_attribute :row, RankedModel::MIN_RANK_VALUE
-        @second.update_attribute :row, RankedModel::MIN_RANK_VALUE
+        @first.update :row => RankedModel::MIN_RANK_VALUE
+        @second.update :row => RankedModel::MIN_RANK_VALUE
       }
 
       context {
@@ -163,11 +163,11 @@ describe Duck do
           where(Duck.arel_table[:id].not_in([@first.id, @second.id, @third.id, @fourth.id, @fifth.id])).
           where(Duck.arel_table[:row].gteq(RankedModel::MAX_RANK_VALUE / 2)).
           collect {|d| d.id }
-        @first.update_attribute :row, RankedModel::MIN_RANK_VALUE
-        @second.update_attribute :row, RankedModel::MAX_RANK_VALUE
-        @third.update_attribute :row, (RankedModel::MAX_RANK_VALUE / 2)
+        @first.update :row => RankedModel::MIN_RANK_VALUE
+        @second.update :row => RankedModel::MAX_RANK_VALUE
+        @third.update :row => (RankedModel::MAX_RANK_VALUE / 2)
         Duck.where(id: @fifth.id).update_all row: @third.row
-        @fourth.update_attribute :row, @third.row
+        @fourth.update :row => @third.row
       }
 
       context {

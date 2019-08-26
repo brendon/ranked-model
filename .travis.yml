@@ -1,10 +1,12 @@
-sudo: false # use newer travis infrastructure
+sudo: required
 language: ruby
 cache: bundler
 dist: trusty
 before_install:
   - gem install bundler -v 1.16.1
 before_script:
+  - sudo service postgresql restart
+  - sleep 1
   - mysql -e 'create database ranked_model_test;'
   - psql -c 'create database ranked_model_test;' -U postgres
 rvm:
@@ -13,17 +15,31 @@ rvm:
   - jruby-9.1.17.0
   - rbx-3.107
 env:
-  - DB=sqlite
-  - DB=mysql
-  - DB=postgresql
+  matrix:
+    - DB=sqlite
+    - DB=mysql
+    - DB=postgresql
+services:
+  - mysql
+  - postgresql
+addons:
+  postgresql: "9.6"
+
 gemfile:
   - gemfiles/rails_4_2.gemfile
   - gemfiles/rails_5_0.gemfile
   - gemfiles/rails_5_1.gemfile
   - gemfiles/rails_5_2.gemfile
+  - gemfiles/rails_6_0.gemfile
 matrix:
   exclude:
     - rvm: jruby-9.1.17.0
       gemfile: gemfiles/rails_5_2.gemfile
     - rvm: rbx-3.107
       gemfile: gemfiles/rails_5_2.gemfile
+    - rvm: 2.4.4
+      gemfile: gemfiles/rails_6_0.gemfile
+    - rvm: rbx-3.107
+      gemfile: gemfiles/rails_6_0.gemfile
+    - rvm: jruby-9.1.17.0
+      gemfile: gemfiles/rails_6_0.gemfile
