@@ -10,8 +10,8 @@ before_script:
 rvm:
   - 2.4.4
   - 2.5.1
+  - 2.6.4
   - jruby-9.1.17.0
-  - rbx-3.107
 env:
   - DB=sqlite
   - DB=mysql
@@ -29,11 +29,7 @@ matrix:
   exclude:
     - rvm: jruby-9.1.17.0
       gemfile: gemfiles/rails_5_2.gemfile
-    - rvm: rbx-3.107
-      gemfile: gemfiles/rails_5_2.gemfile
     - rvm: 2.4.4
-      gemfile: gemfiles/rails_6_0.gemfile
-    - rvm: rbx-3.107
       gemfile: gemfiles/rails_6_0.gemfile
     - rvm: jruby-9.1.17.0
       gemfile: gemfiles/rails_6_0.gemfile
