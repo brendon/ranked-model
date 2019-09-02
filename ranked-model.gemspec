@@ -9,11 +9,11 @@ Gem::Specification.new do |s|
   s.authors     = ["Matthew Beale"]
   s.email       = ["matt.beale@madhatted.com"]
   s.homepage    = "https://github.com/mixonic/ranked-model"
-  s.summary     = %q{An acts_as_sortable replacement built for Rails 3 & 4}
-  s.description = %q{ranked-model is a modern row sorting library built for Rails 3 & 4. It uses ARel aggressively and is better optimized than most other libraries.}
+  s.summary     = %q{An acts_as_sortable replacement built for Rails 4.2+}
+  s.description = %q{ranked-model is a modern row sorting library built for Rails 4.2+. It uses ARel aggressively and is better optimized than most other libraries.}
   s.license     = 'MIT'
 
-  s.add_dependency "activerecord", ">= 4.2.10"
+  s.add_dependency "activerecord", ">= 4.2"
   s.add_development_dependency "rspec", "~> 3"
   s.add_development_dependency "rspec-its"
   s.add_development_dependency "mocha"

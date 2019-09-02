@@ -1,12 +1,9 @@
-sudo: required
 language: ruby
 cache: bundler
-dist: trusty
-before_install:
-  - gem install bundler -v 1.16.1
+sudo: false
 before_script:
-  - sudo service postgresql restart
-  - sleep 1
+  - gem uninstall -v '>= 2' -i $(rvm gemdir)@global -ax bundler || true
+  - gem install bundler -v '< 2'
   - mysql -e 'create database ranked_model_test;'
   - psql -c 'create database ranked_model_test;' -U postgres
 rvm:
@@ -15,16 +12,12 @@ rvm:
   - jruby-9.1.17.0
   - rbx-3.107
 env:
-  matrix:
-    - DB=sqlite
-    - DB=mysql
-    - DB=postgresql
+  - DB=sqlite
+  - DB=mysql
+  - DB=postgresql
 services:
   - mysql
   - postgresql
-addons:
-  postgresql: "9.6"
-
 gemfile:
   - gemfiles/rails_4_2.gemfile
   - gemfiles/rails_5_0.gemfile

@@ -6,14 +6,17 @@ gem "activerecord", "~> 5.2.0"
 
 group :sqlite do
   gem "sqlite3", "~> 1.3.13", platform: :ruby
-end
-
-group :mysql do
-  gem "mysql2", "~> 0.4.10", platform: :ruby
+  gem "activerecord-jdbcsqlite3-adapter", "~> 52.0", platform: :jruby
 end
 
 group :postgresql do
-  gem "pg", "~> 0.21.0", platform: :ruby
+  gem "pg", "~> 1.1.4", platform: :ruby
+  gem "activerecord-jdbcpostgresql-adapter", "~> 52.0", platform: :jruby
+end
+
+group :mysql do
+  gem "mysql2", "~> 0.5.0", platform: :ruby
+  gem "activerecord-jdbcmysql-adapter", "~> 52.0", platform: :jruby
 end
 
 gemspec path: "../"
