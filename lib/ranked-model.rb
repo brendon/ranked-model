@@ -65,6 +65,16 @@ module RankedModel
         ranker.with(self).relative_rank
       end
 
+      define_method "#{ranker.name}_rank_after!" do |record|
+        if record
+          ranker.with(self).rank_after(ranker.with(record))
+        else
+          send "#{ranker.name}_position=", :first
+        end
+
+        save!
+      end
+
       public "#{ranker.name}_position", "#{ranker.name}_position="
     end
 
