@@ -779,6 +779,36 @@ describe Duck do
     }
   end
 
+  describe "when moving between ponds should work when rebalancing" do
+
+    before {
+      [:feathers, :wingy, :webby, :waddly, :beaky].each_with_index do |name, i|
+        Duck.where(id: @ducks[name].id).update_all(age: RankedModel::MIN_RANK_VALUE + i, pond: "Boyden")
+        @ducks[name].reload
+      end
+
+      Duck.find_by(id: @ducks[:quacky]).update!(age_position: 2, pond: "Boyden")
+    }
+
+    context {
+      subject { Duck.find_by(id: @ducks[:feathers]).age_rank }
+
+      it { should == 0 }
+    }
+
+    context {
+      subject { Duck.find_by(id: @ducks[:quacky]).age_rank }
+
+      it { should == 2 }
+    }
+
+    context {
+      subject { Duck.find_by(id: @ducks[:beaky]).age_rank }
+
+      it { should == 5 }
+    }
+  end
+
 end
 
 describe Duck do
