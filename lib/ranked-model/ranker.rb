@@ -211,10 +211,12 @@ module RankedModel
       def rebalance_ranks
         if rank && instance.persisted?
           origin = current_order.index { |item| item.instance.id == instance.id }
-          destination = current_order.index { |item| rank <= item.rank }
-          destination -= 1 if origin < destination
+          if origin
+            destination = current_order.index { |item| rank <= item.rank }
+            destination -= 1 if origin < destination
 
-          current_order.insert destination, current_order.delete_at(origin)
+            current_order.insert destination, current_order.delete_at(origin)
+          end
         end
 
         gaps = current_order.size + 1
