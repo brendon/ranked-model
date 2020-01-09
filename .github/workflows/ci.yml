@@ -1,0 +1,87 @@
+name: Build
+
+on: [push, pull_request]
+
+jobs:
+  test:
+    name: Ruby ${{ matrix.ruby }}, ${{ matrix.gemfile }}, ${{ matrix.db }}
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        ruby: [2.4, 2.5, 2.6, 2.7, jruby]
+        gemfile:
+          [
+            "gemfiles/rails_4_2.gemfile",
+            "gemfiles/rails_5_0.gemfile",
+            "gemfiles/rails_5_1.gemfile",
+            "gemfiles/rails_5_2.gemfile",
+            "gemfiles/rails_6_0.gemfile",
+          ]
+        db: ["sqlite", "mysql", "postgresql"]
+        exclude:
+          - ruby: 2.4
+            gemfile: gemfiles/rails_6_0.gemfile
+          - ruby: 2.7
+            gemfile: gemfiles/rails_4_2.gemfile
+          # TODO: resolve problems connecting to MySQL
+          - ruby: jruby
+            db: mysql
+
+    services:
+      mysql:
+        image: mysql:5.7
+        env:
+          MYSQL_USER: user
+          MYSQL_PASSWORD: password
+          MYSQL_ROOT_PASSWORD: password
+          MYSQL_DATABASE: ranked_model_test
+        ports:
+          - 3306
+        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
+
+      postgres:
+        image: postgres:11.5-alpine
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: password
+          POSTGRES_DB: ranked_model_test
+        ports:
+          - 5432:5432
+        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
+
+    steps:
+      - uses: actions/checkout@master
+
+      - name: Set up database dependencies
+        run: sudo apt-get install -y libmysqlclient-dev libpq-dev libsqlite3-dev
+      - name: Install Ruby
+        uses: eregon/use-ruby-action@master
+        with:
+          ruby-version: ${{ matrix.ruby }}
+      - name: Set up bundler
+        run: |
+          BUNDLER_VERSION=$(cat Gemfile.lock | tail -1 | tr -d " ")
+          gem install bundler -v ${BUNDLER_VERSION}
+          bundle config set path 'vendor/bundle'
+          bundle config gemfile ${{ matrix.gemfile }}
+
+      - uses: actions/checkout@v1
+
+      - name: Cache bundle
+        uses: actions/cache@v1
+        with:
+          path: ./gemfiles/vendor/bundle
+          key: ${{ matrix.ruby }}-gem-${{ hashFiles(join(matrix.gemfile, '.lock')) }}
+          restore-keys: |
+            ${{ matrix.ruby }}-gem-
+
+      - name: Install bundle
+        run: bundle install
+      - name: Run tests
+        env:
+          DB: ${{ matrix.db }}
+          DB_HOST: 127.0.0.1
+          DB_PASSWORD: password
+          MYSQL_TCP_PORT: ${{ job.services.mysql.ports[3306] }}
+          RAILS_ENV: test
+        run: bundle exec rake

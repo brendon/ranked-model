@@ -13,7 +13,7 @@ describe 'ColumnDefaultDuck' do
 
 	it "should not raise an error if we don't have a database connection when checking for default value" do
 		begin
-			ActiveRecord::Base.remove_connection
+			connection = ActiveRecord::Base.remove_connection
 
 			expect {
 				class ColumnDefaultDuck < ActiveRecord::Base
@@ -22,7 +22,7 @@ describe 'ColumnDefaultDuck' do
 				end
 			}.not_to raise_error
 		ensure
-			ActiveRecord::Base.establish_connection(ENV['DB'].to_sym)
+			ActiveRecord::Base.establish_connection(connection)
 		end
 	end
 

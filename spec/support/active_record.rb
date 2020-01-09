@@ -1,13 +1,14 @@
 require 'active_record'
 require 'logger'
+require 'yaml'
 
-unless ENV['DB']
-  ENV['DB'] = 'sqlite'
-end
+environment = ENV['DB'] || 'sqlite'
+configurations = YAML::load(IO.read('spec/support/database.yml'))
+config = configurations[environment]
+config.merge!(host: ENV['DB_HOST'], password: ENV['DB_PASSWORD'])
 
 ActiveRecord::Base.logger = Logger.new('tmp/ar_debug.log')
-ActiveRecord::Base.configurations = YAML::load(IO.read('spec/support/database.yml'))
-ActiveRecord::Base.establish_connection(ENV['DB'].to_sym)
+ActiveRecord::Base.establish_connection(config)
 
 ActiveRecord::Schema.define :version => 0 do
   create_table :ducks, :force => true do |t|
