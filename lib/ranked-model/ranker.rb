@@ -69,6 +69,10 @@ module RankedModel
           update_all(ranker.column => value)
       end
 
+      def reset_ranks!
+        finder.update_all(ranker.column => nil)
+      end
+
       def position
         instance.send "#{ranker.name}_position"
       end
@@ -209,31 +213,35 @@ module RankedModel
       end
 
       def rebalance_ranks
-        if rank && instance.persisted?
-          origin = current_order.index { |item| item.instance.id == instance.id }
-          if origin
-            destination = current_order.index { |item| rank <= item.rank }
-            destination -= 1 if origin < destination
+        ActiveRecord::Base.transaction do
+          if rank && instance.persisted?
+            origin = current_order.index { |item| item.instance.id == instance.id }
+            if origin
+              destination = current_order.index { |item| rank <= item.rank }
+              destination -= 1 if origin < destination
 
-            current_order.insert destination, current_order.delete_at(origin)
+              current_order.insert destination, current_order.delete_at(origin)
+            end
           end
-        end
 
-        gaps = current_order.size + 1
-        range = (RankedModel::MAX_RANK_VALUE - RankedModel::MIN_RANK_VALUE).to_f
-        gap_size = (range / gaps).ceil
+          gaps = current_order.size + 1
+          range = (RankedModel::MAX_RANK_VALUE - RankedModel::MIN_RANK_VALUE).to_f
+          gap_size = (range / gaps).ceil
 
-        current_order.each.with_index(1) do |item, position|
-          new_rank = (gap_size * position) + RankedModel::MIN_RANK_VALUE
+          reset_ranks!
 
-          if item.instance.id == instance.id
-            rank_at new_rank
-          else
-            item.update_rank! new_rank
+          current_order.each.with_index(1) do |item, position|
+            new_rank = (gap_size * position) + RankedModel::MIN_RANK_VALUE
+
+            if item.instance.id == instance.id
+              rank_at new_rank
+            else
+              item.update_rank! new_rank
+            end
           end
-        end
 
-        reset_cache
+          reset_cache
+        end
       end
 
       def finder(order = :asc)

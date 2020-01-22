@@ -780,33 +780,41 @@ describe Duck do
   end
 
   describe "when moving between ponds should work when rebalancing" do
-
-    before {
+    before do
       [:feathers, :wingy, :webby, :waddly, :beaky].each_with_index do |name, i|
-        Duck.where(id: @ducks[name].id).update_all(age: RankedModel::MIN_RANK_VALUE + i, pond: "Boyden")
-        @ducks[name].reload
+        Duck.where(id: @ducks[name].id)
+          .update_all(age: RankedModel::MIN_RANK_VALUE + i, pond: "Boyden")
       end
 
-      Duck.find_by(id: @ducks[:quacky]).update!(age_position: 2, pond: "Boyden")
-    }
+      @ducks[:quacky].update!(age_position: 2, pond: "Boyden")
+    end
 
-    context {
-      subject { Duck.find_by(id: @ducks[:feathers]).age_rank }
+    it 'rebalances ranks correctly' do
+      expect(@ducks[:feathers].reload.age_rank).to eq 0
+      expect(@ducks[:quacky].reload.age_rank).to eq 2
+      expect(@ducks[:beaky].reload.age_rank).to eq 5
+    end
 
-      it { should == 0 }
-    }
+    context 'when attempting to update position to a non-unique value' do
+      before do
+        @duck_one = Duck.create(landing_order: RankedModel::MIN_RANK_VALUE,
+                               lake_id: 42, flock_id: 42)
+        # Duck one's landing order will be rebalanced to -715_827_883.
+        # Given a unique index on [:landing_order, :lake_id, :flock_id] we
+        # verify that the operation succeeds despite the value already being
+        # occupied by duck two.
+        @duck_two = Duck.create(landing_order: -715_827_883,
+                                lake_id: 42, flock_id: 42)
+      end
 
-    context {
-      subject { Duck.find_by(id: @ducks[:quacky]).age_rank }
-
-      it { should == 2 }
-    }
-
-    context {
-      subject { Duck.find_by(id: @ducks[:beaky]).age_rank }
-
-      it { should == 5 }
-    }
+      it 'rebalances ranks correctly' do
+        @ducks[:quacky].update!(landing_order_position: :first,
+                                lake_id: 42, flock_id: 42)
+        expect(@ducks[:quacky].reload.landing_order_rank).to eq 0
+        expect(@duck_one.reload.landing_order_rank).to eq 1
+        expect(@duck_two.reload.landing_order_rank).to eq 2
+      end
+    end
   end
 
 end
