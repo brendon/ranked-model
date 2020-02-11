@@ -21,6 +21,11 @@ ActiveRecord::Schema.define :version => 0 do
     t.string :pond
   end
 
+  create_table :lovesick_ducks, :force => true do |t|
+    t.string :name
+    t.integer :row
+  end
+
   create_table :wrong_scope_ducks, :force => true do |t|
     t.string :name
     t.integer :size
@@ -81,6 +86,11 @@ class Duck < ActiveRecord::Base
 
   scope :in_shin_pond, lambda { where(:pond => 'Shin') }
 
+end
+
+class LovesickDuck < ActiveRecord::Base
+  include RankedModel
+  ranks :row, :preferred_spread => 1000
 end
 
 # Negative examples
