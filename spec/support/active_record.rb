@@ -21,6 +21,8 @@ ActiveRecord::Schema.define :version => 0 do
     t.string :pond
   end
 
+  add_index :ducks, [:landing_order, :lake_id, :flock_id], unique: true
+
   create_table :wrong_scope_ducks, :force => true do |t|
     t.string :name
     t.integer :size

@@ -4,6 +4,7 @@ appraise "rails-4-2" do
   end
   group :mysql do
     gem "mysql2", "~> 0.4.0", platform: :ruby
+    gem "jdbc-mysql", "~> 5.1.47", platform: :jruby
     gem "activerecord-jdbcmysql-adapter", "~> 1.3.24", platform: :jruby
   end
   group :postgresql do

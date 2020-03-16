@@ -5,7 +5,7 @@ describe Duck do
   before {
     200.times do |i|
       Duck.create \
-        :name => "Duck #{i}"
+        :name => "Duck #{i + 1}"
     end
   }
 
@@ -149,34 +149,30 @@ describe Duck do
 
     describe "with no more gaps" do
 
-      before {
+      before do
         @first = Duck.rank(:row).first
         @second = Duck.rank(:row).offset(1).first
         @third = Duck.rank(:row).offset(2).first
-        @fourth = Duck.rank(:row).offset(4).first
-        @fifth = Duck.rank(:row).offset(5).first
+        @fourth = Duck.rank(:row).offset(3).first
         @lower = Duck.rank(:row).
-          where(Duck.arel_table[:id].not_in([@first.id, @second.id, @third.id, @fourth.id, @fifth.id])).
+          where(Duck.arel_table[:id].not_in([@first.id, @second.id, @third.id, @fourth.id])).
           where(Duck.arel_table[:row].lt(RankedModel::MAX_RANK_VALUE / 2)).
-          collect {|d| d.id }
+          pluck(:id)
         @upper = Duck.rank(:row).
-          where(Duck.arel_table[:id].not_in([@first.id, @second.id, @third.id, @fourth.id, @fifth.id])).
+          where(Duck.arel_table[:id].not_in([@first.id, @second.id, @third.id, @fourth.id])).
           where(Duck.arel_table[:row].gteq(RankedModel::MAX_RANK_VALUE / 2)).
-          collect {|d| d.id }
-        @first.update :row => RankedModel::MIN_RANK_VALUE
-        @second.update :row => RankedModel::MAX_RANK_VALUE
-        @third.update :row => (RankedModel::MAX_RANK_VALUE / 2)
-        Duck.where(id: @fifth.id).update_all row: @third.row
-        @fourth.update :row => @third.row
-      }
+          pluck(:id)
+        @first.update(row: RankedModel::MIN_RANK_VALUE)
+        @second.update(row: RankedModel::MAX_RANK_VALUE)
+        @third.update(row: (RankedModel::MAX_RANK_VALUE / 2))
+        @fourth.update(row: @third.row)
+      end
 
-      context {
-
-        subject { Duck.rank(:row).collect {|d| d.id } }
-
-        it { is_expected.to eq([@first.id] + @lower + [@fourth.id, @third.id, @fifth.id] + @upper + [@second.id]) }
-
-      }
+      it 'works correctly' do
+        result = Duck.rank(:row).pluck(:id)
+        expected = [@first.id, *@lower, @fourth.id, @third.id, *@upper, @second.id]
+        expect(result).to eq(expected)
+      end
 
     end
 
