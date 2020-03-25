@@ -1,13 +1,13 @@
-**ranked-model** is a modern row sorting library built for Rails 3, 4 and 5.  It uses ARel aggressively and is better optimized than most other libraries.
+**ranked-model** is a modern row sorting library built for Rails 3+.  It uses ARel aggressively and is better optimized than most other libraries.
 
 [![Build Status](https://travis-ci.org/mixonic/ranked-model.png)](https://travis-ci.org/mixonic/ranked-model)
 
 Installation
 ------------
 
-ranked-model passes specs with Rails 4.2, 5.0, 5.1, 5.2, 6.0 for MySQL, Postgres, and SQLite on Ruby 2.4 through 2.6, and jruby-9.1.17.0 where Rails supports the platform. This is with the exception of Postgres before Rails 4.0 on all platforms, which is unsupported by `ranked-model`. Note that the `pg` gem has pulled support for rbx (Rubinius) from version 1 onward.
+ranked-model passes specs with Rails 4.2, 5.0, 5.1, 5.2 and 6.0 for MySQL, Postgres, and SQLite on Ruby 2.4 through 2.6, and jruby-9.1.17.0 where Rails supports the platform. This is with the exception of Postgres before Rails 4.0 on all platforms, which is unsupported by `ranked-model`. Note that the `pg` gem has pulled support for rbx (Rubinius) from version 1 onward.
 
-TL;DR, if you are using Rails 4 and up you are 100% good to go. Before Rails 4, be wary of Postgres.
+TL;DR, **if you are using Rails 4 and up you are 100% good to go.** Before Rails 4, be wary of Postgres.
 
 To install ranked-model, just add it to your `Gemfile`:
 
@@ -31,6 +31,13 @@ class Duck < ActiveRecord::Base
 end
 ```
 
+Give them an order (integer column):
+
+```bash
+rails g migration AddRowOrderToDucks row_order:integer
+rails db:migrate
+```
+
 Put your ducks in a row:
 
 ``` ruby
@@ -42,7 +49,7 @@ class Duck < ActiveRecord::Base
 end
 ```
 
-This simple example assumes an integer column called `row_order`.  To order Ducks by this order:
+Order the Ducks by this order:
 
 ``` ruby
 Duck.rank(:row_order).all
