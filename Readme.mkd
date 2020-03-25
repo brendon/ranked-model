@@ -179,6 +179,32 @@ truck.row_order
 => 4194304
 ```
 
+Migrations for existing data
+----------------------------
+
+If you use `ranked_model` with existing data, the following migration (for Rails
+6) can be a starting point. Make sure to declare `include RankedModel` and
+`ranks :row_order` in your `Duck` before running the migration.
+
+```bash
+rails g migration AddRowOrderToDucks row_order:integer
+```
+
+Then, adjust the migration:
+```ruby
+# e.g. file db/migrate/20200325095038_add_row_order_to_ducks.rb
+class AddRowOrderToDucks < ActiveRecord::Migration[6.0]
+  def change
+    add_column :courses, :row_order, :integer
+
+    # Newest Duck shall rank "highest"" (be last).
+    Duck.order(created_at: :desc).desc.each do |duck|
+      duck.update!(row_order: duck.created_at.to_i)
+    end
+  end
+end
+```
+
 Internals
 ---------
 
