@@ -196,9 +196,12 @@ class AddRowOrderToDucks < ActiveRecord::Migration[6.0]
     add_column :courses, :row_order, :integer
 
     # Newest Duck shall rank "highest"" (be last).
-    Duck.order(created_at: :desc).desc.each do |duck|
-      duck.update!(row_order: duck.created_at.to_i)
-    end
+    Duck.update_all('row_order = EXTRACT(EPOCH FROM created_at)')
+
+    # Alternatively, implement any other sorting default
+    # Duck.order(created_at: :desc).desc.each do |duck|
+    #   duck.update!(row_order: duck.created_at.to_i + duck.age / 2)
+    # end
   end
 end
 ```
