@@ -1,13 +1,11 @@
-**ranked-model** is a modern row sorting library built for Rails 3, 4 and 5.  It uses ARel aggressively and is better optimized than most other libraries.
+**ranked-model** is a modern row sorting library built for Rails 4.2+.  It uses ARel aggressively and is better optimized than most other libraries.
 
 [![Build Status](https://travis-ci.org/mixonic/ranked-model.png)](https://travis-ci.org/mixonic/ranked-model)
 
 Installation
 ------------
 
-ranked-model passes specs with Rails 4.2, 5.0, 5.1, 5.2, 6.0 for MySQL, Postgres, and SQLite on Ruby 2.4 through 2.6, and jruby-9.1.17.0 where Rails supports the platform. This is with the exception of Postgres before Rails 4.0 on all platforms, which is unsupported by `ranked-model`. Note that the `pg` gem has pulled support for rbx (Rubinius) from version 1 onward.
-
-TL;DR, if you are using Rails 4 and up you are 100% good to go. Before Rails 4, be wary of Postgres.
+ranked-model passes specs with Rails 4.2, 5.0, 5.1, 5.2 and 6.0 for MySQL, Postgres, and SQLite on Ruby 2.4 through 2.6, and jruby-9.1.17.0 where Rails supports the platform. Note that the `pg` gem has pulled support for rbx (Rubinius) from version 1 onward.
 
 To install ranked-model, just add it to your `Gemfile`:
 
@@ -31,6 +29,13 @@ class Duck < ActiveRecord::Base
 end
 ```
 
+Give them an order (integer column):
+
+```bash
+rails g migration AddRowOrderToDucks row_order:integer
+rails db:migrate
+```
+
 Put your ducks in a row:
 
 ``` ruby
@@ -42,7 +47,7 @@ class Duck < ActiveRecord::Base
 end
 ```
 
-This simple example assumes an integer column called `row_order`.  To order Ducks by this order:
+Order the Ducks by this order:
 
 ``` ruby
 Duck.rank(:row_order).all
@@ -172,6 +177,35 @@ truck.row_order
 => 4194304
 ```
 
+Migrations for existing data
+----------------------------
+
+If you use `ranked_model` with existing data, the following migration (for Rails
+6) can be a starting point. Make sure to declare `include RankedModel` and
+`ranks :row_order` in your `Duck` before running the migration.
+
+```bash
+rails g migration AddRowOrderToDucks row_order:integer
+```
+
+Then, adjust the migration:
+```ruby
+# e.g. file db/migrate/20200325095038_add_row_order_to_ducks.rb
+class AddRowOrderToDucks < ActiveRecord::Migration[6.0]
+  def change
+    add_column :courses, :row_order, :integer
+
+    # Newest Duck shall rank "highest"" (be last).
+    Duck.update_all('row_order = EXTRACT(EPOCH FROM created_at)')
+
+    # Alternatively, implement any other sorting default
+    # Duck.order(created_at: :desc).desc.each do |duck|
+    #   duck.update!(row_order: duck.created_at.to_i + duck.age / 2)
+    # end
+  end
+end
+```
+
 Internals
 ---------
 
@@ -188,6 +222,8 @@ Contributing
 ------------
 
 Fork, clone, write a test, write some code, commit, push, send a pull request.  Github FTW!
+
+The code is published under the [MIT License](LICENSE).
 
 The specs can be run with sqlite, postgres, and mysql:
 
