@@ -14,7 +14,7 @@ gem 'ranked-model'
 
 # Or pin ranked-model to git
 # gem 'ranked-model',
-#   :git => 'git@github.com:mixonic/ranked-model.git'
+#   git: 'git@github.com:mixonic/ranked-model.git'
 ```
 
 Then use `bundle install` to update your `Gemfile.lock`.
@@ -57,7 +57,7 @@ The ranking integers stored in the `row_order` column will be big and spaced apa
 implement a sorting UI, just update the resource by appending the column name with `_position` and indicating the desired position:
 
 ``` ruby
-@duck.update :row_order_position => 0  # or 1, 2, 37. :first, :last, :up and :down are also valid
+@duck.update row_order_position: 0  # or 1, 2, 37. :first, :last, :up and :down are also valid
 ```
 
 **IMPORTANT: Note that you MUST append _position to the column name when setting a new position on an instance. This is a fake column that can take relative as well as absolute index-based values for position.**
@@ -97,18 +97,18 @@ class Duck < ActiveRecord::Base
   include RankedModel
 
   ranks :row_order,                  # Name this ranker, used with rank()
-    :column => :sort_order           # Override the default column, which defaults to the name
+    column: :sort_order              # Override the default column, which defaults to the name
 
   belongs_to :pond
   ranks :swimming_order,
-    :with_same => :pond_id           # Ducks belong_to Ponds, make the ranker scoped to one pond
+    with_same: :pond_id              # Ducks belong_to Ponds, make the ranker scoped to one pond
 
   ranks :row_order,
-    :with_same => [:pond_id, :breed] # Lets rank them by breed
+    with_same: [:pond_id, :breed]    # Lets rank them by breed
 
-  scope :walking, where(:walking => true )
+  scope :walking, where(walking: true )
   ranks :walking_order,
-    :scope => :walking               # Narrow this ranker to a scope
+    scope: :walking                  # Narrow this ranker to a scope
 
 end
 ```
