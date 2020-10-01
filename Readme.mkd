@@ -110,6 +110,14 @@ class Duck < ActiveRecord::Base
   ranks :walking_order,
     scope: :walking                  # Narrow this ranker to a scope
 
+  belongs_to :parent, class_name: 'Duck', optional: true
+  ranks :child_order,
+    unless: :parent?,                # Rank only ducks that have a parent. Alternatively a Proc or lambda can be passed, e.g. proc { parent.nil? }
+    with_same: :parent_id
+
+  def parent?
+    parent.nil?
+  end
 end
 ```
 
