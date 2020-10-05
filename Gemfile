@@ -8,7 +8,7 @@ group :sqlite do
 end
 
 group :postgresql do
-  gem "pg", "~> 1.1.4", platform: :ruby
+  gem "pg", "~> 1.2.0", platform: :ruby
 end
 
 group :mysql do
