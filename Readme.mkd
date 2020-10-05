@@ -36,6 +36,11 @@ rails g migration AddRowOrderToDucks row_order:integer
 rails db:migrate
 ```
 
+**IMPORTANT: The `_order` table column MUST allow null values. For the reason behind this requirement see [issue#167](https://github.com/mixonic/ranked-model/issues/167)**
+
+
+
+
 Put your ducks in a row:
 
 ``` ruby
