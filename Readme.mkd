@@ -112,10 +112,10 @@ class Duck < ActiveRecord::Base
 
   belongs_to :parent, class_name: 'Duck', optional: true
   ranks :child_order,
-    unless: :parent?,                # Rank only ducks that have a parent. Alternatively a Proc or lambda can be passed, e.g. proc { parent.nil? }
+    unless: :has_no_parent?,         # Rank only ducks that have a parent. Alternatively a Proc or lambda can be passed, e.g. proc { parent.nil? }
     with_same: :parent_id
 
-  def parent?
+  def has_no_parent?
     parent.nil?
   end
 end
