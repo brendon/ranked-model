@@ -62,3 +62,21 @@ describe RankedModel::Ranker, 'unless as Proc' do
     }
   end
 end
+
+describe RankedModel::Ranker, 'unless as lambda' do
+  context 'returns true' do
+    subject { RankedModel::Ranker.new(:overview, unless: ->(_) { true }).with(Class.new) }
+    its(:handle_ranking) { should == nil }
+  end
+
+  context 'returns false' do
+    subject { RankedModel::Ranker.new(:overview, unless: ->(_) { false }).with(Class.new) }
+
+    it {
+      subject.expects(:update_index_from_position).once
+      subject.expects(:assure_unique_position).once
+
+      subject.handle_ranking
+    }
+  end
+end
