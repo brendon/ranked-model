@@ -78,7 +78,7 @@ module RankedModel
       end
 
       def relative_rank
-        escaped_column = ActiveRecord::Base.connection.quote_column_name ranker.column
+        escaped_column = instance_class.connection.quote_column_name ranker.column
 
         finder.where("#{escaped_column} < #{rank}").count(:all)
       end
@@ -189,7 +189,7 @@ module RankedModel
 
       def rearrange_ranks
         _scope = finder
-        escaped_column = ActiveRecord::Base.connection.quote_column_name ranker.column
+        escaped_column = instance_class.connection.quote_column_name ranker.column
         # If there is room at the bottom of the list and we're added to the very top of the list...
         if current_first.rank && current_first.rank > RankedModel::MIN_RANK_VALUE && rank == RankedModel::MAX_RANK_VALUE
           # ...then move everyone else down 1 to make room for us at the end
