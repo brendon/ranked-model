@@ -28,4 +28,12 @@ describe Number do
 
   end
 
+  describe "getting a position with keyword column name" do
+
+    subject { Number.first }
+
+    its(:order_rank) { should == 0 }
+
+  end
+
 end

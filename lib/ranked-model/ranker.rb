@@ -78,7 +78,9 @@ module RankedModel
       end
 
       def relative_rank
-        finder.where("#{ranker.column} < #{rank}").count(:all)
+        escaped_column = ActiveRecord::Base.connection.quote_column_name ranker.column
+
+        finder.where("#{escaped_column} < #{rank}").count(:all)
       end
 
       def rank
