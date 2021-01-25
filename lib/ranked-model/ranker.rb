@@ -4,12 +4,13 @@ module RankedModel
   class InvalidField < StandardError; end
 
   class Ranker
-    attr_accessor :name, :column, :scope, :with_same, :class_name, :unless
+    attr_accessor :name, :column, :scope, :with_same, :class_name, :unless, :preferred_spread
 
     def initialize name, options={}
       self.name = name.to_sym
       self.column = options[:column] || name
       self.class_name = options[:class_name]
+      self.preferred_spread = options[:preferred_spread]
 
       [ :scope, :with_same, :unless ].each do |key|
         self.send "#{key}=", options[key]
@@ -113,13 +114,21 @@ module RankedModel
       def update_index_from_position
         case position
           when :first, 'first'
-            if current_first && current_first.rank
+            if ranker.preferred_spread
+              rank = current_first.rank - ranker.preferred_spread
+              rank = RankedModel::MIN_RANK_VALUE if rank < RankedModel::MIN_RANK_VALUE
+              rank_at(rank)
+            elsif current_first && current_first.rank
               rank_at( ( ( RankedModel::MIN_RANK_VALUE - current_first.rank ).to_f / 2 ).ceil + current_first.rank)
             else
               position_at :middle
             end
           when :last, 'last'
-            if current_last && current_last.rank
+            if ranker.preferred_spread
+              rank = current_first.rank + ranker.preferred_spread
+              rank = RankedModel::MAX_RANK_VALUE if rank < RankedModel::MAX_RANK_VALUE
+              rank_at(rank)
+            elsif current_last && current_last.rank
               rank_at( ( ( RankedModel::MAX_RANK_VALUE - current_last.rank ).to_f / 2 ).ceil + current_last.rank )
             else
               position_at :middle
