@@ -26,6 +26,7 @@ gemfile:
   - gemfiles/rails_5_1.gemfile
   - gemfiles/rails_5_2.gemfile
   - gemfiles/rails_6_0.gemfile
+  - gemfiles/rails_6_1.gemfile
 matrix:
   exclude:
     # Rails <6 does not support Ruby 3, see:
@@ -49,3 +50,7 @@ matrix:
       gemfile: gemfiles/rails_6_0.gemfile
     - rvm: jruby-9.1.17.0
       gemfile: gemfiles/rails_6_0.gemfile
+    - rvm: 2.4
+      gemfile: gemfiles/rails_6_1.gemfile
+    - rvm: jruby-9.1.17.0
+      gemfile: gemfiles/rails_6_1.gemfile
