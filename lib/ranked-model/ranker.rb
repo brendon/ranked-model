@@ -294,9 +294,7 @@ module RankedModel
 
       def current_last
         @current_last ||= begin
-          if (ordered_instance = finder.
-                                   reverse.
-                                   first)
+          if (ordered_instance = finder.last)
             RankedModel::Ranker::Mapper.new ranker, ordered_instance
           end
         end
