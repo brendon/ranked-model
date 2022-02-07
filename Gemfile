@@ -4,13 +4,13 @@ source "https://rubygems.org"
 gemspec
 
 group :sqlite do
-  gem "sqlite3", "~> 1.3.13", platform: :ruby
+  gem "sqlite3", platform: :ruby
 end
 
 group :postgresql do
-  gem "pg", "~> 1.2.0", platform: :ruby
+  gem "pg", platform: :ruby
 end
 
 group :mysql do
-  gem "mysql2", "~> 0.5.0", platform: :ruby
+  gem "mysql2", platform: :ruby
 end
