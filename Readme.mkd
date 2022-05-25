@@ -136,6 +136,37 @@ Pond.first.ducks.rank(:swimming_order)
 Duck.walking.rank(:walking)
 ```
 
+Drawbacks
+---------
+
+While ranked-model is performant when storing data, it might cause N+1s depending on how you write your code. Consider this snippet:
+
+```ruby
+ducks = Duck.all
+ducks.map do |duck|
+  {
+    id: duck.id,
+    position: duck.row_order_rank # This causes N+1!
+  }
+end
+```
+
+Every call to `duck.row_order_rank` will make a call to the DB to check the rank of that 
+particular element. If you have a long list of elements this might cause issues to your DB.
+
+In order to avoid that, you can use the `rank(:your_rank)` scope and some Ruby code to get
+the element's position:
+
+```ruby
+ducks = Duck.rank(:row_order).all
+ducks.map.with_index do |duck, index|
+  {
+    id: duck.id,
+    position: index
+  }
+end
+```
+
 Single Table Inheritance (STI)
 ------------------------------
 
