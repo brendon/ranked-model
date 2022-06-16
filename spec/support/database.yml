@@ -6,6 +6,7 @@ sqlite:
 
 mysql:
   adapter: mysql2
+  host: 127.0.0.1
   database: ranked_model_test
   pool: 5
   timeout: 5000
@@ -14,6 +15,7 @@ mysql:
 
 postgresql:
   adapter: postgresql
+  host: 127.0.0.1
   database: ranked_model_test
   pool: 5
   timeout: 5000
