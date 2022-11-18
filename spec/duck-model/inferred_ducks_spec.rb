@@ -25,7 +25,7 @@ describe Duck do
   describe "updating a duck order with first" do
     it "should maintain the order after creating a new duck" do
       duck = Duck.last
-      duck.update(row: :first)
+      duck.update(row_position: :first)
       expect(duck.row_rank).to eq(0)
 
       Duck.create(name: "Wacky")
@@ -39,8 +39,8 @@ describe Duck do
 
   describe "updating a duck order with up" do
     it "should maintain the order after creating a new duck" do
-      duck = Duck.rank(:row)[2]
-      duck.update(row: :up)
+      duck = Duck.rank(:row).with(Duck.new).current_at_position(2)
+      duck.update(row_position: :up)
       expect(duck.row_rank).to eq(3)
 
       Duck.create(name: "Wacky")
@@ -54,8 +54,8 @@ describe Duck do
 
   describe "updating a duck order with down" do
     it "should maintain the order after creating a new duck" do
-      duck = Duck.rank(:row)[2]
-      duck.update(row: :down)
+      duck = Duck.rank(:row).with(Duck.new).current_at_position(2)
+      duck.update(row_position: :down)
       expect(duck.row_rank).to eq(1)
 
       Duck.create(name: "Wacky")
