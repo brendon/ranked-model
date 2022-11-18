@@ -73,7 +73,7 @@ module RankedModel
       end
 
       define_method "update_#{ranker.name}_position" do
-        instance_variable_set "@#{ranker.name}_position", send("#{ranker.column}_rank")
+        instance_variable_set "@#{ranker.name}_position", send("#{ranker.name}_rank")
       end
 
       public "#{ranker.name}_position", "#{ranker.name}_position="
