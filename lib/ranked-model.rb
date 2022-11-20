@@ -68,7 +68,7 @@ module RankedModel
       end
 
       define_method "inferred_#{ranker.name}_position?" do
-        send("#{ranker.column}_changed?") &&
+        send("#{ranker.column}_previously_changed?") &&
           !send("#{ranker.name}_position").is_a?(Integer)
       end
 

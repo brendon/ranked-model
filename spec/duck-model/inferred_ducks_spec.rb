@@ -39,31 +39,33 @@ describe Duck do
 
   describe "updating a duck order with up" do
     it "should maintain the order after creating a new duck" do
-      duck = Duck.rank(:row).with(Duck.new).current_at_position(2)
+      duck_id = Duck.ranker(:row).with(Duck.new).current_at_position(2).instance.id
+      duck = Duck.find(duck_id)
       duck.update(row_position: :up)
-      expect(duck.row_rank).to eq(3)
+      expect(duck.row_rank).to eq(1)
 
       Duck.create(name: "Wacky")
 
-      expect(duck.row_rank).to eq(3)
+      expect(duck.row_rank).to eq(1)
 
       duck.update(pond: 'Shin')
-      expect(duck.row_rank).to eq(3)
+      expect(duck.row_rank).to eq(1)
     end
   end
 
   describe "updating a duck order with down" do
     it "should maintain the order after creating a new duck" do
-      duck = Duck.rank(:row).with(Duck.new).current_at_position(2)
+      duck_id = Duck.ranker(:row).with(Duck.new).current_at_position(2).instance.id
+      duck = Duck.find(duck_id)
       duck.update(row_position: :down)
-      expect(duck.row_rank).to eq(1)
+      expect(duck.row_rank).to eq(3)
 
       Duck.create(name: "Wacky")
 
-      expect(duck.row_rank).to eq(1)
+      expect(duck.row_rank).to eq(3)
 
       duck.update(pond: 'Shin')
-      expect(duck.row_rank).to eq(1)
+      expect(duck.row_rank).to eq(3)
     end
   end
 end
