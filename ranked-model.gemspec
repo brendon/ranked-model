@@ -13,7 +13,7 @@ Gem::Specification.new do |s|
   s.description = %q{ranked-model is a modern row sorting library built for Rails 4.2+. It uses ARel aggressively and is better optimized than most other libraries.}
   s.license     = 'MIT'
 
-  s.add_dependency "activerecord", ">= 4.2"
+  s.add_dependency "activerecord", ">= 5.2"
   s.add_development_dependency "rspec", "~> 3"
   s.add_development_dependency "rspec-its"
   s.add_development_dependency "mocha"
