@@ -36,7 +36,6 @@ jobs:
             gemfile: gemfiles/rails_7_0.gemfile
           - ruby: 2.6
             gemfile: gemfiles/rails_7_0.gemfile
-            db: sqlite
           - ruby: '3.0'
             gemfile: gemfiles/rails_5_2.gemfile
           - ruby: 3.1
