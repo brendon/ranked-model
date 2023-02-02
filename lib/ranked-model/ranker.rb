@@ -4,12 +4,13 @@ module RankedModel
   class InvalidField < StandardError; end
 
   class Ranker
-    attr_accessor :name, :column, :scope, :with_same, :class_name, :unless
+    attr_accessor :name, :column, :scope, :with_same, :class_name, :unless, :preferred_spread
 
     def initialize name, options={}
       self.name = name.to_sym
       self.column = options[:column] || name
       self.class_name = options[:class_name]
+      self.preferred_spread = options[:preferred_spread]
 
       [ :scope, :with_same, :unless ].each do |key|
         self.send "#{key}=", options[key]
@@ -128,13 +129,21 @@ module RankedModel
         case position
           when :first, 'first'
             if current_first && current_first.rank
-              rank_at_average current_first.rank, RankedModel::MIN_RANK_VALUE
+              if ranker.preferred_spread
+                rank_with_preferred_spread current_first.rank, RankedModel::MIN_RANK_VALUE
+              else
+                rank_at_average current_first.rank, RankedModel::MIN_RANK_VALUE
+              end
             else
               position_at :middle
             end
           when :last, 'last'
             if current_last && current_last.rank
-              rank_at_average current_last.rank, RankedModel::MAX_RANK_VALUE
+              if ranker.preferred_spread
+                rank_with_preferred_spread current_last.rank, RankedModel::MAX_RANK_VALUE
+              else
+                rank_at_average current_last.rank, RankedModel::MAX_RANK_VALUE
+              end
             else
               position_at :middle
             end
@@ -170,12 +179,26 @@ module RankedModel
         end
       end
 
+      def possibly_rebalance_and_position(min, max)
+        return false unless (max - min).between?(-1, 1) # No room at the inn...
+        rebalance_ranks
+        position_at position
+        true
+      end
+
       def rank_at_average(min, max)
-        if (max - min).between?(-1, 1) # No room at the inn...
-          rebalance_ranks
-          position_at position
+        rank_at( ( ( max - min ).to_f / 2 ).ceil + min ) unless possibly_rebalance_and_position(min, max)
+      end
+
+      def rank_with_preferred_spread(min, max)
+        return if possibly_rebalance_and_position(min, max)
+
+        modifier = min < max ? 1 : -1
+
+        if (max - min).abs < ranker.preferred_spread * 2
+          rank_at(min + (max - min).abs * 0.3 * modifier)
         else
-          rank_at( ( ( max - min ).to_f / 2 ).ceil + min )
+          rank_at(min + modifier * ranker.preferred_spread)
         end
       end
 
@@ -229,11 +252,13 @@ module RankedModel
           gaps = current_order.size + 1
           range = (RankedModel::MAX_RANK_VALUE - RankedModel::MIN_RANK_VALUE).to_f
           gap_size = (range / gaps).ceil
+          gap_size = ranker.preferred_spread if ranker.preferred_spread && gap_size > ranker.preferred_spread
+          base_position = ranker.preferred_spread ? -gap_size * ((current_order.count + 1) / 2).ceil : RankedModel::MIN_RANK_VALUE
 
           reset_ranks!
 
           current_order.each.with_index(1) do |item, position|
-            new_rank = (gap_size * position) + RankedModel::MIN_RANK_VALUE
+            new_rank = (gap_size * position) + base_position
 
             if item.instance.id == instance.id
               rank_at new_rank

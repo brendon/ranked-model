@@ -5,11 +5,12 @@ describe RankedModel::Ranker, 'initialized' do
   subject {
     RankedModel::Ranker.new \
       :overview,
-      :column     => :a_sorting_column,
-      :scope      => :a_scope,
-      :with_same  => :a_column,
-      :class_name => 'SomeClass',
-      :unless     => :a_method
+      :column           => :a_sorting_column,
+      :scope            => :a_scope,
+      :with_same        => :a_column,
+      :class_name       => 'SomeClass',
+      :unless           => :a_method,
+      :preferred_spread => 500
   }
 
   its(:name) { should == :overview }
@@ -18,6 +19,7 @@ describe RankedModel::Ranker, 'initialized' do
   its(:with_same) { should == :a_column }
   its(:class_name) { should == 'SomeClass' }
   its(:unless) { should == :a_method }
+  its(:preferred_spread) { should == 500 }
 end
 
 describe RankedModel::Ranker, 'unless as Symbol' do
