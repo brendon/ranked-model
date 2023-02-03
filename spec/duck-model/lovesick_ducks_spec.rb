@@ -20,6 +20,19 @@ describe LovesickDuck do
 
   describe "when placing duck first" do
 
+    context "in large numbers" do
+      let!(:lovesick_ducks) { 200.times.map { LovesickDuck.create(name: "LovesickDuck #{_1 + 1}", row: :first) } }
+
+      it "evenly spaces them" do
+        expect(lovesick_ducks.pluck(:row).each_cons(2).map { _2 - _1 }).to all(eq 1000)
+      end
+
+      it "didn't rebalance them" do
+        expect { lovesick_ducks.each(&:reload) }
+          .not_to change { lovesick_ducks.pluck(:row) }
+      end
+    end
+
     describe "when enough room" do
       before {
         [:quacky, :feathers, :wingy, :webby, :waddly, :beaky].each_with_index do |name, i|
@@ -80,6 +93,19 @@ describe LovesickDuck do
   end
 
   describe "when placing duck last" do
+
+    context "in large numbers" do
+      let!(:lovesick_ducks) { 200.times.map { LovesickDuck.create(name: "LovesickDuck #{_1 + 1}", row: :last) } }
+
+      it "evenly spaces them" do
+        expect(lovesick_ducks.pluck(:row).each_cons(2).map { _2 - _1 }).to all(eq 1000)
+      end
+
+      it "didn't rebalance them" do
+        expect { lovesick_ducks.each(&:reload) }
+          .not_to change { lovesick_ducks.pluck(:row) }
+      end
+    end
 
     describe "when enough room" do
       before {
