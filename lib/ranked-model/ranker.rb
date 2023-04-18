@@ -114,6 +114,7 @@ module RankedModel
 
       def rank_at value
         instance.send "#{ranker.column}=", value
+        instance.send "#{ranker.name}_position=", relative_rank unless position.is_a?(Integer)
       end
 
       def rank_changed?

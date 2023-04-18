@@ -61,7 +61,7 @@ module RankedModel
         end
       end
 
-      after_save :"update_#{ranker.name}_position", if: :"inferred_#{ranker.name}_position?"
+      # after_save :"update_#{ranker.name}_position", if: :"inferred_#{ranker.name}_position?"
 
       define_method "#{ranker.name}_rank" do
         ranker.with(self).relative_rank
