@@ -112,9 +112,12 @@ module RankedModel
         update_index_from_position
       end
 
-      def rank_at value
+      def rank_at value, rebalance: false
         instance.send "#{ranker.column}=", value
-        instance.send "#{ranker.name}_position=", relative_rank unless position.is_a?(Integer)
+
+        unless rebalance || position.is_a?(Integer)
+          instance.send "#{ranker.name}_position=", relative_rank
+        end
       end
 
       def rank_changed?
@@ -237,7 +240,7 @@ module RankedModel
             new_rank = (gap_size * position) + RankedModel::MIN_RANK_VALUE
 
             if item.instance.id == instance.id
-              rank_at new_rank
+              rank_at new_rank, rebalance: true
             else
               item.update_rank! new_rank
             end
