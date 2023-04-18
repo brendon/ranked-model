@@ -61,19 +61,8 @@ module RankedModel
         end
       end
 
-      # after_save :"update_#{ranker.name}_position", if: :"inferred_#{ranker.name}_position?"
-
       define_method "#{ranker.name}_rank" do
         ranker.with(self).relative_rank
-      end
-
-      define_method "inferred_#{ranker.name}_position?" do
-        send("#{ranker.column}_previously_changed?") &&
-          !send("#{ranker.name}_position").is_a?(Integer)
-      end
-
-      define_method "update_#{ranker.name}_position" do
-        instance_variable_set "@#{ranker.name}_position", send("#{ranker.name}_rank")
       end
 
       public "#{ranker.name}_position", "#{ranker.name}_position="
