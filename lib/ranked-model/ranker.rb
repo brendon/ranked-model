@@ -114,6 +114,7 @@ module RankedModel
 
       def rank_at value
         instance.send "#{ranker.column}=", value
+        instance.send "#{ranker.name}_position=", relative_rank unless position.is_a?(Integer)
       end
 
       def rank_changed?
@@ -236,7 +237,7 @@ module RankedModel
             new_rank = (gap_size * position) + RankedModel::MIN_RANK_VALUE
 
             if item.instance.id == instance.id
-              rank_at new_rank
+              instance.send "#{ranker.column}=", new_rank
             else
               item.update_rank! new_rank
             end
