@@ -1,4 +1,5 @@
 require File.dirname(__FILE__)+'/ranked-model/ranker'
+require File.dirname(__FILE__)+'/ranked-model/advisory_lock'
 require File.dirname(__FILE__)+'/ranked-model/railtie' if defined?(Rails::Railtie)
 
 module RankedModel
@@ -17,8 +18,6 @@ module RankedModel
 
       extend RankedModel::ClassMethods
 
-      before_save :handle_ranking
-
       scope :rank, lambda { |name|
         reorder ranker(name.to_sym).column
       }
@@ -27,12 +26,6 @@ module RankedModel
   end
 
   private
-
-  def handle_ranking
-    self.class.rankers.each do |ranker|
-      ranker.with(self).handle_ranking
-    end
-  end
 
   module ClassMethods
 
@@ -48,7 +41,7 @@ module RankedModel
       self.rankers ||= []
       ranker = RankedModel::Ranker.new(*args)
 
-      if column_default(ranker)
+      if ActiveRecord::Base.connected? && table_exists? && column_defaults[ranker.name.to_s]
         raise NonNilColumnDefault, %Q{Your ranked model column "#{ranker.name}" must not have a default value in the database.}
       end
 
@@ -66,10 +59,20 @@ module RankedModel
       end
 
       public "#{ranker.name}_position", "#{ranker.name}_position="
-    end
 
-    def column_default ranker
-      column_defaults[ranker.name.to_s] if ActiveRecord::Base.connected? && table_exists?
+      if ActiveRecord::Base.connected? && table_exists?
+        advisory_lock = AdvisoryLock.new(base_class, ranker.column)
+        before_create advisory_lock
+        before_update advisory_lock
+        before_destroy advisory_lock
+      end
+
+      before_save { ranker.with(self).handle_ranking }
+
+      if ActiveRecord::Base.connected? && table_exists? && local_variables.include?(:advisory_lock)
+        after_commit advisory_lock
+        after_rollback advisory_lock
+      end
     end
 
   end
