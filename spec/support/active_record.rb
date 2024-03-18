@@ -6,6 +6,10 @@ unless ENV['DB']
 end
 
 ActiveRecord::Base.logger = Logger.new('tmp/ar_debug.log')
+
+# Uncomment this to see Active Record logging for tests
+# ActiveRecord::Base.logger = Logger.new(STDOUT)
+
 ActiveRecord::Base.configurations = YAML::load(IO.read('spec/support/database.yml'))
 ActiveRecord::Base.establish_connection(ENV['DB'].to_sym)
 

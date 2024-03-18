@@ -7,9 +7,6 @@ require 'pry'
 
 Dir[File.join(File.dirname(__FILE__), 'support/**/*.rb')].each {|f| require f}
 
-# Uncomment this to see Active Record logging for tests
-# ActiveRecord::Base.logger = Logger.new(STDOUT)
-
 RSpec.configure do |config|
   config.mock_with :mocha
 
