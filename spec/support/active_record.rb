@@ -91,6 +91,10 @@ end
 
 # Negative examples
 
+class ColumnDefaultDuck < ActiveRecord::Base
+  include RankedModel
+end
+
 class WrongScopeDuck < ActiveRecord::Base
 
   include RankedModel
