@@ -7,26 +7,17 @@ require 'pry'
 
 Dir[File.join(File.dirname(__FILE__), 'support/**/*.rb')].each {|f| require f}
 
-# After the DB connection is setup
-require 'database_cleaner'
-
 # Uncomment this to see Active Record logging for tests
 # ActiveRecord::Base.logger = Logger.new(STDOUT)
 
 RSpec.configure do |config|
   config.mock_with :mocha
 
-  config.before(:suite) do
-    DatabaseCleaner.strategy = :transaction
-    DatabaseCleaner.clean_with(:truncation)
-  end
-
-  config.before(:each) do
-    DatabaseCleaner.start
-  end
-
-  config.after(:each) do
-    DatabaseCleaner.clean
+  config.around(:each) do |each|
+    ActiveRecord::Base.transaction do
+      each.run
+      raise ActiveRecord::Rollback
+    end
   end
 
   config.order = :random

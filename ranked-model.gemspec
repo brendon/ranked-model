@@ -17,7 +17,6 @@ Gem::Specification.new do |s|
   s.add_development_dependency "rspec", "~> 3"
   s.add_development_dependency "rspec-its"
   s.add_development_dependency "mocha"
-  s.add_development_dependency "database_cleaner", "~> 1.7.0"
   s.add_development_dependency "rake", ">= 12.3.3"
   s.add_development_dependency "appraisal"
   s.add_development_dependency "pry"
