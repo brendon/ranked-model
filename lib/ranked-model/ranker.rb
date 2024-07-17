@@ -173,7 +173,7 @@ module RankedModel
 
       def rank_at_average(min, max)
         if (max - min).between?(-1, 1) # No room at the inn...
-          rebalance_ranks
+          notify_ranks_updated { rebalance_ranks }
           position_at position
         else
           rank_at( ( ( max - min ).to_f / 2 ).ceil + min )
@@ -183,7 +183,7 @@ module RankedModel
       def assure_unique_position
         if ( new_record? || rank_changed? )
           if (rank > RankedModel::MAX_RANK_VALUE) || rank_taken?
-            rearrange_ranks
+            notify_ranks_updated { rearrange_ranks }
           end
         end
       end
@@ -350,6 +350,16 @@ module RankedModel
         end
       end
 
+      def notify_ranks_updated(&block)
+        ActiveSupport::Notifications.instrument(
+          "ranked_model.ranks_updated",
+          instance: instance,
+          scope: ranker.scope,
+          with_same: ranker.with_same
+        ) do
+          block.call
+        end
+      end
     end
 
   end
