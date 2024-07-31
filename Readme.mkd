@@ -273,8 +273,8 @@ Record updates to rebalance ranks do not trigger ActiveRecord callbacks. If you 
 (to index them in a secondary data store, for example), you can subscribe to the `ranked_model.ranks_updated`
 [ActiveSupport notification](https://api.rubyonrails.org/v7.1/classes/ActiveSupport/Notifications.html).
 Subscribed consumers receive an event for each rearrangement or rebalancing, the payload of which includes the
-triggering instance and the scope and with_same options for the ranking, which can be used to retrieve the affected
-records.
+triggering instance and the `scope` and `with_same` options for the ranking, which can be used to retrieve the
+affected records.
 
 ```ruby
 ActiveSupport::Notifications.subscribe("ranked_model.ranks_updated") do |_name, _start, _finish, _id, payload|
