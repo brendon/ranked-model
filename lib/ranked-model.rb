@@ -49,7 +49,7 @@ module RankedModel
       ranker = RankedModel::Ranker.new(*args)
 
       if column_default(ranker)
-        raise NonNilColumnDefault, %Q{Your ranked model column "#{ranker.name}" must not have a default value in the database.}
+        Rails.logger.fatal %Q{NonNilColumnDefault:  Your ranked model column "#{ranker.name}" must not have a default value in the database.}
       end
 
       self.rankers << ranker
