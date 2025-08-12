@@ -1,5 +1,5 @@
-require 'active_record'
 require 'logger'
+require 'active_record'
 
 unless ENV['DB']
   ENV['DB'] = 'sqlite'
