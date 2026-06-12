@@ -229,7 +229,7 @@ module RankedModel
 
           gaps = current_order.size + 1
           range = (RankedModel::MAX_RANK_VALUE - RankedModel::MIN_RANK_VALUE).to_f
-          gap_size = (range / gaps).ceil
+          gap_size = (range / gaps).floor
 
           reset_ranks!
 
