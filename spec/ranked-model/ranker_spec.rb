@@ -80,3 +80,33 @@ describe RankedModel::Ranker, 'unless as lambda' do
     }
   end
 end
+
+# rebalance_ranks should keep all ranks within bounds
+# see: https://github.com/brendon/ranked-model/issues/206
+describe RankedModel::Ranker::Mapper, "rebalance_ranks" do
+  around do |example|
+    original_min = RankedModel::MIN_RANK_VALUE
+    original_max = RankedModel::MAX_RANK_VALUE
+    RankedModel.send(:remove_const, :MIN_RANK_VALUE)
+    RankedModel.send(:remove_const, :MAX_RANK_VALUE)
+    RankedModel.const_set(:MIN_RANK_VALUE, -256)
+    RankedModel.const_set(:MAX_RANK_VALUE, 255)
+    example.run
+  ensure
+    RankedModel.send(:remove_const, :MIN_RANK_VALUE)
+    RankedModel.send(:remove_const, :MAX_RANK_VALUE)
+    RankedModel.const_set(:MIN_RANK_VALUE, original_min)
+    RankedModel.const_set(:MAX_RANK_VALUE, original_max)
+  end
+
+  it "keeps all ranks within bounds after rebalancing" do
+    27.times { |i| Duck.create(name: "Duck #{i}") }
+    duck = Duck.first
+
+    Duck.ranker(:row).with(duck).instance_eval { rebalance_ranks }
+
+    ranks = Duck.pluck(:row)
+    expect(ranks.max).to be <= RankedModel::MAX_RANK_VALUE
+    expect(ranks.min).to be >= RankedModel::MIN_RANK_VALUE
+  end
+end
