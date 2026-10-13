@@ -2,21 +2,18 @@
 
 source "https://rubygems.org"
 
-gem "activerecord", "~> 5.2.0"
+gem "activerecord", "~> 8.1.0"
 
 group :sqlite do
   gem "sqlite3", platform: :ruby
-  gem "activerecord-jdbcsqlite3-adapter", "~> 52.0", platform: :jruby
 end
 
 group :postgresql do
   gem "pg", platform: :ruby
-  gem "activerecord-jdbcpostgresql-adapter", "~> 52.0", platform: :jruby
 end
 
 group :mysql do
   gem "mysql2", platform: :ruby
-  gem "activerecord-jdbcmysql-adapter", "~> 52.0", platform: :jruby
 end
 
 gemspec path: "../"

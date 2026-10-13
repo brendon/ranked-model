@@ -1,5 +1,7 @@
 ## [Unreleased]
 
+- Require Ruby 3.3+ and Rails 7.2+.
+
 ## [0.4.11] - 2024-10-20
 
 - Add `funding_uri` to gemspec.
