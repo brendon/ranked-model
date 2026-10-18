@@ -1,3 +1,3 @@
 module RankedModel
-  VERSION = "0.4.11"
+  VERSION = "0.5.0"
 end
