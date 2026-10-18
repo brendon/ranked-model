@@ -8,7 +8,7 @@ require 'pry'
 Dir[File.join(File.dirname(__FILE__), 'support/**/*.rb')].each {|f| require f}
 
 # After the DB connection is setup
-require 'database_cleaner'
+require 'database_cleaner/active_record'
 
 # Uncomment this to see Active Record logging for tests
 # ActiveRecord::Base.logger = Logger.new(STDOUT)

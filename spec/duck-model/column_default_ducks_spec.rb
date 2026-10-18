@@ -23,6 +23,7 @@ describe 'ColumnDefaultDuck' do
 			}.not_to raise_error
 		ensure
 			ActiveRecord::Base.establish_connection(ENV['DB'].to_sym)
+			ActiveRecord::Base.connection_pool.with_connection(&:verify!)
 		end
 	end
 

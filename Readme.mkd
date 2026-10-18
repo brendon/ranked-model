@@ -1,4 +1,4 @@
-**ranked-model** is a modern row sorting library built for Rails 4.2+.  It uses ARel aggressively and is better optimized than most other libraries.
+**ranked-model** is a modern row sorting library built for Rails 7.2+.  It uses ARel aggressively and is better optimized than most other libraries.
 
 [![Build Status](https://github.com/brendon/ranked-model/actions/workflows/ci.yml/badge.svg)](https://github.com/brendon/ranked-model/actions/workflows/ci.yml)
 
@@ -12,7 +12,7 @@ Positioning works similarly to Acts As List in that it maintains a sequential li
 Installation
 ------------
 
-ranked-model passes specs with Rails 4.2, 5.0, 5.1, 5.2, 6.0 and 6.1 for MySQL, Postgres, and SQLite on Ruby 2.4 through 3.0 (with exceptions, please check the CI setup for supported combinations), and jruby-9.1.17.0 where Rails supports the platform.
+ranked-model passes specs with Rails 7.2, 8.0 and 8.1 for MySQL, Postgres, and SQLite on Ruby 3.3, 3.4 and 4.0 (with exceptions, please check the CI setup for supported combinations).
 
 To install ranked-model, just add it to your `Gemfile`:
 
